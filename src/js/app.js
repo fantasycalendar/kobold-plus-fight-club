@@ -302,19 +302,19 @@ function app() {
 
             let sources = [];
 
-            await fetch("/json/se_sources.json")
+            await fetch("json/se_sources.json")
                 .then(res => res.json())
                 .then((data) => {
                     sources = sources.concat(data);
                 });
 
-            await fetch("/json/se_third_party_sources.json")
+            await fetch("json/se_third_party_sources.json")
                 .then(res => res.json())
                 .then((data) => {
                     sources = sources.concat(data);
                 });
 
-            await fetch("/json/se_community_sources.json")
+            await fetch("json/se_community_sources.json")
                 .then(res => res.json())
                 .then((data) => {
                     sources = sources.concat(data);
@@ -337,19 +337,19 @@ function app() {
 
             let monsters = [];
 
-            await fetch("/json/se_monsters.json")
+            await fetch("json/se_monsters.json")
                 .then(res => res.json())
                 .then((data) => {
                     monsters = monsters.concat(data);
                 });
 
-            await fetch("/json/se_third_party_monsters.json")
+            await fetch("json/se_third_party_monsters.json")
                 .then(res => res.json())
                 .then((data) => {
                     monsters = monsters.concat(data);
                 });
 
-            await fetch("/json/se_community_monsters.json")
+            await fetch("json/se_community_monsters.json")
                 .then(res => res.json())
                 .then((data) => {
                     monsters = monsters.concat(data);
