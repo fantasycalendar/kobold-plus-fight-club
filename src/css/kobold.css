@@ -1,0 +1,113 @@
+@import '~nouislider/dist/nouislider.min.css';
+@import '~@fortawesome/fontawesome-free/css/all.css';
+@import '~choices.js/public/assets/styles/choices.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind forms;
+
+@layer components {
+    input[type=text] {
+        @apply disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-gray-600 block w-full px-2 shadow-sm border-gray-300 rounded-md mb-4;
+    }
+}
+
+/* Choices.js Overrides */
+body .choices { @apply leading-6 border-gray-300 dark:border-gray-700 rounded-none; }
+body .choices.is-open { @apply ring-4 border-emerald-600 dark:border-emerald-800 ring-opacity-30 ring-emerald-600; }
+body .is-open .choices__inner { @apply border-gray-300 dark:border-gray-700 rounded-none; }
+body .choices__inner > input {
+    @apply bg-white dark:bg-gray-700;
+}
+.is-open .choices__list--dropdown, .is-open .choices__list[aria-expanded] {
+    @apply border-gray-300 dark:border-gray-600;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    @apply bg-emerald-600 dark:bg-emerald-800 text-gray-200;
+}
+body .choices .choices__inner { 
+    @apply 
+    bg-white
+    dark:bg-gray-700
+    rounded-md
+    shadow-sm
+    focus:outline-none
+    focus:ring-0
+    focus:ring-emerald-600
+    focus:ring-opacity-30
+    focus:border-emerald-600 dark:border-emerald-800
+    block
+    w-full
+    py-1
+    mb-0
+    text-base
+    border-gray-300 dark:border-gray-600
+    focus:outline-none
+    sm:text-sm
+    rounded-md;
+}
+body .choices__list--multiple .choices__item { 
+    @apply bg-emerald-700 border-emerald-800 rounded-md mb-0; 
+}
+body .choices__list--multiple .choices__item:hover { @apply bg-emerald-600; }
+body .choices__list--single { @apply py-0; }
+body .choices__item { @apply text-gray-700 dark:text-gray-300; }
+body .choices__placeholder { @apply opacity-100; }
+body .choices__list--dropdown, body .choices__list[aria-expanded] { @apply border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 z-50; }
+body .is-open .choices__list--multiple { @apply border-gray-300 dark:border-gray-700 shadow-lg; }
+body .choices__input { @apply focus:ring-0 border-none px-0; }
+
+/* noUiSlider overrides */
+.noUi-target {
+    @apply border-none shadow-none bg-gray-100 dark:bg-gray-800;
+}
+.noUi-connect {
+    @apply bg-emerald-700 dark:bg-emerald-700;
+}
+.noUi-handle {
+    @apply shadow-none hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 after:content-none before:content-none rounded-md p-0;
+}
+.primary-link {
+    @apply text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-600 hover:text-emerald-600;
+}
+
+.button-primary-md {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-700 disabled:bg-emerald-300 dark:disabled:bg-emerald-900 disabled:hover:bg-emerald-300 dark:disabled:hover:bg-emerald-900 disabled:opacity-70 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500;
+}
+.button-secondary-md {
+    @apply inline-flex items-center px-4 py-2 border border-transparent dark:border-emerald-800 text-sm font-medium rounded-md text-emerald-700 bg-emerald-100 dark:bg-transparent dark:text-emerald-600 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500;
+}
+.button-danger-md {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 disabled:bg-red-300 dark:disabled:bg-red-900 disabled:hover:bg-red-300 dark:disabled:hover:bg-red-900 disabled:opacity-70 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+}
+.button-danger-outline-md {
+    @apply inline-flex items-center px-4 py-2 border border-transparent dark:border-red-800 text-sm font-medium rounded-md text-red-700 bg-red-100 dark:bg-transparent dark:text-red-600 dark:hover:bg-red-800 dark:hover:text-white hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+}
+[x-cloak] {
+    @apply hidden;
+}
+
+@media (horizontal-viewport-segments: 2) {
+    #encounter_box {
+        min-width: env(viewport-segment-right 0 0);
+        margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+    }
+
+    #monsters_box{
+        min-width: env(viewport-segment-right 0 0);
+        max-width: env(viewport-segment-right 0 0);
+    }
+}
+
+.surface-duo-2 #monsters_box {
+    right: calc(50% + 16px);
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    @apply py-8 !w-auto !inset-y-0 !left-0;
+}
+.surface-duo-2 #encounter_box {
+    left: calc(50% + 16px);
+    @apply !w-auto !right-0 !px-0 !inset-y-0 py-8;
+}
