@@ -21,14 +21,15 @@ const encounter = {
     },
 
     get actualDifficulty() {
+        return this.getDifficultyFromExperience(this.adjustedExp)
+    },
 
-        const exp = this.adjustedExp;
+    getDifficultyFromExperience(exp){
         const levels = this.app.party.experience;
-
         if (exp === 0){
             return "None";
         }else if (exp < (levels.easy)) {
-            return "Nuisance";
+            return "Trivial";
         } else if (exp < (levels.medium)) {
             return "Easy";
         } else if (exp < (levels.hard)) {
@@ -36,8 +37,25 @@ const encounter = {
         } else if (exp < (levels.deadly)) {
             return "Hard";
         }
-
         return "Deadly";
+    },
+
+    getMonsterColor(monster){
+        if(!this.app.party.totalPlayers) return "";
+        const difficulty = this.getDifficultyFromExperience(monster.cr.exp);
+        switch(difficulty){
+            case "Trivial":
+                return "bg-blue-500";
+            case "Easy":
+                return "bg-lime-500";
+            case "Medium":
+                return "bg-yellow-500";
+            case "Hard":
+                return "bg-orange-500";
+            case "Deadly":
+                return "bg-red-500";
+        }
+        return "";
     },
 
     insaneDifficultyStrings: [
@@ -294,7 +312,7 @@ const encounter = {
         if(!this.app.party.totalPlayers){
             this.app.party.addPlayerGroup();
         }
-        
+
         let group;
         let index = this.groups.findIndex(group => group.monster === monster);
         if(index === -1) {
