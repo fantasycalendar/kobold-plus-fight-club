@@ -50,7 +50,7 @@ function app() {
         environments: {},
 
         totalPages: 1,
-        currentPage: 1,
+        currentPage: Alpine.$persist(1).as('currentPage'),
         pagination: [],
         monstersPerPage: Alpine.$persist(10).as("monstersPerPage"),
 
@@ -257,8 +257,8 @@ function app() {
 
         updatePagination(){
 
-            this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
             this.totalPages = Math.floor(this.filteredMonsters.length / this.monstersPerPage);
+            this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
 
             if(this.currentPage < 5){
                 this.pagination = [
@@ -398,6 +398,7 @@ function app() {
             return monsters;
         },
 
+        timer: null,
         filtersChanged($event){
             const { name, value, asArray } = $event.detail;
             this.filters[name] = asArray ? Object.values(value) : value;
@@ -412,7 +413,10 @@ function app() {
                         return filter.length && !filter.includes('any');
                 }
             }).length;
-            this.updateFilteredMonsters();
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.updateFilteredMonsters();
+            }, 150);
         },
 
         updateFilteredMonsters(){

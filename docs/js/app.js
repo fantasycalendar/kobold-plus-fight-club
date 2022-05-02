@@ -6096,7 +6096,7 @@ function app() {
     monsterLookupTable: {},
     environments: {},
     totalPages: 1,
-    currentPage: 1,
+    currentPage: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(1).as('currentPage'),
     pagination: [],
     monstersPerPage: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(10).as("monstersPerPage"),
     encounterType: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("random").as("encounterType"),
@@ -6342,8 +6342,8 @@ function app() {
       this.updatePagination();
     },
     updatePagination: function updatePagination() {
-      this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
       this.totalPages = Math.floor(this.filteredMonsters.length / this.monstersPerPage);
+      this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
 
       if (this.currentPage < 5) {
         this.pagination = [{
@@ -6562,7 +6562,10 @@ function app() {
       });
       return monsters;
     },
+    timer: null,
     filtersChanged: function filtersChanged($event) {
+      var _this7 = this;
+
       var _$event$detail = $event.detail,
           name = _$event$detail.name,
           value = _$event$detail.value,
@@ -6584,7 +6587,10 @@ function app() {
             return filter.length && !filter.includes('any');
         }
       }).length;
-      this.updateFilteredMonsters();
+      clearTimeout(this.timer);
+      this.timer = setTimeout(function () {
+        _this7.updateFilteredMonsters();
+      }, 150);
     },
     updateFilteredMonsters: function updateFilteredMonsters() {
       this.filteredMonsters = this.filterMonsters();
@@ -6626,12 +6632,12 @@ function app() {
       description: 'Close any open dialogs'
     }],
     setupHotkeys: function setupHotkeys() {
-      var _this7 = this;
+      var _this8 = this;
 
       (0,hotkeys_js__WEBPACK_IMPORTED_MODULE_2__["default"])('ctrl+/,ctrl+k,ctrl+shift+\\,ctrl+f,ctrl+[,ctrl+],ctrl+g,ctrl+s,esc', function (event, handler) {
         switch (handler.key) {
           case 'ctrl+/':
-            _this7.showKeyboardModal = !_this7.showKeyboardModal;
+            _this8.showKeyboardModal = !_this8.showKeyboardModal;
             return false;
 
           case 'ctrl+k':
@@ -6639,36 +6645,36 @@ function app() {
             return false;
 
           case 'ctrl+shift+\\':
-            _this7.toggleTheme();
+            _this8.toggleTheme();
 
             return false;
 
           case 'ctrl+f':
-            _this7.showFilters = !_this7.showFilters;
+            _this8.showFilters = !_this8.showFilters;
             return false;
 
           case 'ctrl+[':
-            _this7.setPageNumber(_this7.currentPage - 1);
+            _this8.setPageNumber(_this8.currentPage - 1);
 
             return false;
 
           case 'ctrl+]':
-            _this7.setPageNumber(_this7.currentPage + 1);
+            _this8.setPageNumber(_this8.currentPage + 1);
 
             return false;
 
           case 'ctrl+s':
-            _this7.encounter.save();
+            _this8.encounter.save();
 
             return false;
 
           case 'ctrl+g':
-            _this7.encounter.generateRandom();
+            _this8.encounter.generateRandom();
 
             return false;
 
           case 'esc':
-            _this7.showPartyModal = _this7.showKeyboardModal = _this7.showFilters = _this7.showSourcesModal = false;
+            _this8.showPartyModal = _this8.showKeyboardModal = _this8.showFilters = _this8.showSourcesModal = false;
             break;
         }
 
@@ -6749,13 +6755,13 @@ function multiSlider($el, name, options, updateCallback) {
       max: '30'
     }).as(name),
     init: function init() {
-      var _this8 = this;
+      var _this9 = this;
 
       this.slider = nouislider__WEBPACK_IMPORTED_MODULE_4___default().create($el, {
         start: [options.findIndex(function (option) {
-          return option.value === _this8.value.min;
+          return option.value === _this9.value.min;
         }), options.findIndex(function (option) {
-          return option.value === _this8.value.max;
+          return option.value === _this9.value.max;
         })],
         connect: true,
         range: {
@@ -6765,15 +6771,15 @@ function multiSlider($el, name, options, updateCallback) {
         step: 1
       });
       this.slider.on('update', function (values) {
-        return updateCallback(_this8.options[parseInt(values[0])], _this8.options[parseInt(values[1])]);
+        return updateCallback(_this9.options[parseInt(values[0])], _this9.options[parseInt(values[1])]);
       });
       this.slider.on('change', function (values) {
-        _this8.value = {
-          min: _this8.options[parseInt(values[0])].value,
-          max: _this8.options[parseInt(values[1])].value
+        _this9.value = {
+          min: _this9.options[parseInt(values[0])].value,
+          max: _this9.options[parseInt(values[1])].value
         };
 
-        _this8.onFiltersChanged();
+        _this9.onFiltersChanged();
       });
       this.onFiltersChanged();
     },
@@ -6806,15 +6812,15 @@ function multiSelect($el, name, options) {
     name: name,
     options: options,
     init: function init() {
-      var _this9 = this;
+      var _this10 = this;
 
       if (!options.length) return;
       this.$nextTick(function () {
-        _this9.setUp();
+        _this10.setUp();
       });
     },
     setUp: function setUp() {
-      var _this10 = this;
+      var _this11 = this;
 
       var choices = new (choices_js__WEBPACK_IMPORTED_MODULE_1___default())($el, {
         allowHTML: true,
@@ -6822,9 +6828,9 @@ function multiSelect($el, name, options) {
       });
 
       var refreshChoices = function refreshChoices() {
-        var selection = _this10.multiple ? _this10.value : [_this10.value];
+        var selection = _this11.multiple ? _this11.value : [_this11.value];
         choices.clearStore();
-        choices.setChoices(_this10.options.map(function (_ref) {
+        choices.setChoices(_this11.options.map(function (_ref) {
           var value = _ref.value,
               label = _ref.label;
           return {
@@ -6834,24 +6840,24 @@ function multiSelect($el, name, options) {
           };
         }));
 
-        _this10.onFiltersChanged();
+        _this11.onFiltersChanged();
       };
 
       refreshChoices();
       $el.addEventListener('change', function () {
-        _this10.value = choices.getValue(true);
+        _this11.value = choices.getValue(true);
 
-        if (_this10.value.length > 1 && _this10.value.includes('any')) {
-          _this10.value = _this10.value.filter(function (value) {
+        if (_this11.value.length > 1 && _this11.value.includes('any')) {
+          _this11.value = _this11.value.filter(function (value) {
             return value !== 'any';
           });
         }
 
-        if (_this10.multiple && !_this10.value.length) {
-          _this10.value = ['any'];
+        if (_this11.multiple && !_this11.value.length) {
+          _this11.value = ['any'];
         }
 
-        _this10.onFiltersChanged();
+        _this11.onFiltersChanged();
       });
       this.$watch('value', function () {
         return refreshChoices();
@@ -7524,19 +7530,19 @@ var encounter = {
 
     switch (difficulty) {
       case "Trivial":
-        return "bg-blue-500";
+        return "bg-blue-300 dark:bg-blue-700";
 
       case "Easy":
-        return "bg-lime-500";
+        return "bg-lime-300 dark:bg-lime-700";
 
       case "Medium":
-        return "bg-yellow-500";
+        return "bg-yellow-300 dark:bg-yellow-600";
 
       case "Hard":
-        return "bg-orange-500";
+        return "bg-amber-300 dark:bg-orange-700";
 
       case "Deadly":
-        return "bg-red-500";
+        return "bg-rose-300 dark:bg-rose-700";
     }
 
     return "";

@@ -182,7 +182,7 @@
 							<tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
 							<template x-for="monster in monsters">
 								<tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
-                                    <td class="w-[3px] opacity-75" :class="encounter.getMonsterColor(monster)"></td>
+                                    <td class="w-[5px]" :class="encounter.getMonsterColor(monster)"></td>
 									<td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none" @click="encounter.addMonster(monster)">Add</span>
 									</td>
