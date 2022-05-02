@@ -7524,29 +7524,6 @@ var encounter = {
 
     return "Deadly";
   },
-  getMonsterColor: function getMonsterColor(monster) {
-    if (!this.app.party.totalPlayers) return "";
-    var difficulty = this.getDifficultyFromExperience(monster.cr.exp);
-
-    switch (difficulty) {
-      case "Trivial":
-        return "bg-blue-300 dark:bg-blue-700";
-
-      case "Easy":
-        return "bg-lime-300 dark:bg-lime-700";
-
-      case "Medium":
-        return "bg-yellow-300 dark:bg-yellow-600";
-
-      case "Hard":
-        return "bg-amber-300 dark:bg-orange-700";
-
-      case "Deadly":
-        return "bg-rose-300 dark:bg-rose-700";
-    }
-
-    return "";
-  },
   insaneDifficultyStrings: ["an incredibly bad idea", "suicide", "/r/rpghorrorstories", "an angry table", "the BBEG wrote this encounter", "the party's final session", "someone forgot to bring snacks", "rocks fall", "someone insulted the DM"],
 
   get difficultyFeel() {

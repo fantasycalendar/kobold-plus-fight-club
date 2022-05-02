@@ -40,24 +40,6 @@ const encounter = {
         return "Deadly";
     },
 
-    getMonsterColor(monster){
-        if(!this.app.party.totalPlayers) return "";
-        const difficulty = this.getDifficultyFromExperience(monster.cr.exp);
-        switch(difficulty){
-            case "Trivial":
-                return "bg-blue-300 dark:bg-blue-700";
-            case "Easy":
-                return "bg-lime-300 dark:bg-lime-700";
-            case "Medium":
-                return "bg-yellow-300 dark:bg-yellow-600";
-            case "Hard":
-                return "bg-amber-300 dark:bg-orange-700";
-            case "Deadly":
-                return "bg-rose-300 dark:bg-rose-700";
-        }
-        return "";
-    },
-
     insaneDifficultyStrings: [
         "an incredibly bad idea",
         "suicide",

@@ -182,7 +182,13 @@
 							<tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
 							<template x-for="monster in monsters">
 								<tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
-                                    <td class="w-[5px]" :class="encounter.getMonsterColor(monster)"></td>
+                                    <td class="w-[5px]" :class="{
+                                        'bg-blue-300 dark:bg-blue-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Trivial',
+                                        'bg-lime-300 dark:bg-lime-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Easy',
+                                        'bg-yellow-300 dark:bg-yellow-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Medium',
+                                        'bg-amber-300 dark:bg-orange-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Hard',
+                                        'bg-rose-300 dark:bg-rose-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly'
+                                    }"></td>
 									<td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none" @click="encounter.addMonster(monster)">Add</span>
 									</td>
