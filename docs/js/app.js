@@ -7769,6 +7769,10 @@ var encounter = {
     this.saveToHistory();
   },
   addMonster: function addMonster(monster) {
+    if (!this.app.party.totalPlayers) {
+      this.app.party.addPlayerGroup();
+    }
+
     var group;
     var index = this.groups.findIndex(function (group) {
       return group.monster === monster;

@@ -291,6 +291,10 @@ const encounter = {
 
     addMonster(monster){
 
+        if(!this.app.party.totalPlayers){
+            this.app.party.addPlayerGroup();
+        }
+        
         let group;
         let index = this.groups.findIndex(group => group.monster === monster);
         if(index === -1) {
