@@ -7611,7 +7611,6 @@ var encounter = {
     var multiplier = this.getMultiplier(encounterTemplate.total) / encounterTemplate.multiplier;
     var totalAvailableXP = baseExpBudget / multiplier;
     var targetExp;
-    this.groups = [];
     var encounter = [];
 
     var _iterator = _createForOfIteratorHelper(encounterTemplate.groups),
@@ -7625,6 +7624,15 @@ var encounter = {
         var monster = this.getBestMonster(targetExp, encounter, group.count);
 
         if (!monster) {
+          dispatchEvent(new CustomEvent('notification', {
+            detail: {
+              title: 'Failed to generate encounter!',
+              body: 'Change the filters so that there are more monsters to sample from.',
+              icon: 'fa-circle-xmark',
+              icon_color: 'text-red-400',
+              sticky: true
+            }
+          }));
           return false;
         }
 

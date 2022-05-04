@@ -137,8 +137,7 @@ const encounter = {
         let totalAvailableXP = baseExpBudget / multiplier;
 
         let targetExp;
-        this.groups = [];
-        const encounter = []
+        const encounter = [];
         for (const group of encounterTemplate.groups) {
 
             targetExp = encounterTemplate.subtractive ? (totalAvailableXP / encounterTemplate.groups.length) : (totalAvailableXP * group.ratio);
@@ -147,6 +146,15 @@ const encounter = {
 
             const monster = this.getBestMonster(targetExp, encounter, group.count);
             if (!monster) {
+                dispatchEvent(new CustomEvent('notification', {
+                    detail: {
+                        title: 'Failed to generate encounter!',
+                        body: 'Change the filters so that there are more monsters to sample from.',
+                        icon: 'fa-circle-xmark',
+                        icon_color: 'text-red-400',
+                        sticky: true
+                    }
+                }));
                 return false;
             }
 
