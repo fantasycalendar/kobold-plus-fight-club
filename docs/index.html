@@ -191,9 +191,14 @@
 										<span class="truncate" x-text="monster.name" @click="setSortBy('name')"></span>
 										<dl class="font-normal">
 											<dt class="sr-only">Sources</dt>
-											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400"
-												x-text="monster.sources.map(source => source.reference.shortname).join(', ')"
+											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 cursor-help"
 												:title="monster.sources.map(source => source.fullText).join('\n')">
+                                                <template x-for="(source, index) of monster.sources">
+                                                    <span x-html="
+                                                        `<span class='underline decoration-dotted underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
+                                                        + (index < monster.sources.length-1 ? ', ' : '')
+                                                    "></span>
+                                                </template>
 											</dd>
 											<dt class="sr-only sm:hidden">Type</dt>
 											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" x-text="monster.type"></dd>

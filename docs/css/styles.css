@@ -8884,6 +8884,9 @@ input[type=text]:disabled{
 .cursor-pointer{
   cursor: pointer;
 }
+.cursor-help{
+  cursor: help;
+}
 .cursor-default{
   cursor: default;
 }
@@ -9195,10 +9198,6 @@ input[type=text]:disabled{
 .bg-emerald-100{
   --tw-bg-opacity: 1;
   background-color: rgb(209 250 229 / var(--tw-bg-opacity));
-}
-.bg-gray-700{
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 .bg-emerald-500{
   --tw-bg-opacity: 1;
@@ -9554,6 +9553,21 @@ input[type=text]:disabled{
 .text-red-400{
   --tw-text-opacity: 1;
   color: rgb(248 113 113 / var(--tw-text-opacity));
+}
+.underline{
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+}
+.decoration-gray-400{
+  -webkit-text-decoration-color: #9ca3af;
+          text-decoration-color: #9ca3af;
+}
+.decoration-dotted{
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
+}
+.underline-offset-2{
+  text-underline-offset: 2px;
 }
 .opacity-100{
   opacity: 1;
@@ -10482,6 +10496,10 @@ body .choices__input:focus{
 .dark .dark\:text-gray-800{
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+.dark .dark\:decoration-gray-500{
+  -webkit-text-decoration-color: #6b7280;
+          text-decoration-color: #6b7280;
 }
 .dark .dark\:shadow-xl{
   --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
