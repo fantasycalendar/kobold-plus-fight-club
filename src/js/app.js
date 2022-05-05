@@ -20,7 +20,7 @@ function app() {
         showFilters: false,
         showSourcesModal: false,
         showEncounterModal: false,
-        showPartyModal: false,
+        showPartyModal: true,
         showKeyboardModal: false,
 
         mobileEncounterTab: false,

@@ -1082,13 +1082,13 @@
 													</div>
 												</div>
 
-												<div class="grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
+												<div class="text-gray-600 dark:text-gray-300 grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
 													<div>Active</div>
-													<div>Name</div>
-													<div>Level</div>
-													<div class="md:order-6"></div>
-													<div>Initiative</div>
-													<div>HP</div>
+													<div>Name<span class="md:hidden">/Init.</span></div>
+													<div>Level<span class="md:hidden">/HP</span></div>
+													<div class="hidden md:block md:order-6"></div>
+													<div class="hidden md:block">Initiative</div>
+													<div class="hidden md:block">HP</div>
 												</div>
 
 												<template x-for="(player, playerIndex) of party.players">
