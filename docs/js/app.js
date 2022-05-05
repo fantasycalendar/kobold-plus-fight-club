@@ -7608,10 +7608,10 @@ var encounter = {
 
     var baseExpBudget = totalExperienceTarget * fudgeFactor;
     var encounterTemplate = this.getEncounterTemplate();
-    var multiplier = this.getMultiplier(encounterTemplate.total) / encounterTemplate.multiplier;
-    var totalAvailableXP = baseExpBudget / multiplier;
+    var totalAvailableXP = baseExpBudget / this.getMultiplier(encounterTemplate.total);
     var targetExp;
     var encounter = [];
+    encounterTemplate.groups.reverse();
 
     var _iterator = _createForOfIteratorHelper(encounterTemplate.groups),
         _step;
@@ -7651,6 +7651,7 @@ var encounter = {
       _iterator.f();
     }
 
+    encounter.reverse();
     this.groups = encounter;
     this.saveToHistory(true);
   },
@@ -7745,7 +7746,6 @@ var encounter = {
       });
     }
 
-    template.multiplier = template.multiplier || 1;
     return template;
   },
   getMultiplier: function getMultiplier(numMonsters) {

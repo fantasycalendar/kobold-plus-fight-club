@@ -133,11 +133,11 @@ const encounter = {
         let fudgeFactor = 1.1; // The algorithm is conservative in spending exp; so this tries to get it closer to the actual medium value
         let baseExpBudget = totalExperienceTarget * fudgeFactor;
         let encounterTemplate = this.getEncounterTemplate();
-        let multiplier = this.getMultiplier(encounterTemplate.total) / encounterTemplate.multiplier;
-        let totalAvailableXP = baseExpBudget / multiplier;
+        let totalAvailableXP = baseExpBudget / this.getMultiplier(encounterTemplate.total);
 
         let targetExp;
         const encounter = [];
+        encounterTemplate.groups.reverse();
         for (const group of encounterTemplate.groups) {
 
             targetExp = encounterTemplate.subtractive ? (totalAvailableXP / encounterTemplate.groups.length) : (totalAvailableXP * group.ratio);
@@ -166,6 +166,8 @@ const encounter = {
                 targetExp -= group.count * monster.cr.exp;
             }
         }
+
+        encounter.reverse();
 
         this.groups = encounter;
 
@@ -254,8 +256,6 @@ const encounter = {
                 group.ratio = (group.ratio || 1) / template.overallRatio;
             });
         }
-
-        template.multiplier = template.multiplier || 1;
 
         return template;
 
