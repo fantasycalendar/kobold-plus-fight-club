@@ -128,7 +128,6 @@
 						<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
 							<thead class="bg-gray-50 dark:bg-gray-700">
 							<tr>
-                                <th></th>
 								<th scope="col" class="py-3.5 px-3 text-center text-sm font-semibold text-gray-900 sm:pl-6 w-8 max-w-8">
 									<span class="sr-only">Add to encounter</span>
 								</th>
@@ -182,15 +181,11 @@
 							<tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
 							<template x-for="monster in monsters">
 								<tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
-                                    <td class="w-[5px]" :class="{
-                                        'bg-blue-300 dark:bg-blue-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Trivial',
-                                        'bg-lime-300 dark:bg-lime-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Easy',
-                                        'bg-yellow-300 dark:bg-yellow-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Medium',
-                                        'bg-amber-300 dark:bg-orange-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Hard',
-                                        'bg-rose-300 dark:bg-rose-700': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly'
-                                    }"></td>
 									<td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
-										<span class="primary-link cursor-pointer select-none" @click="encounter.addMonster(monster)">Add</span>
+										<span class="primary-link cursor-pointer select-none"
+											@click="encounter.addMonster(monster)"
+											:title="encounter.getDifficultyFromExperience(monster.cr.exp)"
+											>Add</span>
 									</td>
 									<td class="w-full max-w-0 py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-100 w-64 max-w-64 truncate">
 										<span class="truncate" x-text="monster.name" @click="setSortBy('name')"></span>
@@ -208,12 +203,26 @@
 										<span class="truncate" x-text="monster.size"></span>
 										<dl class="font-normal">
 											<dt class="sr-only sm:hidden">CR</dt>
-											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 sm:hidden">CR <span x-text="monster.cr.string"></span></dd>
+											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 sm:hidden">CR <span x-text="monster.cr.string" :class="{
+												'text-indigo-300 dark:text-indigo-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Trivial',
+												'text-green-300 dark:text-green-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Easy',
+												'text-yellow-300 dark:text-yellow-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Medium',
+												'text-amber-300 dark:text-orange-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Hard',
+												'text-rose-300 dark:text-rose-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly'
+											}"></span></dd>
 											<dt class="sr-only sm:hidden">Alignment</dt>
 											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" x-text="monster.alignment.string"></dd>
 										</dl>
 									</td>
-									<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 sm:table-cell w-12" x-text="monster.cr.string"></td>
+									<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 sm:table-cell w-12">
+										<span :class="{
+												'text-cyan-600 dark:text-cyan-400': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Trivial',
+												'text-green-600 dark:text-green-400': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Easy',
+												'text-yellow-600 dark:text-yellow-400': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Medium',
+												'text-amber-600 dark:text-orange-400': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Hard',
+												'text-rose-600 dark:text-rose-500': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly'
+											}" x-text="monster.cr.string"></span>
+									</td>
 									<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" x-text="monster.type"></td>
 									<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" x-text="monster.alignment.string"></td>
 								</tr>
@@ -914,7 +923,7 @@
                      x-transition:leave="ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-					 x-data="{ tab: 'saved' }"
+					 x-data="{ tab: 'history' }"
                 >
                     <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
                         <div class="sm:flex flex-col sm:items-start w-full">
@@ -1082,13 +1091,13 @@
 													</div>
 												</div>
 
-												<div class="grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
+												<div class="text-gray-600 dark:text-gray-300 grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
 													<div>Active</div>
-													<div>Name</div>
-													<div>Level</div>
-													<div class="md:order-6"></div>
-													<div>Initiative</div>
-													<div>HP</div>
+													<div>Name<span class="md:hidden">/Init.</span></div>
+													<div>Level<span class="md:hidden">/HP</span></div>
+													<div class="hidden md:block md:order-6"></div>
+													<div class="hidden md:block">Initiative</div>
+													<div class="hidden md:block">HP</div>
 												</div>
 
 												<template x-for="(player, playerIndex) of party.players">
@@ -1118,7 +1127,7 @@
 															<input type="number" :id="'level_'+playerIndex" x-model.number="player.level" class="px-1 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
 														</div>
 
-														<div class="relative order-5 md:order-4">
+														<div class="relative order-5 md:order-4 mb-2 md:mb-0">
 															<input type="number" :id="'initiativeMod_'+playerIndex" x-model.number="player.initiativeMod" class="pl-1 pr-8 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
 															<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" title="Advantage on Initiative">
 																<svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="28" viewbox="0 0 173.20508075688772 200" style="fill: currentColor;"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path></svg>
@@ -1128,7 +1137,7 @@
 															</div>
 														</div>
 
-														<div class="order-6 md:order-5 justify-center md:justify-start flex -space-x-px">
+														<div class="order-6 md:order-5 justify-center md:justify-start flex -space-x-px mb-2 md:mb-0">
 															<div class="w-1/2 flex-1 min-w-0">
 																<input min="0" @change="if(player.currentHp > player.maxHp) { player.maxHp = player.currentHp }" @blur="if(player.currentHp > player.maxHp) { player.maxHp = player.currentHp }" type="number" x-model.number="player.currentHp" class="px-1 py-1 text-right border-r-0 relative block w-full rounded-none rounded-l-md sm:text-sm dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"/>
 															</div>
@@ -1138,7 +1147,7 @@
 															</div>
 														</div>
 
-														<div @click="deletePlayer(partyIndex, playerIndex)" class="order-4 md:order-6 group cursor-pointer grid place-items-center">
+														<div @click="deletePlayer(partyIndex, playerIndex)" class="order-4 md:order-6 group cursor-pointer grid place-items-center mb-2 md:mb-0">
 															<i class="fa fa-times text-red-500 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-700"></i>
 														</div>
 													</div>
