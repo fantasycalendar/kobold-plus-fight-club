@@ -7,6 +7,7 @@ import noUiSlider from "nouislider";
 import * as lib from "./lib.js";
 import CONST from "./constants.js";
 import Monster from "./monster.js";
+import tippy from 'tippy.js';
 
 import persist from '@alpinejs/persist'
 import Alpine from 'alpinejs'
@@ -84,6 +85,7 @@ function app() {
         toggleTheme() {
             let theme = (localStorage.theme === 'dark' ? 'light' : 'dark');
             this.theme = theme;
+            window.theme = theme;
             localStorage.theme = theme;
             document.documentElement.classList.toggle('dark', theme === 'dark');
         },
@@ -291,7 +293,6 @@ function app() {
                     { number: this.totalPages }
                 ]
             }
-
         },
 
         async fetchSources(){
@@ -652,6 +653,7 @@ window.multiSelect = multiSelect;
 window.multiSlider = multiSlider;
 window.noUiSlider = noUiSlider;
 window.Choices = Choices;
+window.tippy = tippy;
 
 window.Alpine = Alpine
 

@@ -30,6 +30,50 @@
 		if(window.navigator.userAgent.includes('Surface Duo 2')) {
 			document.documentElement.classList.add('surface-duo-2');
 		}
+
+		document.addEventListener('alpine:init', () => {
+			tippy.setDefaultProps({
+				delay: 700
+			});
+
+			// Magic: $tooltip
+			Alpine.magic('tooltip', el => message => {
+				let instance = tippy(el, { content: message, trigger: 'manual' })
+
+				instance.show()
+
+				setTimeout(() => {
+					instance.hide()
+
+					setTimeout(() => instance.destroy(), 150)
+				}, 2000)
+			})
+
+			// Directive: x-tooltip
+			Alpine.directive('tooltip', (el, { expression }, { evaluateLater, effect }) => {
+				let createMessage = evaluateLater(expression);
+
+				effect(() => {
+					createMessage(tooltipString => {
+						if(el._tippy) {
+							el._tippy.destroy();
+						}
+
+						console.log(window.theme);
+
+						tippy(el, {
+							content: tooltipString,
+							delay: 200,
+							theme: window.theme ?? 'dark'
+						});
+					})
+				})
+			})
+
+			Alpine.directive('tippy', (el, { expression }) => {
+				tippy(el, { content: expression, theme: window.theme ?? 'dark' });
+			})
+		})
 	</script>
 </head>
 
@@ -55,7 +99,7 @@
 					<div class="hidden lg:flex text-white lg:-my-px lg:ml-6 lg:space-x-8 items-center">
                         <a href="https://fantasy-calendar.com/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Fantasy Calendar</a>
                         <a href="" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">About</a>
-						<a title="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">
+						<a x-tippy="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">
 							<i :class="{ 'fa-moon': theme === 'light', 'fa-sun': theme === 'dark' }" class="fa"></i>
 						</a>
 					</div>
@@ -77,7 +121,7 @@
 				<div class="pt-2 pb-3 space-y-1">
 					<a href="https://fantasy-calendar.com/" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300">Fantasy Calendar</a>
 					<a href="" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300">About</a>
-                    <a title="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300">
+                    <a x-tippy="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300">
                         <i :class="theme === 'light' ? 'fa-moon' : 'fa-sun'" class="fa"></i> <span x-text="`Toggle theme`"></span>
                     </a>
 				</div>
@@ -109,7 +153,7 @@
 								<kbd class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400" x-text="navigator.platform.toLowerCase().includes('mac') ? '⌘K' : 'Ctrl K'"></kbd>
 							</div>
 						</div>
-						<div class="relative inline-block text-left" x-data="{ filtersMenu: true }" title="Filter monsters (Ctrl+L)">
+						<div class="relative inline-block text-left" x-data="{ filtersMenu: true }" x-tippy="Filter monsters (Ctrl+L)">
 							<button @click="showFilters =! showFilters" type="button" class="-ml-px h-full relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md bg-white disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 dark:text-gray-400 text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
 								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -184,18 +228,18 @@
 									<td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none"
 											@click="encounter.addMonster(monster)"
-											:title="encounter.getDifficultyFromExperience(monster.cr.exp)"
+											x-tooltip="encounter.getDifficultyFromExperience(monster.cr.exp)"
 											>Add</span>
 									</td>
 									<td class="w-full max-w-0 py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-100 w-64 max-w-64 truncate">
 										<span class="truncate" x-text="monster.name" @click="setSortBy('name')"></span>
 										<dl class="font-normal">
 											<dt class="sr-only">Sources</dt>
-											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 cursor-help"
-												:title="monster.sources.map(source => source.fullText).join('\n')">
+											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
                                                 <template x-for="(source, index) of monster.sources">
-                                                    <span x-html="
-                                                        `<span class='underline decoration-dotted underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
+                                                    <span x-tooltip="monster.sources.map(source => source.fullText).join('\n')"
+															x-html="
+                                                        `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
                                                         + (index < monster.sources.length-1 ? ', ' : '')
                                                     "></span>
                                                 </template>
@@ -305,7 +349,7 @@
 						<div x-show="party.groups.length" class="w-full grid grid-rows-[18px_1fr] grid-cols-[1fr_40px_1fr_50px_36px] gap-y-2 align-center mb-2" x-show="party.totalPlayers">
 							<label class="col-span-2 text-sm text-gray-700 dark:text-gray-300">Players</label>
 							<label class="text-sm text-gray-700 dark:text-gray-300">Level</label>
-							<label class="text-center text-sm text-gray-700 dark:text-gray-300" title="Determines whether these characters get a share of XP from the encounter.">XP</label>
+							<label class="text-center text-sm text-gray-700 dark:text-gray-300" x-tippy="Determines whether these characters get a share of XP from the encounter.">XP</label>
 							<div>&nbsp;</div>
 
 
@@ -473,8 +517,8 @@
 						<div class="flex flex-row w-full mb-4 relative">
 							<div class="grow pb-2 min-w-0">
 								<div class="grid grid-cols-[1fr_20px] mb-2">
-									<span :title="group.monster.name" class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate" x-text="group.monster.name"></span>
-									<div title="Shuffle monster" @click="encounter.getNewMonster(group)" class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"><i class="fas fa-random"></i></div>
+									<span x-tooltip="group.monster.name" data-tippy-placement="top-start" data-tippy-delay="1000" class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate" x-text="group.monster.name"></span>
+									<div x-tippy="Shuffle monster" @click="encounter.getNewMonster(group)" class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"><i class="fas fa-random"></i></div>
 								</div>
 
 								<div>
@@ -483,7 +527,7 @@
 									<div class='overflow-hidden whitespace-nowrap overflow-ellipsis pr-40'>
 										<ul class="list-none text-s italic max-w-full">
 											<template x-for="source in group.monster.sources">
-												<li class="max-w-full truncate" :title="source.fullText" x-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
+												<li class="max-w-full truncate" x-tooltip="source.fullText" data-tippy-delay="1000" x-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
 											</template>
 										</ul>
 									</div>
@@ -738,19 +782,19 @@
 										<div @click="toggle((chaotic_good | chaotic_neutral | chaotic_evil))" :class="classes(chaotic_good | chaotic_neutral | chaotic_evil)" class="col-span-4 h-8 rounded-t-md"><i :class="{ [randomIcon]: true }"></i></div>
 
 										<div @click="toggle((lawful_good | neutral_good | chaotic_good))" :class="classes(lawful_good | neutral_good | chaotic_good)" class="col-span-2 w-8 rounded-l-md"><i class="fa fa-dove"></i></div>
-										<div @click="toggle(lawful_good)" :class="classes(lawful_good)" class="col-span-4 h-16" title="Lawful Good">LG</div>
-										<div @click="toggle(neutral_good)" :class="classes(neutral_good)" class="col-span-4 h-16" title="Neutral Good">NG</div>
-										<div @click="toggle(chaotic_good)" :class="classes(chaotic_good)" class="col-span-4 h-16" title="Chaotic Good">CG</div>
+										<div @click="toggle(lawful_good)" :class="classes(lawful_good)" class="col-span-4 h-16" x-tippy="Lawful Good">LG</div>
+										<div @click="toggle(neutral_good)" :class="classes(neutral_good)" class="col-span-4 h-16" x-tippy="Neutral Good">NG</div>
+										<div @click="toggle(chaotic_good)" :class="classes(chaotic_good)" class="col-span-4 h-16" x-tippy="Chaotic Good">CG</div>
 
 										<div @click="toggle((lawful_neutral | neutral | chaotic_neutral))" :class="classes(lawful_neutral | neutral | chaotic_neutral)" class="col-span-2 w-8 rounded-l-md"><i class="fa fa-face-meh"></i></div>
-										<div @click="toggle(lawful_neutral)" :class="classes(lawful_neutral)" class="col-span-4 h-16" title="Lawful Neutral">LN</div>
-										<div @click="toggle(neutral)" :class="classes(neutral)" class="col-span-4 h-16" title="Neutral">N</div>
-										<div @click="toggle(chaotic_neutral)" :class="classes(chaotic_neutral)" class="col-span-4 h-16" title="Chaotic Neutral">CN</div>
+										<div @click="toggle(lawful_neutral)" :class="classes(lawful_neutral)" class="col-span-4 h-16" x-tippy="Lawful Neutral">LN</div>
+										<div @click="toggle(neutral)" :class="classes(neutral)" class="col-span-4 h-16" x-tippy="Neutral">N</div>
+										<div @click="toggle(chaotic_neutral)" :class="classes(chaotic_neutral)" class="col-span-4 h-16" x-tippy="Chaotic Neutral">CN</div>
 
 										<div @click="toggle((lawful_evil | neutral_evil | chaotic_evil))" :class="classes(lawful_evil | neutral_evil | chaotic_evil)" class="col-span-2 w-8 rounded-l-md"><i class="fa fa-skull"></i></div>
-										<div @click="toggle(lawful_evil)" :class="classes(lawful_evil)" class="col-span-4 h-16" title="Lawful Evil">LE</div>
-										<div @click="toggle(neutral_evil)" :class="classes(neutral_evil)" class="col-span-4 h-16" title="Neutral Evil">NE</div>
-										<div @click="toggle(chaotic_evil)" :class="classes(chaotic_evil)" class="col-span-4 h-16" title="Chaotic Evil">CE</div>
+										<div @click="toggle(lawful_evil)" :class="classes(lawful_evil)" class="col-span-4 h-16" x-tippy="Lawful Evil">LE</div>
+										<div @click="toggle(neutral_evil)" :class="classes(neutral_evil)" class="col-span-4 h-16" x-tippy="Neutral Evil">NE</div>
+										<div @click="toggle(chaotic_evil)" :class="classes(chaotic_evil)" class="col-span-4 h-16" x-tippy="Chaotic Evil">CE</div>
 
 										<div @click="toggle((lawful_evil | neutral | chaotic_good))" :class="classes(lawful_evil | neutral | chaotic_good)" class="col-span-2 rounded-bl-md"></div>
 										<div @click="total = (total === 1023) ? 0 : 1023" :class="{ 'bg-emerald-700 text-white hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 1023) === 1023, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 1023) !== 1023 }" class="select-none text-gray-900 col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Any</div>
@@ -962,7 +1006,7 @@
 								<div class="mt-2 max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
 									<template x-for="(_, index) of savedEncounters">
 										<div @click="(loadedEncounterIndex !== savedEncounters.length-index-1) && encounter.loadFromSaved(savedEncounters.length-index-1)" class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
-											 :title="savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
+											 x-tooltip="savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 											 :key="index"
 											 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': loadedEncounterIndex !== savedEncounters.length-index-1 }"
 										>
@@ -991,7 +1035,7 @@
                                 <div class="mt-2 max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
                                     <template x-for="(_, index) of encounterHistory">
                                         <div class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
-											 :title="encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
+											 x-tooltip="encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 											 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': !(loadedEncounterIndex === null && index === 0 && encounter.groups.length) }"
 											 @click="!(loadedEncounterIndex === null && index === 0 && encounter.groups.length) && encounter.loadFromHistory(encounterHistory.length-index-1)"
                                              :key="index"
@@ -1065,7 +1109,7 @@
 										<div>
 											<div class="flex px-4 py-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600"
 												 :class="{ 'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': party.editing }"
-												 :title="party.name"
+												 x-tooltip="party.name"
 												 :key="partyIndex"
 												 @click="party.editing =! party.editing"
 											>
@@ -1092,7 +1136,7 @@
 														   class="!mb-0 py-0.5 text-xl"
 													>
 													<div class="w-[30px] ml-2 flex justify-center">
-														<i @click.stop="deleteParty(partyIndex)" :title="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
+														<i @click.stop="deleteParty(partyIndex)" x-tooltip="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
 													</div>
 												</div>
 
@@ -1134,7 +1178,7 @@
 
 														<div class="relative order-5 md:order-4 mb-2 md:mb-0">
 															<input type="number" :id="'initiativeMod_'+playerIndex" x-model.number="player.initiativeMod" class="pl-1 pr-8 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
-															<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" title="Advantage on Initiative">
+															<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" x-tippy="Advantage on Initiative">
 																<svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="28" viewbox="0 0 173.20508075688772 200" style="fill: currentColor;"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path></svg>
 															</div>
 															<div class="pointer-events-none text-lg text-center text-white dark:text-gray-700 font-bold w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center">

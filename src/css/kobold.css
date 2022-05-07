@@ -1,6 +1,8 @@
 @import '~nouislider/dist/nouislider.min.css';
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import '~choices.js/public/assets/styles/choices.min.css';
+@import '~tippy.js/dist/tippy.css';
+@import '~tippy.js/themes/light.css';
 
 @tailwind base;
 @tailwind components;
@@ -110,4 +112,21 @@ body .choices__input { @apply focus:ring-0 border-none px-0; }
 .surface-duo-2 #encounter_box {
     left: calc(50% + 16px);
     @apply !w-auto !right-0 !px-0 !inset-y-0 py-8;
+}
+
+.tippy-box[data-theme~='dark'] {
+    @apply bg-gray-600;
+}
+
+.tippy-box[data-theme~='dark'][data-placement^='top'] > .tippy-arrow::before {
+    @apply border-t-gray-600;
+}
+.tippy-box[data-theme~='dark'][data-placement^='bottom'] > .tippy-arrow::before {
+    @apply border-b-gray-600;
+}
+.tippy-box[data-theme~='dark'][data-placement^='left'] > .tippy-arrow::before {
+    @apply border-l-gray-600;
+}
+.tippy-box[data-theme~='dark'][data-placement^='right'] > .tippy-arrow::before {
+    @apply border-r-gray-600;
 }
