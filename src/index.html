@@ -235,7 +235,7 @@
 											<dt class="sr-only">Sources</dt>
 											<dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
                                                 <template x-for="(source, index) of monster.sources">
-                                                    <span x-tooltip="monster.sources.map(source => source.fullText).join('\n')"
+                                                    <span x-tooltip="source.fullText"
 															x-html="
                                                         `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
                                                         + (index < monster.sources.length-1 ? ', ' : '')
