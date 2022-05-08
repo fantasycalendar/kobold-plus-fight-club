@@ -9480,6 +9480,10 @@ function app() {
       this.currentPage = num;
       this.updatePagination();
     },
+    setMonstersPerPage: function setMonstersPerPage(num) {
+      this.monstersPerPage = num;
+      this.updatePagination();
+    },
     updatePagination: function updatePagination() {
       var _this3 = this;
 

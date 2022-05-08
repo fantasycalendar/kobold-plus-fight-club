@@ -257,6 +257,11 @@ function app() {
             this.updatePagination();
         },
 
+        setMonstersPerPage(num){
+            this.monstersPerPage = num;
+            this.updatePagination();
+        },
+
         updatePagination(){
 
             this.totalPages = Math.ceil((this.filteredMonsters.length-1) / this.monstersPerPage);
