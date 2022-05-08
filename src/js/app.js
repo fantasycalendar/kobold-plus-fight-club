@@ -259,10 +259,17 @@ function app() {
 
         updatePagination(){
 
-            this.totalPages = Math.floor(this.filteredMonsters.length / this.monstersPerPage);
+            this.totalPages = Math.ceil((this.filteredMonsters.length-1) / this.monstersPerPage);
             this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
 
-            if(this.currentPage < 5){
+            if(this.totalPages <= 5) {
+                this.pagination = Array(this.totalPages).fill({}).map((page, index) => {
+                    return {
+                        number: index+1,
+                        active: this.currentPage === (index+1)
+                    };
+                });
+            }else if(this.currentPage < 5){
                 this.pagination = [
                     { number: 1, active: this.currentPage === 1 },
                     { number: 2, active: this.currentPage === 2 },
@@ -271,7 +278,7 @@ function app() {
                     { number: 5, active: this.currentPage === 5 },
                     { divider: true },
                     { number: this.totalPages }
-                ]
+                ];
             }else if(this.currentPage > this.totalPages-5){
                 this.pagination = [
                     { number: 1 },
@@ -281,7 +288,7 @@ function app() {
                     { number: this.totalPages-2, active: this.totalPages-2 === this.currentPage },
                     { number: this.totalPages-1, active: this.totalPages-1 === this.currentPage },
                     { number: this.totalPages, active: this.totalPages === this.currentPage  }
-                ]
+                ];
             }else{
                 this.pagination = [
                     { number: 1 },
@@ -291,7 +298,7 @@ function app() {
                     { number: this.currentPage+1 },
                     { divider: true },
                     { number: this.totalPages }
-                ]
+                ];
             }
         },
 
