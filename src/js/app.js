@@ -202,6 +202,16 @@ function app() {
             this.party.app = this;
             this.fetchData();
 
+            if(Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            ) > 1535) {
+                this.showFilters = true;
+            }
+
             this.$watch('sources', () => { this.enabledSources = Object.values(this.sources).filter(source => source.enabled) });
         },
 

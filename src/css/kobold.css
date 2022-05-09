@@ -15,6 +15,33 @@
     }
 }
 
+@layer utilities {
+    /* Scroll thumb styles */
+    .scrollbar::-webkit-scrollbar {
+        width: .5rem;
+    }
+    .scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-gray-700 rounded-sm;
+    }
+    .scrollbar::-webkit-scrollbar-thumb:active {
+        @apply bg-gray-700;
+    }
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+        @apply bg-gray-600;
+    }
+
+    /* Scroll track styles (Background) */
+    .scrollbar::-webkit-scrollbar-track {
+        border-radius: 4px;
+        @apply bg-gray-800;
+    }
+    .scrollbar::-webkit-scrollbar-track:hover,
+    .scrollbar::-webkit-scrollbar-track:active {
+        @apply bg-gray-800;
+    }
+}
+
 /* Choices.js Overrides */
 body .choices { @apply leading-6 border-gray-300 dark:border-gray-700 rounded-none; }
 body .choices.is-open { @apply ring-4 border-emerald-600 dark:border-emerald-800 ring-opacity-30 ring-emerald-600; }

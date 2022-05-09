@@ -9392,6 +9392,11 @@ function app() {
       this.encounter.app = this;
       this.party.app = this;
       this.fetchData();
+
+      if (Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, document.body.offsetWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth) > 1535) {
+        this.showFilters = true;
+      }
+
       this.$watch('sources', function () {
         _this.enabledSources = Object.values(_this.sources).filter(function (source) {
           return source.enabled;
