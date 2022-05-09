@@ -311,6 +311,15 @@
 							</a>
 						</div>
 					</nav>
+
+                    <div>
+                        <label for="monstersPerPage" class="block text-sm font-medium text-gray-700 dark:text-gray-900">Monsters per page</label>
+                        <select id="monstersPerPage" @change="setMonstersPerPage(Number($event.target.value))" name="location" class="mt-1 block w-full pl-3 pr-10 py-2 text-base dark:text-gray-900 border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md">
+                            <option value="10" :selected="monstersPerPage === 10">10</option>
+                            <option value="50" :selected="monstersPerPage === 50">50</option>
+                            <option value="100" :selected="monstersPerPage === 100">100</option>
+                        </select>
+                    </div>
 				</div>
 			</div>
 

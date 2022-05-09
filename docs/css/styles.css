@@ -9532,10 +9532,6 @@ input[type=text]:disabled{
   --tw-text-opacity: 1;
   color: rgb(5 150 105 / var(--tw-text-opacity));
 }
-.text-black{
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
-}
 .text-gray-200{
   --tw-text-opacity: 1;
   color: rgb(229 231 235 / var(--tw-text-opacity));
@@ -10524,6 +10520,10 @@ body .choices__input:focus{
 .dark .dark\:text-gray-800{
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
+}
+.dark .dark\:text-gray-900{
+  --tw-text-opacity: 1;
+  color: rgb(17 24 39 / var(--tw-text-opacity));
 }
 .dark .dark\:decoration-gray-500{
   -webkit-text-decoration-color: #6b7280;
