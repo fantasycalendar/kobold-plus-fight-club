@@ -141,7 +141,7 @@
 				<button @click="mobileEncounterTab = true" type="button" :class="{ 'text-gray-900 ': mobileEncounterTab, 'text-gray-700': !mobileEncounterTab }" class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-none focus:z-10 w-40">Monsters</button>
 			</div>
 
-			<div id="monsters_box" :class="{ 'hidden md:block': !mobileEncounterTab }" class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:right-2 md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar">
+			<div id="monsters_box" :class="{ 'hidden md:block': !mobileEncounterTab }" class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar">
 				<label for="search" class="max-w-full block text-sm font-medium text-gray-700 sr-only">Search monsters</label>
 
 				<div class="px-4 sm:px-6 lg:px-8">
@@ -164,6 +164,7 @@
 							<div class="w-full lg:w-auto">
 								<select id="monstersPerPage" @change="setMonstersPerPage(Number($event.target.value))" name="location" class="block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-l-md lg:rounded-none 2xl:rounded-r-md border-gray-300 border-l-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
 									<option value="10" :selected="monstersPerPage === 10">10 per page</option>
+									<option value="25" :selected="monstersPerPage === 25">25 per page</option>
 									<option value="50" :selected="monstersPerPage === 50">50 per page</option>
 									<option value="100" :selected="monstersPerPage === 100">100 per page</option>
 								</select>
@@ -617,7 +618,7 @@
 				</div>
 			</div>
 
-			<div class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" x-show="showFilters" x-cloak>
+			<div class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" x-show="showFilters" x-cloak>
 				<div class="absolute 2xl:static inset-0 overflow-hidden">
 					<!-- Background overlay, show/hide based on slide-over state. -->
 					<div @click="showFilters = false" class="absolute 2xl:hidden inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity 2xl:duration-0" aria-hidden="true"
@@ -661,7 +662,7 @@
 											<span class="w-full text-center">Manage sources</span>
 										</button>
 
-										<button :disabled="!nonDefaultFiltersCount" @click="$dispatch('reset-filters')" class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-700 disabled:hover:bg-slate-700 disabled:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2">
+										<button :disabled="!nonDefaultFiltersCount" @click="$dispatch('reset-filters')" class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2">
 											<span class="inline-block w-full"><i class="fa fa-undo pr-1"></i> Reset Filters</span>
 										</button>
 									</div>
@@ -671,9 +672,8 @@
 											Challenge Rating
 										</div>
 
-										<div class="relative px-6 pt-1 pb-2 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md">
-
-											<div x-ref="cr_slider" class="my-4 mx-2" x-data="multiSlider($el, 'challenge_rating', [
+										<div class="relative px-6 pt-1 pb-2 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md" x-data="{
+											crValues: [
 														{ value: '0', label: '0' },
 														{ value: '1/8', label: '1/8' },
 														{ value: '1/4', label: '1/4' },
@@ -708,7 +708,10 @@
 														{ value: '28', label: '28' },
 														{ value: '29', label: '29' },
 														{ value: '30', label: '30' }
-													], (lower, upper) => {
+													]
+										}">
+
+											<div x-ref="cr_slider" class="my-4 mx-2" x-data="multiSlider($el, 'challenge_rating', crValues, (lower, upper) => {
 														minCr = lower;
 														maxCr = upper;
 													})"
@@ -717,17 +720,39 @@
 												 @reset-filters.window="reset()"
 											></div>
 
-											<div class="grid place-items-center">
-												<div x-show="minCr.value == 0 && maxCr.value == 30">Any CR</div>
-												<div x-show="(minCr.value != 0 || maxCr.value != 30) && (minCr.value !== maxCr.value)">
-													CR between <span x-text="minCr.label"></span> and <span x-text="maxCr.label"></span>
+											<div class="flex justify-between items-center">
+												<div class="grow">
+													<select class="w-full text-center border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-600 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
+															x-ref="min_cr_select"
+															name="min_cr"
+															id="min_cr_select"
+															@filters-changed.window="$el.value = minCr.value; console.log(minCr);"
+															@change="$dispatch('set-cr-slider', [{ value: $event.target.value, label: $event.target.value }, maxCr]);"
+													>
+														<template x-for="option in crValues">
+															<option :value="option.value" x-text="option.label" :disabled="parseInt(option.value) > parseInt(maxCr.value)"></option>
+														</template>
+													</select>
 												</div>
-												<div x-show="minCr.value == maxCr.value">CR is exactly <span x-text="minCr.label"></span></div>
+												<div class="grow text-center">&le; CR &le;</div>
+												<div class="grow">
+													<select class="w-full text-center border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-600 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
+															x-ref="max_cr_select"
+															name="max_cr"
+															id="max_cr_select"
+															@filters-changed.window="$el.value = maxCr.value"
+															@change="$dispatch('set-cr-slider', [minCr, { value: $event.target.value, label: $event.target.value }]);"
+													>
+														<template x-for="option in crValues">
+															<option :value="option.value" x-text="option.label" :disabled="parseInt(option.value) < parseInt(minCr.value)"></option>
+														</template>
+													</select>
+												</div>
 											</div>
 
-											<span @click="$dispatch('reset-cr-slider')" x-show="!(minCr.value == 0 && maxCr.value == 30)" class="absolute bottom-1 right-6 cursor-pointer">
-													<i class="fa fa-undo h-6 w-6 text-gray-800 dark:text-gray-300"></i>
-												</span>
+											<span @click="$dispatch('reset-cr-slider')" x-show="!(minCr.value == 0 && maxCr.value == 30)" class="absolute top-1 right-1 text-center cursor-pointer">
+												<i class="fa fa-undo text-sm h-6 w-6 text-gray-800 dark:text-gray-300"></i>
+											</span>
 										</div>
 									</div>
 
@@ -737,7 +762,7 @@
 											Alignment
 										</div>
 
-										<div class="grid grid-cols-[12px_12px_repeat(12,_minmax(0,_1fr))] divide divide-gray-200 dark:divide-gray-600 gap-2 rounded-md dark:bg-gray-700 border border-gray-200 dark:border-gray-600 overflow-hidden p-2" x-data="{
+										<div class="grid grid-cols-[12px_12px_repeat(12,_minmax(0,_1fr))] divide divide-gray-200 dark:divide-gray-600 gap-2 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 overflow-hidden p-2" x-data="{
 												lawful_good: 1,
 												neutral_good: 2,
 												chaotic_good: 4,
@@ -930,7 +955,7 @@
 							</div>
 							<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 								<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" id="modal-title">Select your sources</h3>
-								<div class="mt-2">
+								<div class="mt-2 max-h-96 overflow-y-auto px-1 scrollbar scrollbar-dark">
 
 									<template x-for="type of sourcesByType">
 										<div class="mb-4">

@@ -9941,6 +9941,10 @@ function multiSlider($el, name, options, updateCallback) {
       this.onFiltersChanged();
     },
     onFiltersChanged: function onFiltersChanged() {
+      console.log({
+        min: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.min].numeric,
+        max: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.max].numeric
+      });
       window.dispatchEvent(new CustomEvent('filters-changed', {
         detail: {
           name: "cr",
@@ -9957,7 +9961,27 @@ function multiSlider($el, name, options, updateCallback) {
       this.onFiltersChanged();
     },
     set: function set($event) {
-      this.slider.set($event.detail);
+      var newSetting = [options.findIndex(function (option) {
+        return option.value === $event.detail[0].value;
+      }), options.findIndex(function (option) {
+        return option.value === $event.detail[1].value;
+      })];
+
+      if (newSetting[0] < 0) {
+        newSetting[0] = 0;
+      }
+
+      if (newSetting[1] < 0) {
+        newSetting[1] = this.options.length - 1;
+      }
+
+      this.slider.set(newSetting);
+      this.value = {
+        min: $event.detail[0].value,
+        max: $event.detail[1].value
+      };
+      console.log($event.detail, newSetting);
+      this.onFiltersChanged();
     }
   };
 }
