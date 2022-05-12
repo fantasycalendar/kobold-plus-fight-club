@@ -17,6 +17,10 @@ const internationalNumberFormat = new Intl.NumberFormat('en-US')
 function app() {
     
     return {
+
+        sourcesVersion: "2.1.0",
+        storedSourcesVersion: Alpine.$persist("2.0.0").as('storedSourcesVersion'),
+
         menu: false,
         showFilters: false,
         showSourcesModal: false,
@@ -319,7 +323,7 @@ function app() {
 
         async fetchSources(){
 
-            if(this.loadedSources.length){
+            if(this.loadedSources.length && lib.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
 
@@ -348,13 +352,13 @@ function app() {
                 return source;
             });
 
-            return sources;
+            return this.loadedSources;
 
         },
 
         async fetchMonsters(){
 
-            if(this.loadedMonsters.length){
+            if(this.loadedSources.length && lib.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
                 return this.loadedMonsters;
             }
 
@@ -380,7 +384,9 @@ function app() {
 
             this.loadedMonsters = monsters;
 
-            return monsters;
+            this.storedSourcesVersion = this.sourcesVersion;
+
+            return this.loadedMonsters;
         },
 
         formatSources(data){

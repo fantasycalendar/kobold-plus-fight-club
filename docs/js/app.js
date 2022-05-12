@@ -9210,6 +9210,8 @@ var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
+    sourcesVersion: "2.1.0",
+    storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
     showSourcesModal: false,
@@ -9572,7 +9574,7 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                if (!_this4.loadedSources.length) {
+                if (!(_this4.loadedSources.length && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
                   _context2.next = 2;
                   break;
                 }
@@ -9609,7 +9611,7 @@ function app() {
                   source.enabled = !!source["default"];
                   return source;
                 });
-                return _context2.abrupt("return", sources);
+                return _context2.abrupt("return", _this4.loadedSources);
 
               case 11:
               case "end":
@@ -9628,7 +9630,7 @@ function app() {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!_this5.loadedMonsters.length) {
+                if (!(_this5.loadedSources.length && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
                   _context3.next = 2;
                   break;
                 }
@@ -9662,9 +9664,10 @@ function app() {
 
               case 9:
                 _this5.loadedMonsters = monsters;
-                return _context3.abrupt("return", monsters);
+                _this5.storedSourcesVersion = _this5.sourcesVersion;
+                return _context3.abrupt("return", _this5.loadedMonsters);
 
-              case 11:
+              case 12:
               case "end":
                 return _context3.stop();
             }
@@ -11131,7 +11134,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "randomFloatBetween": () => (/* binding */ randomFloatBetween),
 /* harmony export */   "randomIntBetween": () => (/* binding */ randomIntBetween),
 /* harmony export */   "ratio": () => (/* binding */ ratio),
-/* harmony export */   "slugify": () => (/* binding */ slugify)
+/* harmony export */   "slugify": () => (/* binding */ slugify),
+/* harmony export */   "versionCompare": () => (/* binding */ versionCompare)
 /* harmony export */ });
 /**
  *  Returns a floating point number between a minimum and maximum value
@@ -11216,6 +11220,55 @@ function ratio(start, end, value) {
 }
 function slugify(str) {
   return str.normalize('NFKD').toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+}
+function versionCompare(v1, v2, options) {
+  var lexicographical = options && (options === null || options === void 0 ? void 0 : options.lexicographical),
+      zeroExtend = options && (options === null || options === void 0 ? void 0 : options.zeroExtend),
+      v1parts = v1.split('.'),
+      v2parts = v2.split('.');
+
+  function isValidPart(x) {
+    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+  }
+
+  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+    return NaN;
+  }
+
+  if (zeroExtend) {
+    while (v1parts.length < v2parts.length) {
+      v1parts.push("0");
+    }
+
+    while (v2parts.length < v1parts.length) {
+      v2parts.push("0");
+    }
+  }
+
+  if (!lexicographical) {
+    v1parts = v1parts.map(Number);
+    v2parts = v2parts.map(Number);
+  }
+
+  for (var i = 0; i < v1parts.length; ++i) {
+    if (v2parts.length === i) {
+      return 1;
+    }
+
+    if (v1parts[i] === v2parts[i]) {
+      continue;
+    } else if (v1parts[i] > v2parts[i]) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
+  if (v1parts.length !== v2parts.length) {
+    return -1;
+  }
+
+  return 0;
 }
 
 /***/ }),
