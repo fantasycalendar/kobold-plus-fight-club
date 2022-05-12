@@ -8679,6 +8679,9 @@ input[type=text]:disabled{
 .\!mb-0{
   margin-bottom: 0px !important;
 }
+.ml-1{
+  margin-left: 0.25rem;
+}
 .block{
   display: block;
 }
@@ -9236,6 +9239,10 @@ input[type=text]:disabled{
   --tw-bg-opacity: 1;
   background-color: rgb(100 116 139 / var(--tw-bg-opacity));
 }
+.bg-emerald-800{
+  --tw-bg-opacity: 1;
+  background-color: rgb(6 95 70 / var(--tw-bg-opacity));
+}
 .bg-opacity-75{
   --tw-bg-opacity: 0.75;
 }
@@ -9618,6 +9625,14 @@ input[type=text]:disabled{
 .text-slate-200{
   --tw-text-opacity: 1;
   color: rgb(226 232 240 / var(--tw-text-opacity));
+}
+.text-emerald-800{
+  --tw-text-opacity: 1;
+  color: rgb(6 95 70 / var(--tw-text-opacity));
+}
+.text-emerald-100{
+  --tw-text-opacity: 1;
+  color: rgb(209 250 229 / var(--tw-text-opacity));
 }
 .underline{
   -webkit-text-decoration-line: underline;

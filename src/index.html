@@ -102,7 +102,7 @@
 						</div>
 					</div>
 					<div class="hidden lg:flex text-white lg:-my-px lg:ml-6 lg:space-x-8 items-center">
-                        <a @click="showKeyboardModal = true" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Keyboard Shortcuts</a>
+                        <a @click="showKeyboardModal = true" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Keyboard Shortcuts <span class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-emerald-800 text-emerald-100 ml-1">Ctrl+/</span></a>
                         <a href="https://fantasy-calendar.com/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Fantasy Calendar</a>
                         <a href="" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">About</a>
 						<a x-tippy="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">
@@ -440,7 +440,7 @@
 				</div>
 
 				<div class="border-t border-gray-200 dark:border-gray-700">
-					<div class="flex pt-4 justify-between items-center 2xl:pb-4 mb-1">
+					<div class="flex pt-4 justify-between items-center mb-1">
 						<span class="text-gray-600 dark:text-gray-400">Encounter</span>
 
 						<a href="javascript:" class="primary-link text-sm" @click="showEncounterModal = true">History</a>
@@ -448,7 +448,7 @@
 
 					<div class="flex flex-col sm:flex-row pb-4 w-full space-x-2 items-end justify-between pb-4">
 						<div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
-							<div class="w-full col-span-1 sm:col-span-3 2xl:col-span-4">
+							<div class="w-full col-span-1 sm:col-span-3">
 								<label id="difficulty-label" class="sr-only"> Difficulty </label>
 								<div class="mt-1 relative" @click.outside="difficultySelectOpen = false">
 									<button @click="difficultySelectOpen = true" type="button" class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
@@ -484,7 +484,7 @@
 								</div>
 							</div>
 
-							<div class="w-full col-span-1 sm:col-span-5 2xl:col-span-4">
+							<div class="w-full col-span-1 sm:col-span-5">
 								<label id="composition-label" class="sr-only"> Composition </label>
 								<div class="mt-1 relative" @click.outside="encounterTypeSelectOpen = false">
 									<button @click="encounterTypeSelectOpen = true" type="button" class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="composition-label">
@@ -726,7 +726,7 @@
 															x-ref="min_cr_select"
 															name="min_cr"
 															id="min_cr_select"
-															@filters-changed.window="$el.value = minCr.value; console.log(minCr);"
+															@filters-changed.window="$el.value = minCr.value"
 															@change="$dispatch('set-cr-slider', [{ value: $event.target.value, label: $event.target.value }, maxCr]);"
 													>
 														<template x-for="option in crValues">

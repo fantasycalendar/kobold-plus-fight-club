@@ -9807,7 +9807,7 @@ function app() {
             return false;
 
           case 'ctrl+f':
-            _this9.showFilters = !_this9.showFilters;
+            _this9.showFilters = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, document.body.offsetWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth) > 1535 ? true : _this9.showFilters = !_this9.showFilters;
             return false;
 
           case 'ctrl+[':
@@ -9831,7 +9831,10 @@ function app() {
             return false;
 
           case 'esc':
-            _this9.showPartyModal = _this9.showKeyboardModal = _this9.showFilters = _this9.showSourcesModal = false;
+            _this9.showPartyModal = false;
+            _this9.showKeyboardModal = false;
+            _this9.showFilters = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, document.body.offsetWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth) > 1535;
+            _this9.showSourcesModal = false;
             break;
         }
 
@@ -9941,10 +9944,6 @@ function multiSlider($el, name, options, updateCallback) {
       this.onFiltersChanged();
     },
     onFiltersChanged: function onFiltersChanged() {
-      console.log({
-        min: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.min].numeric,
-        max: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.max].numeric
-      });
       window.dispatchEvent(new CustomEvent('filters-changed', {
         detail: {
           name: "cr",
@@ -9980,7 +9979,6 @@ function multiSlider($el, name, options, updateCallback) {
         min: $event.detail[0].value,
         max: $event.detail[1].value
       };
-      console.log($event.detail, newSetting);
       this.onFiltersChanged();
     }
   };

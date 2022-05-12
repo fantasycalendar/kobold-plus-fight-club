@@ -477,7 +477,15 @@ function app() {
                         return false;
                     case 'ctrl+shift+\\': this.toggleTheme();
                         return false;
-                    case 'ctrl+f': this.showFilters =! this.showFilters;
+                    case 'ctrl+f': this.showFilters = (Math.max(
+                        document.body.scrollWidth,
+                        document.documentElement.scrollWidth,
+                        document.body.offsetWidth,
+                        document.documentElement.offsetWidth,
+                        document.documentElement.clientWidth
+                    ) > 1535)
+                        ? true
+                        : this.showFilters =! this.showFilters;
                         return false;
                     case 'ctrl+[': this.setPageNumber(this.currentPage-1);
                         return false;
@@ -487,7 +495,17 @@ function app() {
                         return false;
                     case 'ctrl+g': this.encounter.generateRandom();
                         return false;
-                    case 'esc': this.showPartyModal = this.showKeyboardModal = this.showFilters = this.showSourcesModal = false;
+                    case 'esc':
+                            this.showPartyModal = false;
+                            this.showKeyboardModal = false;
+                            this.showFilters = (Math.max(
+                                document.body.scrollWidth,
+                                document.documentElement.scrollWidth,
+                                document.body.offsetWidth,
+                                document.documentElement.offsetWidth,
+                                document.documentElement.clientWidth
+                            ) > 1535);
+                            this.showSourcesModal = false;
                         break;
                 }
 
@@ -583,11 +601,6 @@ function multiSlider($el, name, options, updateCallback) {
             this.onFiltersChanged();
         },
         onFiltersChanged() {
-            console.log({
-                min: CONST.CR[this.value.min].numeric,
-                max: CONST.CR[this.value.max].numeric
-            });
-
             window.dispatchEvent(new CustomEvent('filters-changed', { detail: {
                     name: "cr",
                     value: {
@@ -611,18 +624,16 @@ function multiSlider($el, name, options, updateCallback) {
             if(newSetting[0] < 0) {
                 newSetting[0] = 0;
             }
-
             if(newSetting[1] < 0) {
                 newSetting[1] = this.options.length - 1;
             }
 
             this.slider.set(newSetting);
+
             this.value = {
                 min: $event.detail[0].value,
                 max: $event.detail[1].value
             };
-
-            console.log($event.detail, newSetting);
 
             this.onFiltersChanged();
         }
