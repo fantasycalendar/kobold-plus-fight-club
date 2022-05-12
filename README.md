@@ -1,6 +1,6 @@
 # Kobold+ Fight Club
 =================
-Kobold+ Fight Club is a fork of Kobold Fight Club by Fantasy Computerworks that seeks to address a number of concerns with the original: 
+Kobold+ Fight Club is a complete rewrite of Kobold Fight Club by Fantasy Computerworks that seeks to address a number of concerns with the original: 
 - [x] The project needs new maintainers (Oh hey that's us)
 - [x] Need to stop using Google Sheets API as a database+backend
 - [ ] Migration method for existing custom content from Google Sheets to another data source (Needs to be as easy to setup and maintain as we can get it)
@@ -19,10 +19,10 @@ Not available just yet, more on this when it's built out.
 Coming Soon™
 
 ## Technical stuff
-In case you're interested in contributing code
+In case you're interested in contributing code, we're building this iteration of KFC+ with AlpineJS and TailwindCSS. 
+
+The build process uses Laravel Mix, just for convenience of setup and browser-sync.  
 
 ## Node Commands
 - npm install - Install necessary dependencies
-- npm run start - Start an http server for debugging on localhost
-- npm run build-css - Compile sass into css
-- npm run watch-css - Watch folder for changes and run build-css if needed
+- npm run watch - Start the build process, including a server and browsersync on port 3000

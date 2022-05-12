@@ -17,6 +17,10 @@ const internationalNumberFormat = new Intl.NumberFormat('en-US')
 function app() {
     
     return {
+
+        sourcesVersion: "2.1.0",
+        storedSourcesVersion: Alpine.$persist("2.0.0").as('storedSourcesVersion'),
+
         menu: false,
         showFilters: false,
         showSourcesModal: false,
@@ -202,6 +206,16 @@ function app() {
             this.party.app = this;
             this.fetchData();
 
+            if(Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            ) > 1535) {
+                this.showFilters = true;
+            }
+
             this.$watch('sources', () => { this.enabledSources = Object.values(this.sources).filter(source => source.enabled) });
         },
 
@@ -257,12 +271,24 @@ function app() {
             this.updatePagination();
         },
 
+        setMonstersPerPage(num){
+            this.monstersPerPage = num;
+            this.updatePagination();
+        },
+
         updatePagination(){
 
-            this.totalPages = Math.floor(this.filteredMonsters.length / this.monstersPerPage);
+            this.totalPages = Math.ceil((this.filteredMonsters.length-1) / this.monstersPerPage);
             this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
 
-            if(this.currentPage < 5){
+            if(this.totalPages <= 5) {
+                this.pagination = Array(this.totalPages).fill({}).map((page, index) => {
+                    return {
+                        number: index+1,
+                        active: this.currentPage === (index+1)
+                    };
+                });
+            }else if(this.currentPage < 5){
                 this.pagination = [
                     { number: 1, active: this.currentPage === 1 },
                     { number: 2, active: this.currentPage === 2 },
@@ -271,7 +297,7 @@ function app() {
                     { number: 5, active: this.currentPage === 5 },
                     { divider: true },
                     { number: this.totalPages }
-                ]
+                ];
             }else if(this.currentPage > this.totalPages-5){
                 this.pagination = [
                     { number: 1 },
@@ -281,7 +307,7 @@ function app() {
                     { number: this.totalPages-2, active: this.totalPages-2 === this.currentPage },
                     { number: this.totalPages-1, active: this.totalPages-1 === this.currentPage },
                     { number: this.totalPages, active: this.totalPages === this.currentPage  }
-                ]
+                ];
             }else{
                 this.pagination = [
                     { number: 1 },
@@ -291,13 +317,13 @@ function app() {
                     { number: this.currentPage+1 },
                     { divider: true },
                     { number: this.totalPages }
-                ]
+                ];
             }
         },
 
         async fetchSources(){
 
-            if(this.loadedSources.length){
+            if(this.loadedSources.length && lib.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
 
@@ -326,13 +352,13 @@ function app() {
                 return source;
             });
 
-            return sources;
+            return this.loadedSources;
 
         },
 
         async fetchMonsters(){
 
-            if(this.loadedMonsters.length){
+            if(this.loadedSources.length && lib.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
                 return this.loadedMonsters;
             }
 
@@ -358,7 +384,9 @@ function app() {
 
             this.loadedMonsters = monsters;
 
-            return monsters;
+            this.storedSourcesVersion = this.sourcesVersion;
+
+            return this.loadedMonsters;
         },
 
         formatSources(data){
@@ -455,7 +483,15 @@ function app() {
                         return false;
                     case 'ctrl+shift+\\': this.toggleTheme();
                         return false;
-                    case 'ctrl+f': this.showFilters =! this.showFilters;
+                    case 'ctrl+f': this.showFilters = (Math.max(
+                        document.body.scrollWidth,
+                        document.documentElement.scrollWidth,
+                        document.body.offsetWidth,
+                        document.documentElement.offsetWidth,
+                        document.documentElement.clientWidth
+                    ) > 1535)
+                        ? true
+                        : this.showFilters =! this.showFilters;
                         return false;
                     case 'ctrl+[': this.setPageNumber(this.currentPage-1);
                         return false;
@@ -465,7 +501,17 @@ function app() {
                         return false;
                     case 'ctrl+g': this.encounter.generateRandom();
                         return false;
-                    case 'esc': this.showPartyModal = this.showKeyboardModal = this.showFilters = this.showSourcesModal = false;
+                    case 'esc':
+                            this.showPartyModal = false;
+                            this.showKeyboardModal = false;
+                            this.showFilters = (Math.max(
+                                document.body.scrollWidth,
+                                document.documentElement.scrollWidth,
+                                document.body.offsetWidth,
+                                document.documentElement.offsetWidth,
+                                document.documentElement.clientWidth
+                            ) > 1535);
+                            this.showSourcesModal = false;
                         break;
                 }
 
@@ -576,7 +622,26 @@ function multiSlider($el, name, options, updateCallback) {
             this.onFiltersChanged();
         },
         set($event) {
-            this.slider.set($event.detail);
+            let newSetting = [
+                options.findIndex((option) => option.value === $event.detail[0].value),
+                options.findIndex((option) => option.value === $event.detail[1].value)
+            ];
+
+            if(newSetting[0] < 0) {
+                newSetting[0] = 0;
+            }
+            if(newSetting[1] < 0) {
+                newSetting[1] = this.options.length - 1;
+            }
+
+            this.slider.set(newSetting);
+
+            this.value = {
+                min: $event.detail[0].value,
+                max: $event.detail[1].value
+            };
+
+            this.onFiltersChanged();
         }
     }
 }

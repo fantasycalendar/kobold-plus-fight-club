@@ -9210,6 +9210,8 @@ var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
+    sourcesVersion: "2.1.0",
+    storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
     showSourcesModal: false,
@@ -9392,6 +9394,11 @@ function app() {
       this.encounter.app = this;
       this.party.app = this;
       this.fetchData();
+
+      if (Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, document.body.offsetWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth) > 1535) {
+        this.showFilters = true;
+      }
+
       this.$watch('sources', function () {
         _this.enabledSources = Object.values(_this.sources).filter(function (source) {
           return source.enabled;
@@ -9480,11 +9487,24 @@ function app() {
       this.currentPage = num;
       this.updatePagination();
     },
+    setMonstersPerPage: function setMonstersPerPage(num) {
+      this.monstersPerPage = num;
+      this.updatePagination();
+    },
     updatePagination: function updatePagination() {
-      this.totalPages = Math.floor(this.filteredMonsters.length / this.monstersPerPage);
+      var _this3 = this;
+
+      this.totalPages = Math.ceil((this.filteredMonsters.length - 1) / this.monstersPerPage);
       this.currentPage = Math.max(1, Math.min(this.totalPages, this.currentPage));
 
-      if (this.currentPage < 5) {
+      if (this.totalPages <= 5) {
+        this.pagination = Array(this.totalPages).fill({}).map(function (page, index) {
+          return {
+            number: index + 1,
+            active: _this3.currentPage === index + 1
+          };
+        });
+      } else if (this.currentPage < 5) {
         this.pagination = [{
           number: 1,
           active: this.currentPage === 1
@@ -9546,7 +9566,7 @@ function app() {
       }
     },
     fetchSources: function fetchSources() {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
         var sources;
@@ -9554,12 +9574,12 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                if (!_this3.loadedSources.length) {
+                if (!(_this4.loadedSources.length && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
                   _context2.next = 2;
                   break;
                 }
 
-                return _context2.abrupt("return", _this3.loadedSources);
+                return _context2.abrupt("return", _this4.loadedSources);
 
               case 2:
                 sources = [];
@@ -9587,11 +9607,11 @@ function app() {
                 });
 
               case 9:
-                _this3.loadedSources = sources.map(function (source) {
+                _this4.loadedSources = sources.map(function (source) {
                   source.enabled = !!source["default"];
                   return source;
                 });
-                return _context2.abrupt("return", sources);
+                return _context2.abrupt("return", _this4.loadedSources);
 
               case 11:
               case "end":
@@ -9602,7 +9622,7 @@ function app() {
       }))();
     },
     fetchMonsters: function fetchMonsters() {
-      var _this4 = this;
+      var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
         var monsters;
@@ -9610,12 +9630,12 @@ function app() {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!_this4.loadedMonsters.length) {
+                if (!(_this5.loadedSources.length && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
                   _context3.next = 2;
                   break;
                 }
 
-                return _context3.abrupt("return", _this4.loadedMonsters);
+                return _context3.abrupt("return", _this5.loadedMonsters);
 
               case 2:
                 monsters = [];
@@ -9643,10 +9663,11 @@ function app() {
                 });
 
               case 9:
-                _this4.loadedMonsters = monsters;
-                return _context3.abrupt("return", monsters);
+                _this5.loadedMonsters = monsters;
+                _this5.storedSourcesVersion = _this5.sourcesVersion;
+                return _context3.abrupt("return", _this5.loadedMonsters);
 
-              case 11:
+              case 12:
               case "end":
                 return _context3.stop();
             }
@@ -9661,11 +9682,11 @@ function app() {
       }, {});
     },
     formatMonsters: function formatMonsters(data) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.allMonsters = data.map(function (data) {
-        var monster = new _monster_js__WEBPACK_IMPORTED_MODULE_7__["default"](_this5, data);
-        _this5.monsterLookupTable[monster.slug] = monster;
+        var monster = new _monster_js__WEBPACK_IMPORTED_MODULE_7__["default"](_this6, data);
+        _this6.monsterLookupTable[monster.slug] = monster;
         return monster;
       });
       this.environments = Object.values(this.environments);
@@ -9681,29 +9702,29 @@ function app() {
       }));
     },
     filterMonsters: function filterMonsters() {
-      var _this6 = this;
+      var _this7 = this;
 
       var crString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var filterCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {
         return true;
       };
       var monsters = this.allMonsters.filter(function (monster) {
-        return monster.sourceEnabled && filterCallback(monster) && monster.filter(_this6.search, _this6.filters, crString);
+        return monster.sourceEnabled && filterCallback(monster) && monster.filter(_this7.search, _this7.filters, crString);
       });
       monsters.sort(function (a, b) {
-        if (_this6.sortBy === "cr") {
-          return _this6.sortByDesc ? a[_this6.sortBy].numeric - b[_this6.sortBy].numeric : b[_this6.sortBy].numeric - a[_this6.sortBy].numeric;
-        } else if (_this6.sortBy === "alignment") {
-          return _this6.sortByDesc ? a[_this6.sortBy].bits - b[_this6.sortBy].bits : b[_this6.sortBy].bits - a[_this6.sortBy].bits;
+        if (_this7.sortBy === "cr") {
+          return _this7.sortByDesc ? a[_this7.sortBy].numeric - b[_this7.sortBy].numeric : b[_this7.sortBy].numeric - a[_this7.sortBy].numeric;
+        } else if (_this7.sortBy === "alignment") {
+          return _this7.sortByDesc ? a[_this7.sortBy].bits - b[_this7.sortBy].bits : b[_this7.sortBy].bits - a[_this7.sortBy].bits;
         }
 
-        return _this6.sortByDesc ? a[_this6.sortBy] > b[_this6.sortBy] ? 1 : -1 : a[_this6.sortBy] < b[_this6.sortBy] ? 1 : -1;
+        return _this7.sortByDesc ? a[_this7.sortBy] > b[_this7.sortBy] ? 1 : -1 : a[_this7.sortBy] < b[_this7.sortBy] ? 1 : -1;
       });
       return monsters;
     },
     timer: null,
     filtersChanged: function filtersChanged($event) {
-      var _this7 = this;
+      var _this8 = this;
 
       var _$event$detail = $event.detail,
           name = _$event$detail.name,
@@ -9728,7 +9749,7 @@ function app() {
       }).length;
       clearTimeout(this.timer);
       this.timer = setTimeout(function () {
-        _this7.updateFilteredMonsters();
+        _this8.updateFilteredMonsters();
       }, 150);
     },
     updateFilteredMonsters: function updateFilteredMonsters() {
@@ -9771,12 +9792,12 @@ function app() {
       description: 'Close any open dialogs'
     }],
     setupHotkeys: function setupHotkeys() {
-      var _this8 = this;
+      var _this9 = this;
 
       (0,hotkeys_js__WEBPACK_IMPORTED_MODULE_2__["default"])('ctrl+/,ctrl+k,ctrl+shift+\\,ctrl+f,ctrl+[,ctrl+],ctrl+g,ctrl+s,esc', function (event, handler) {
         switch (handler.key) {
           case 'ctrl+/':
-            _this8.showKeyboardModal = !_this8.showKeyboardModal;
+            _this9.showKeyboardModal = !_this9.showKeyboardModal;
             return false;
 
           case 'ctrl+k':
@@ -9784,36 +9805,39 @@ function app() {
             return false;
 
           case 'ctrl+shift+\\':
-            _this8.toggleTheme();
+            _this9.toggleTheme();
 
             return false;
 
           case 'ctrl+f':
-            _this8.showFilters = !_this8.showFilters;
+            _this9.showFilters = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, document.body.offsetWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth) > 1535 ? true : _this9.showFilters = !_this9.showFilters;
             return false;
 
           case 'ctrl+[':
-            _this8.setPageNumber(_this8.currentPage - 1);
+            _this9.setPageNumber(_this9.currentPage - 1);
 
             return false;
 
           case 'ctrl+]':
-            _this8.setPageNumber(_this8.currentPage + 1);
+            _this9.setPageNumber(_this9.currentPage + 1);
 
             return false;
 
           case 'ctrl+s':
-            _this8.encounter.save();
+            _this9.encounter.save();
 
             return false;
 
           case 'ctrl+g':
-            _this8.encounter.generateRandom();
+            _this9.encounter.generateRandom();
 
             return false;
 
           case 'esc':
-            _this8.showPartyModal = _this8.showKeyboardModal = _this8.showFilters = _this8.showSourcesModal = false;
+            _this9.showPartyModal = false;
+            _this9.showKeyboardModal = false;
+            _this9.showFilters = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, document.body.offsetWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth) > 1535;
+            _this9.showSourcesModal = false;
             break;
         }
 
@@ -9894,13 +9918,13 @@ function multiSlider($el, name, options, updateCallback) {
       max: '30'
     }).as(name),
     init: function init() {
-      var _this9 = this;
+      var _this10 = this;
 
       this.slider = nouislider__WEBPACK_IMPORTED_MODULE_4___default().create($el, {
         start: [options.findIndex(function (option) {
-          return option.value === _this9.value.min;
+          return option.value === _this10.value.min;
         }), options.findIndex(function (option) {
-          return option.value === _this9.value.max;
+          return option.value === _this10.value.max;
         })],
         connect: true,
         range: {
@@ -9910,15 +9934,15 @@ function multiSlider($el, name, options, updateCallback) {
         step: 1
       });
       this.slider.on('update', function (values) {
-        return updateCallback(_this9.options[parseInt(values[0])], _this9.options[parseInt(values[1])]);
+        return updateCallback(_this10.options[parseInt(values[0])], _this10.options[parseInt(values[1])]);
       });
       this.slider.on('change', function (values) {
-        _this9.value = {
-          min: _this9.options[parseInt(values[0])].value,
-          max: _this9.options[parseInt(values[1])].value
+        _this10.value = {
+          min: _this10.options[parseInt(values[0])].value,
+          max: _this10.options[parseInt(values[1])].value
         };
 
-        _this9.onFiltersChanged();
+        _this10.onFiltersChanged();
       });
       this.onFiltersChanged();
     },
@@ -9939,7 +9963,26 @@ function multiSlider($el, name, options, updateCallback) {
       this.onFiltersChanged();
     },
     set: function set($event) {
-      this.slider.set($event.detail);
+      var newSetting = [options.findIndex(function (option) {
+        return option.value === $event.detail[0].value;
+      }), options.findIndex(function (option) {
+        return option.value === $event.detail[1].value;
+      })];
+
+      if (newSetting[0] < 0) {
+        newSetting[0] = 0;
+      }
+
+      if (newSetting[1] < 0) {
+        newSetting[1] = this.options.length - 1;
+      }
+
+      this.slider.set(newSetting);
+      this.value = {
+        min: $event.detail[0].value,
+        max: $event.detail[1].value
+      };
+      this.onFiltersChanged();
     }
   };
 }
@@ -9951,15 +9994,15 @@ function multiSelect($el, name, options) {
     name: name,
     options: options,
     init: function init() {
-      var _this10 = this;
+      var _this11 = this;
 
       if (!options.length) return;
       this.$nextTick(function () {
-        _this10.setUp();
+        _this11.setUp();
       });
     },
     setUp: function setUp() {
-      var _this11 = this;
+      var _this12 = this;
 
       var choices = new (choices_js__WEBPACK_IMPORTED_MODULE_1___default())($el, {
         allowHTML: true,
@@ -9967,9 +10010,9 @@ function multiSelect($el, name, options) {
       });
 
       var refreshChoices = function refreshChoices() {
-        var selection = _this11.multiple ? _this11.value : [_this11.value];
+        var selection = _this12.multiple ? _this12.value : [_this12.value];
         choices.clearStore();
-        choices.setChoices(_this11.options.map(function (_ref) {
+        choices.setChoices(_this12.options.map(function (_ref) {
           var value = _ref.value,
               label = _ref.label;
           return {
@@ -9979,24 +10022,24 @@ function multiSelect($el, name, options) {
           };
         }));
 
-        _this11.onFiltersChanged();
+        _this12.onFiltersChanged();
       };
 
       refreshChoices();
       $el.addEventListener('change', function () {
-        _this11.value = choices.getValue(true);
+        _this12.value = choices.getValue(true);
 
-        if (_this11.value.length > 1 && _this11.value.includes('any')) {
-          _this11.value = _this11.value.filter(function (value) {
+        if (_this12.value.length > 1 && _this12.value.includes('any')) {
+          _this12.value = _this12.value.filter(function (value) {
             return value !== 'any';
           });
         }
 
-        if (_this11.multiple && !_this11.value.length) {
-          _this11.value = ['any'];
+        if (_this12.multiple && !_this12.value.length) {
+          _this12.value = ['any'];
         }
 
-        _this11.onFiltersChanged();
+        _this12.onFiltersChanged();
       });
       this.$watch('value', function () {
         return refreshChoices();
@@ -11091,7 +11134,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "randomFloatBetween": () => (/* binding */ randomFloatBetween),
 /* harmony export */   "randomIntBetween": () => (/* binding */ randomIntBetween),
 /* harmony export */   "ratio": () => (/* binding */ ratio),
-/* harmony export */   "slugify": () => (/* binding */ slugify)
+/* harmony export */   "slugify": () => (/* binding */ slugify),
+/* harmony export */   "versionCompare": () => (/* binding */ versionCompare)
 /* harmony export */ });
 /**
  *  Returns a floating point number between a minimum and maximum value
@@ -11176,6 +11220,55 @@ function ratio(start, end, value) {
 }
 function slugify(str) {
   return str.normalize('NFKD').toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+}
+function versionCompare(v1, v2, options) {
+  var lexicographical = options && (options === null || options === void 0 ? void 0 : options.lexicographical),
+      zeroExtend = options && (options === null || options === void 0 ? void 0 : options.zeroExtend),
+      v1parts = v1.split('.'),
+      v2parts = v2.split('.');
+
+  function isValidPart(x) {
+    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+  }
+
+  if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+    return NaN;
+  }
+
+  if (zeroExtend) {
+    while (v1parts.length < v2parts.length) {
+      v1parts.push("0");
+    }
+
+    while (v2parts.length < v1parts.length) {
+      v2parts.push("0");
+    }
+  }
+
+  if (!lexicographical) {
+    v1parts = v1parts.map(Number);
+    v2parts = v2parts.map(Number);
+  }
+
+  for (var i = 0; i < v1parts.length; ++i) {
+    if (v2parts.length === i) {
+      return 1;
+    }
+
+    if (v1parts[i] === v2parts[i]) {
+      continue;
+    } else if (v1parts[i] > v2parts[i]) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
+  if (v1parts.length !== v2parts.length) {
+    return -1;
+  }
+
+  return 0;
 }
 
 /***/ }),
