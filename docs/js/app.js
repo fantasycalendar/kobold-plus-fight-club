@@ -9574,7 +9574,7 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                if (!(_this4.loadedSources.length && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
+                if (!(_this4.loadedSources.length > 0 && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
                   _context2.next = 2;
                   break;
                 }
@@ -9630,7 +9630,7 @@ function app() {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!(_this5.loadedSources.length && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
+                if (!(_this5.loadedMonsters.length > 0 && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
                   _context3.next = 2;
                   break;
                 }

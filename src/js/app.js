@@ -323,7 +323,7 @@ function app() {
 
         async fetchSources(){
 
-            if(this.loadedSources.length && lib.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
+            if(this.loadedSources.length > 0 && lib.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
 
@@ -358,7 +358,7 @@ function app() {
 
         async fetchMonsters(){
 
-            if(this.loadedSources.length && lib.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
+            if(this.loadedMonsters.length > 0 && lib.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
                 return this.loadedMonsters;
             }
 
