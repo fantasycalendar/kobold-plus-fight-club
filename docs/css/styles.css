@@ -8512,13 +8512,13 @@ input[type=text]:disabled{
   top: 0.25rem;
   bottom: 0.25rem;
 }
-.inset-x-0{
-  left: 0px;
-  right: 0px;
-}
 .inset-y-0{
   top: 0px;
   bottom: 0px;
+}
+.inset-x-0{
+  left: 0px;
+  right: 0px;
 }
 .left-1{
   left: 0.25rem;
@@ -9294,6 +9294,10 @@ input[type=text]:disabled{
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
+.px-8{
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
 .\!py-0{
   padding-top: 0px !important;
   padding-bottom: 0px !important;
@@ -9339,9 +9343,6 @@ input[type=text]:disabled{
 }
 .pb-8{
   padding-bottom: 2rem;
-}
-.pl-8{
-  padding-left: 2rem;
 }
 .pb-4{
   padding-bottom: 1rem;
@@ -9679,11 +9680,10 @@ input[type=text]:disabled{
         background-color: rgb(75 85 99 / var(--tw-bg-opacity));
     }
 /* Scroll track styles (Background) */
-.scrollbar::-webkit-scrollbar-track {
-        border-radius: 4px;
-        --tw-bg-opacity: 1;
-        background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-    }
+.scrollbar::-webkit-scrollbar-track{
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
 .scrollbar::-webkit-scrollbar-track:hover, .scrollbar::-webkit-scrollbar-track:active{
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity));
@@ -10145,18 +10145,18 @@ body .choices__input:focus{
 }
 
 @media (horizontal-viewport-segments: 2) {
-    #encounter_box {
+    #monsters_box {
         min-width: env(viewport-segment-right 0 0);
         margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
     }
 
-    #monsters_box{
+    #encounter_box{
         min-width: env(viewport-segment-right 0 0);
         max-width: env(viewport-segment-right 0 0);
     }
 }
 
-.surface-duo-2 #monsters_box {
+.surface-duo-2 #encounter_box {
     right: calc(50% + 16px);
     padding-left: 2rem !important;
     padding-right: 2rem !important;
@@ -10167,7 +10167,7 @@ body .choices__input:focus{
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
-.surface-duo-2 #encounter_box {
+.surface-duo-2 #monsters_box {
     left: calc(50% + 16px);
     top: 0px !important;
     bottom: 0px !important;
@@ -10248,6 +10248,10 @@ body .choices__input:focus{
 .hover\:bg-emerald-200:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(167 243 208 / var(--tw-bg-opacity));
+}
+.hover\:bg-gray-200:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 .hover\:text-white:hover{
   --tw-text-opacity: 1;
@@ -10598,6 +10602,10 @@ body .choices__input:focus{
   --tw-bg-opacity: 1;
   background-color: rgb(6 95 70 / var(--tw-bg-opacity));
 }
+.dark .dark\:hover\:bg-gray-800:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
 .dark .dark\:hover\:text-gray-200:hover{
   --tw-text-opacity: 1;
   color: rgb(229 231 235 / var(--tw-text-opacity));
@@ -10832,21 +10840,17 @@ body .choices__input:focus{
     position: absolute;
   }
 
-  .md\:inset-y-8{
-    top: 2rem;
-    bottom: 2rem;
-  }
-
-  .md\:left-4{
-    left: 1rem;
-  }
-
-  .md\:right-4{
-    right: 1rem;
+  .md\:inset-y-0{
+    top: 0px;
+    bottom: 0px;
   }
 
   .md\:right-2{
     right: 0.5rem;
+  }
+
+  .md\:left-4{
+    left: 1rem;
   }
 
   .md\:order-6{
@@ -10938,8 +10942,17 @@ body .choices__input:focus{
     border-radius: 0.5rem;
   }
 
+  .md\:rounded-none{
+    border-radius: 0px;
+  }
+
   .md\:p-12{
     padding: 3rem;
+  }
+
+  .md\:py-8{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 
   .md\:pr-0{
@@ -10958,10 +10971,6 @@ body .choices__input:focus{
     padding-left: 1rem;
   }
 
-  .md\:pb-0{
-    padding-bottom: 0px;
-  }
-
   .md\:pr-2{
     padding-right: 0.5rem;
   }
@@ -10975,6 +10984,10 @@ body .choices__input:focus{
 
   .lg\:ml-6{
     margin-left: 1.5rem;
+  }
+
+  .lg\:mt-0{
+    margin-top: 0px;
   }
 
   .lg\:inline-block{
@@ -10997,10 +11010,27 @@ body .choices__input:focus{
     display: none;
   }
 
+  .lg\:w-auto{
+    width: auto;
+  }
+
+  .lg\:flex-row{
+    flex-direction: row;
+  }
+
   .lg\:space-x-8 > :not([hidden]) ~ :not([hidden]){
     --tw-space-x-reverse: 0;
     margin-right: calc(2rem * var(--tw-space-x-reverse));
     margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  .lg\:rounded-none{
+    border-radius: 0px;
+  }
+
+  .lg\:rounded-r-none{
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   .lg\:px-6{
@@ -11045,8 +11075,16 @@ body .choices__input:focus{
     bottom: 0px;
   }
 
+  .\32xl\:right-\[28rem\]{
+    right: 28rem;
+  }
+
   .\32xl\:right-0{
     right: 0px;
+  }
+
+  .\32xl\:right-\[24rem\]{
+    right: 24rem;
   }
 
   .\32xl\:col-span-4{
@@ -11065,14 +11103,8 @@ body .choices__input:focus{
     width: 28rem;
   }
 
-  .\32xl\:translate-x-0{
-    --tw-translate-x: 0px;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  .\32xl\:translate-x-full{
-    --tw-translate-x: 100%;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  .\32xl\:w-\[24rem\]{
+    width: 24rem;
   }
 
   .\32xl\:rounded-r-md{
@@ -11085,10 +11117,6 @@ body .choices__input:focus{
     padding-bottom: 2rem;
   }
 
-  .\32xl\:pr-\[28rem\]{
-    padding-right: 28rem;
-  }
-
   .\32xl\:pr-4{
     padding-right: 1rem;
   }
@@ -11099,5 +11127,9 @@ body .choices__input:focus{
 
   .\32xl\:opacity-100{
     opacity: 1;
+  }
+
+  .\32xl\:\!duration-\[0ms\]{
+    transition-duration: 0ms !important;
   }
 }
