@@ -1,6 +1,6 @@
 # Kobold+ Fight Club
 =================
-Kobold+ Fight Club is a fork of Kobold Fight Club by Fantasy Computerworks that seeks to address a number of concerns with the original: 
+Kobold+ Fight Club is a complete rewrite of Kobold Fight Club by Fantasy Computerworks that seeks to address a number of concerns with the original: 
 - [x] The project needs new maintainers (Oh hey that's us)
 - [x] Need to stop using Google Sheets API as a database+backend
 - [ ] Migration method for existing custom content from Google Sheets to another data source (Needs to be as easy to setup and maintain as we can get it)
