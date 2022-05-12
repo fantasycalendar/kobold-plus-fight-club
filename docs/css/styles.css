@@ -9435,6 +9435,9 @@ input[type=text]:disabled{
 .pt-0{
   padding-top: 0px;
 }
+.pl-2\.5{
+  padding-left: 0.625rem;
+}
 .text-left{
   text-align: left;
 }
@@ -9633,6 +9636,10 @@ input[type=text]:disabled{
 .text-emerald-100{
   --tw-text-opacity: 1;
   color: rgb(209 250 229 / var(--tw-text-opacity));
+}
+.text-gray-300{
+  --tw-text-opacity: 1;
+  color: rgb(209 213 219 / var(--tw-text-opacity));
 }
 .underline{
   -webkit-text-decoration-line: underline;
