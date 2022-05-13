@@ -347,10 +347,24 @@ function app() {
                     sources = sources.concat(data);
                 });
 
-            this.loadedSources = sources.map(source => {
-                source.enabled = !!source.default;
-                return source;
-            });
+            // This causes old sources that were enabled to remain enabled
+            if(this.loadedSources.length){
+                sources.map((newSource) => {
+                    const foundOldSource = this.loadedSources.find(oldSource => {
+                        return newSource['name'] === oldSource["name"];
+                    });
+                    if(foundOldSource){
+                        newSource.enabled = foundOldSource.enabled;
+                    }else{
+                        newSource.enabled = !!newSource.default;
+                    }
+                })
+            }else{
+                this.loadedSources = sources.map(source => {
+                    source.enabled = !!source.default;
+                    return source;
+                });
+            }
 
             return this.loadedSources;
 

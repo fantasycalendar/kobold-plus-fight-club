@@ -9607,10 +9607,26 @@ function app() {
                 });
 
               case 9:
-                _this4.loadedSources = sources.map(function (source) {
-                  source.enabled = !!source["default"];
-                  return source;
-                });
+                // This causes old sources that were enabled to remain enabled
+                if (_this4.loadedSources.length) {
+                  sources.map(function (newSource) {
+                    var foundOldSource = _this4.loadedSources.find(function (oldSource) {
+                      return newSource['name'] === oldSource["name"];
+                    });
+
+                    if (foundOldSource) {
+                      newSource.enabled = foundOldSource.enabled;
+                    } else {
+                      newSource.enabled = !!newSource["default"];
+                    }
+                  });
+                } else {
+                  _this4.loadedSources = sources.map(function (source) {
+                    source.enabled = !!source["default"];
+                    return source;
+                  });
+                }
+
                 return _context2.abrupt("return", _this4.loadedSources);
 
               case 11:
