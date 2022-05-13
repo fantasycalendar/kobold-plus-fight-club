@@ -42,7 +42,7 @@ export default class Importer {
                     return jsonifiedBody.values.map((item) => ({
                         "name": item[headers.indexOf("name")],
                         "type": 'Custom',
-                        "short_name": item[headers.indexOf("short name")],
+                        "shortname": item[headers.indexOf("short name")],
                         "link": item[headers.indexOf("link")],
                     }));
                 })

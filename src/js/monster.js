@@ -60,6 +60,8 @@ export default class Monster {
             return source;
         });
 
+        console.log(this.sources);
+
         this.sources.sort((a, b) => a.fullText.localeCompare(b.fullText, 'en', { sensitivity: "base" }))
 
     }

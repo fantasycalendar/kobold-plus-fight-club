@@ -657,6 +657,7 @@ function multiSelect($el, name, options) {
         value: Alpine.$persist(['any']).as(name),
         name: name,
         options: options,
+        completedSetup: false,
         init() {
             if(!options.length) return;
             this.$nextTick(() => {
@@ -664,6 +665,10 @@ function multiSelect($el, name, options) {
             })
         },
         setUp(){
+            if(this.completedSetup) {
+                return;
+            }
+
             let choices = new Choices($el, {
                 allowHTML: true,
                 removeItemButton: true
@@ -702,6 +707,8 @@ function multiSelect($el, name, options) {
             this.$watch('options', () => refreshChoices())
 
             this.onFiltersChanged();
+
+            this.completedSetup = true;
         },
         onFiltersChanged() {
             window.dispatchEvent(new CustomEvent('filters-changed', { detail: {

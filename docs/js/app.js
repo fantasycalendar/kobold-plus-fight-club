@@ -9998,6 +9998,7 @@ function multiSelect($el, name, options) {
     value: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(['any']).as(name),
     name: name,
     options: options,
+    completedSetup: false,
     init: function init() {
       var _this11 = this;
 
@@ -10008,6 +10009,10 @@ function multiSelect($el, name, options) {
     },
     setUp: function setUp() {
       var _this12 = this;
+
+      if (this.completedSetup) {
+        return;
+      }
 
       var choices = new (choices_js__WEBPACK_IMPORTED_MODULE_1___default())($el, {
         allowHTML: true,
@@ -10053,6 +10058,7 @@ function multiSelect($el, name, options) {
         return refreshChoices();
       });
       this.onFiltersChanged();
+      this.completedSetup = true;
     },
     onFiltersChanged: function onFiltersChanged() {
       window.dispatchEvent(new CustomEvent('filters-changed', {
@@ -11409,7 +11415,7 @@ _defineProperty(Importer, "loaders", {
                   return {
                     "name": item[headers.indexOf("name")],
                     "type": 'Custom',
-                    "short_name": item[headers.indexOf("short name")],
+                    "shortname": item[headers.indexOf("short name")],
                     "link": item[headers.indexOf("link")]
                   };
                 });
@@ -11531,6 +11537,7 @@ var Monster = /*#__PURE__*/function () {
       source.fullText = source.reference.name + (source.page ? ' p.' + source.page : '');
       return source;
     });
+    console.log(this.sources);
     this.sources.sort(function (a, b) {
       return a.fullText.localeCompare(b.fullText, 'en', {
         sensitivity: "base"
