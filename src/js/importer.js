@@ -1,7 +1,5 @@
 export default class Importer {
 
-    static key = "AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI"
-
     static loaders = {
         'google-sheets': this._importGoogleSheets,
         'json-raw': this._importJson,

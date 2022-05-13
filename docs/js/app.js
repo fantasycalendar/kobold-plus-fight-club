@@ -11533,8 +11533,6 @@ var Importer = /*#__PURE__*/function () {
   return Importer;
 }();
 
-_defineProperty(Importer, "key", "AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI");
-
 _defineProperty(Importer, "loaders", {
   'google-sheets': Importer._importGoogleSheets,
   'json-raw': Importer._importJson,
