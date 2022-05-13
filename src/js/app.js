@@ -256,7 +256,11 @@ function app() {
 
         async fetchData() {
             this.formatSources(await this.fetchSources());
+            this.formatSources(this.importedSources);
+
             this.formatMonsters(await this.fetchMonsters());
+            this.formatMonsters(this.importedMonsters);
+
             this.searchPlaceholder = helpers.randomArrayElement(this.allMonsters).name;
 
             if (this.loadedEncounterIndex !== null){

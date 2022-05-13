@@ -1339,7 +1339,7 @@
 					<div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
 						<div class="sm:flex flex-col sm:items-start w-full" x-data="{
 							importerResourceLocator: '163Yp3ljFrwDR9GJuobN8zOHjYGpTmJfXrXKNDU6Pais',
-							importerSourceType: 'google-sheets',
+							importerSourceType: 'json-file',
 							step: 1,
 							stagedMonsters: [],
 							stagedSources: [],
@@ -1355,11 +1355,11 @@
 								this.step = 2;
 							},
 							finishImport() {
-								importedSources.push(this.stagedSources)
+								importedSources = importedSources.push(this.stagedSources)
 								formatSources(this.stagedSources);
 								this.stagedSources = [];
 
-								importedMonsters.push(this.stagedMonsters)
+								importedMonsters = importedMonsters.concat(this.stagedMonsters)
 								formatMonsters(this.stagedMonsters);
 								this.stagedMonsters = [];
 
@@ -1383,6 +1383,7 @@
 
 								<label for="import_resource_locator">Sheets ID</label>
 								<input class="mb-4" name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
+                                <!--<input id="import_resource_locator" type="file" accept="text/json, text/csv" @change="importerResourceLocator = $event.target.files[0]">-->
 
 								<button class="button-primary-md" @click="startImport">Import</button>
 							</div>

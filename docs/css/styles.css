@@ -8580,9 +8580,6 @@ input[type=text]:disabled{
 .col-span-6{
   grid-column: span 6 / span 6;
 }
-.col-span-5{
-  grid-column: span 5 / span 5;
-}
 .float-right{
   float: right;
 }
@@ -9389,9 +9386,6 @@ input[type=text]:disabled{
 }
 .pr-8{
   padding-right: 2rem;
-}
-.pl-4{
-  padding-left: 1rem;
 }
 .pt-0\.5{
   padding-top: 0.125rem;
@@ -11127,10 +11121,6 @@ body .choices__input:focus{
 
   .lg\:pl-0{
     padding-left: 0px;
-  }
-
-  .lg\:pl-8{
-    padding-left: 2rem;
   }
 }
 @media (min-width: 1536px){

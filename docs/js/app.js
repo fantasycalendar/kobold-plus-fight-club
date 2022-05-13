@@ -9459,14 +9459,18 @@ function app() {
 
                 _context.t0.formatSources.call(_context.t0, _context.t1);
 
+                _this2.formatSources(_this2.importedSources);
+
                 _context.t2 = _this2;
-                _context.next = 8;
+                _context.next = 9;
                 return _this2.fetchMonsters();
 
-              case 8:
+              case 9:
                 _context.t3 = _context.sent;
 
                 _context.t2.formatMonsters.call(_context.t2, _context.t3);
+
+                _this2.formatMonsters(_this2.importedMonsters);
 
                 _this2.searchPlaceholder = _helpers__WEBPACK_IMPORTED_MODULE_4__.randomArrayElement(_this2.allMonsters).name;
 
@@ -9476,7 +9480,7 @@ function app() {
                   _this2.encounter.load(_this2.encounterHistory[_this2.encounterHistory.length - 1]);
                 }
 
-              case 12:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -11358,92 +11362,164 @@ var Importer = /*#__PURE__*/function () {
 
       return _import;
     }()
+  }, {
+    key: "_importJsonFile",
+    value: function () {
+      var _importJsonFile2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                return _context2.abrupt("return", new Promise(function (resolve, reject) {
+                  var reader = new FileReader();
+                  reader.addEventListener('load', function () {
+                    try {
+                      var data = JSON.parse(reader.result);
+                      resolve(data);
+                    } catch (err) {
+                      console.error(err);
+                      reject(err);
+                    }
+                  });
+                  reader.readAsText(resourceLocator);
+                }));
+
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      function _importJsonFile(_x) {
+        return _importJsonFile2.apply(this, arguments);
+      }
+
+      return _importJsonFile;
+    }()
+  }, {
+    key: "_importJson",
+    value: function () {
+      var _importJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(resourceLocator) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.prev = 0;
+                return _context3.abrupt("return", JSON.parse(resourceLocator));
+
+              case 4:
+                _context3.prev = 4;
+                _context3.t0 = _context3["catch"](0);
+                console.error(_context3.t0);
+                return _context3.abrupt("return", false);
+
+              case 8:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[0, 4]]);
+      }));
+
+      function _importJson(_x2) {
+        return _importJson2.apply(this, arguments);
+      }
+
+      return _importJson;
+    }()
+  }, {
+    key: "_importGoogleSheets",
+    value: function () {
+      var _importGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(resourceLocator) {
+        var monsters, sources;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0];
+                  return jsonifiedBody.values.map(function (item) {
+                    return {
+                      "name": item[headers.indexOf("name")],
+                      "cr": item[headers.indexOf("cr")],
+                      "size": item[headers.indexOf("size")],
+                      "type": item[headers.indexOf("type")],
+                      "tags": item[headers.indexOf("tags")],
+                      "section": item[headers.indexOf("section")],
+                      "alignment": item[headers.indexOf("alignment")],
+                      "environment": item[headers.indexOf("environment")],
+                      "ac": item[headers.indexOf("ac")],
+                      "hp": item[headers.indexOf("hp")],
+                      "init": item[headers.indexOf("init")],
+                      "lair": item[headers.indexOf("lair?")],
+                      "legendary": item[headers.indexOf("legendary?")],
+                      "unique": item[headers.indexOf("unique?")],
+                      "sources": item[headers.indexOf("sources")]
+                    };
+                  });
+                })["catch"](function (err) {
+                  return console.error(err);
+                });
+
+              case 2:
+                monsters = _context4.sent;
+                _context4.next = 5;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0];
+                  return jsonifiedBody.values.map(function (item) {
+                    return {
+                      "name": item[headers.indexOf("name")],
+                      "type": 'Custom',
+                      "shortname": item[headers.indexOf("short name")],
+                      "link": item[headers.indexOf("link")],
+                      "enabled": true
+                    };
+                  });
+                })["catch"](function (err) {
+                  return console.error(err);
+                });
+
+              case 5:
+                sources = _context4.sent;
+                return _context4.abrupt("return", {
+                  sources: sources,
+                  monsters: monsters
+                });
+
+              case 7:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function _importGoogleSheets(_x3) {
+        return _importGoogleSheets2.apply(this, arguments);
+      }
+
+      return _importGoogleSheets;
+    }()
   }]);
 
   return Importer;
 }();
 
 _defineProperty(Importer, "loaders", {
-  'google-sheets': function () {
-    var _googleSheets = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
-      var monsters, sources;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
-                key: Importer.key
-              })).then(function (response) {
-                return response.json();
-              }).then(function (jsonifiedBody) {
-                var headers = jsonifiedBody.values.splice(0, 1)[0];
-                return jsonifiedBody.values.map(function (item) {
-                  return {
-                    "name": item[headers.indexOf("name")],
-                    "cr": item[headers.indexOf("cr")],
-                    "size": item[headers.indexOf("size")],
-                    "type": item[headers.indexOf("type")],
-                    "tags": item[headers.indexOf("tags")],
-                    "section": item[headers.indexOf("section")],
-                    "alignment": item[headers.indexOf("alignment")],
-                    "environment": item[headers.indexOf("environment")],
-                    "ac": item[headers.indexOf("ac")],
-                    "hp": item[headers.indexOf("hp")],
-                    "init": item[headers.indexOf("init")],
-                    "lair": item[headers.indexOf("lair?")],
-                    "legendary": item[headers.indexOf("legendary?")],
-                    "unique": item[headers.indexOf("unique?")],
-                    "sources": item[headers.indexOf("sources")]
-                  };
-                });
-              })["catch"](function (err) {
-                return console.log(err);
-              });
-
-            case 2:
-              monsters = _context2.sent;
-              _context2.next = 5;
-              return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
-                key: Importer.key
-              })).then(function (response) {
-                return response.json();
-              }).then(function (jsonifiedBody) {
-                var headers = jsonifiedBody.values.splice(0, 1)[0];
-                return jsonifiedBody.values.map(function (item) {
-                  return {
-                    "name": item[headers.indexOf("name")],
-                    "type": 'Custom',
-                    "shortname": item[headers.indexOf("short name")],
-                    "link": item[headers.indexOf("link")],
-                    "enabled": true
-                  };
-                });
-              })["catch"](function (err) {
-                return console.log(err);
-              });
-
-            case 5:
-              sources = _context2.sent;
-              return _context2.abrupt("return", {
-                sources: sources,
-                monsters: monsters
-              });
-
-            case 7:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-
-    function googleSheets(_x) {
-      return _googleSheets.apply(this, arguments);
-    }
-
-    return googleSheets;
-  }()
+  'google-sheets': Importer._importGoogleSheets,
+  'json-raw': Importer._importJson,
+  'json-file': Importer._importJsonFile
 });
 
 
