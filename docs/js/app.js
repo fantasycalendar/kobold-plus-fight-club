@@ -11416,7 +11416,8 @@ _defineProperty(Importer, "loaders", {
                     "name": item[headers.indexOf("name")],
                     "type": 'Custom',
                     "shortname": item[headers.indexOf("short name")],
-                    "link": item[headers.indexOf("link")]
+                    "link": item[headers.indexOf("link")],
+                    "enabled": true
                   };
                 });
               })["catch"](function (err) {

@@ -1355,8 +1355,15 @@
 								this.step = 2;
 							},
 							finishImport() {
+								importedSources.push(this.stagedSources)
 								formatSources(this.stagedSources);
+								this.stagedSources = [];
+
+								importedMonsters.push(this.stagedMonsters)
 								formatMonsters(this.stagedMonsters);
+								this.stagedMonsters = [];
+
+								showImporterModal = false;
 							}
 						}">
 							<div class="w-full flex pb-3">

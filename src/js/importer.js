@@ -44,6 +44,7 @@ export default class Importer {
                         "type": 'Custom',
                         "shortname": item[headers.indexOf("short name")],
                         "link": item[headers.indexOf("link")],
+                        "enabled": true,
                     }));
                 })
                 .catch(
