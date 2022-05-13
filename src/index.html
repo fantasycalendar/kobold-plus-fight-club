@@ -1355,7 +1355,7 @@
 								this.step = 2;
 							},
 							finishImport() {
-								importedSources = importedSources.push(this.stagedSources)
+								importedSources = importedSources.concat(this.stagedSources)
 								formatSources(this.stagedSources);
 								this.stagedSources = [];
 
