@@ -11537,7 +11537,6 @@ var Monster = /*#__PURE__*/function () {
       source.fullText = source.reference.name + (source.page ? ' p.' + source.page : '');
       return source;
     });
-    console.log(this.sources);
     this.sources.sort(function (a, b) {
       return a.fullText.localeCompare(b.fullText, 'en', {
         sensitivity: "base"
