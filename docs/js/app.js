@@ -9210,7 +9210,7 @@ var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
-    sourcesVersion: "2.1.0",
+    sourcesVersion: "2.2.0",
     storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,

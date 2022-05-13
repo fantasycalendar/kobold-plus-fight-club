@@ -18,7 +18,7 @@ function app() {
     
     return {
 
-        sourcesVersion: "2.1.0",
+        sourcesVersion: "2.2.0",
         storedSourcesVersion: Alpine.$persist("2.0.0").as('storedSourcesVersion'),
 
         menu: false,
