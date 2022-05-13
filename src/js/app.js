@@ -419,6 +419,26 @@ function app() {
             window.dispatchEvent(new CustomEvent('set-environments', { detail: environments }));
         },
 
+        deleteImportedSource(sourceName){
+
+            const sourceToDelete = this.sources[sourceName];
+
+            this.allMonsters = this.allMonsters.filter(monster => {
+                return !monster.sources.find(source => source.actual_source === sourceToDelete);
+            });
+
+            this.importedMonsters = this.importedMonsters.filter(monster => {
+                return !monster.sources.startsWith(sourceName);
+            });
+
+            delete this.sources[sourceName];
+            const index = this.importedSources.findIndex(source => source.name === sourceName);
+            this.importedSources.splice(index, 1);
+
+            this.updateFilteredMonsters();
+
+        },
+
         filterMonsters(crString = false, filterCallback = () => { return true; }){
             const monsters = this.allMonsters.filter(monster => {
                 return monster.sourceEnabled && filterCallback(monster) && monster.filter(this.search, this.filters, crString);

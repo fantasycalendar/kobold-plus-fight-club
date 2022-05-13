@@ -45,8 +45,9 @@ export default class Monster {
         this.sources = this.data.sources.split(', ').map(str => {
             const [book, location] = str.split(": ");
             let source = {};
+            source.actual_source = this.app.sources[book];
             if (!isNaN(location)) {
-                source.reference = this.app.sources[book];
+                source.reference = source.actual_source;
                 source.page = location;
             } else if (helpers.isValidHttpUrl(location)) {
                 source.reference = {

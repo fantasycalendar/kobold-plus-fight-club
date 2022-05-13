@@ -9710,6 +9710,23 @@ function app() {
         detail: environments
       }));
     },
+    deleteImportedSource: function deleteImportedSource(sourceName) {
+      var sourceToDelete = this.sources[sourceName];
+      this.allMonsters = this.allMonsters.filter(function (monster) {
+        return !monster.sources.find(function (source) {
+          return source.actual_source === sourceToDelete;
+        });
+      });
+      this.importedMonsters = this.importedMonsters.filter(function (monster) {
+        return !monster.sources.startsWith(sourceName);
+      });
+      delete this.sources[sourceName];
+      var index = this.importedSources.findIndex(function (source) {
+        return source.name === sourceName;
+      });
+      this.importedSources.splice(index, 1);
+      this.updateFilteredMonsters();
+    },
     filterMonsters: function filterMonsters() {
       var _this7 = this;
 
@@ -11346,7 +11363,7 @@ var Importer = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 _ref = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, _ref$resourceLocator = _ref.resourceLocator, resourceLocator = _ref$resourceLocator === void 0 ? false : _ref$resourceLocator, _ref$type = _ref.type, type = _ref$type === void 0 ? 'google-sheets' : _ref$type;
-                return _context.abrupt("return", this.loaders[type](resourceLocator));
+                return _context.abrupt("return", this.loaders[type].bind(this)(resourceLocator));
 
               case 2:
               case "end":
@@ -11516,6 +11533,8 @@ var Importer = /*#__PURE__*/function () {
   return Importer;
 }();
 
+_defineProperty(Importer, "key", "AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI");
+
 _defineProperty(Importer, "loaders", {
   'google-sheets': Importer._importGoogleSheets,
   'json-raw': Importer._importJson,
@@ -11598,9 +11617,10 @@ var Monster = /*#__PURE__*/function () {
           location = _str$split2[1];
 
       var source = {};
+      source.actual_source = _this.app.sources[book];
 
       if (!isNaN(location)) {
-        source.reference = _this.app.sources[book];
+        source.reference = source.actual_source;
         source.page = location;
       } else if (_helpers_js__WEBPACK_IMPORTED_MODULE_1__.isValidHttpUrl(location)) {
         source.reference = {

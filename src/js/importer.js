@@ -1,5 +1,6 @@
 export default class Importer {
-    
+
+    static key = "AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI"
 
     static loaders = {
         'google-sheets': this._importGoogleSheets,
@@ -16,7 +17,7 @@ export default class Importer {
     *
      */
     static async import({ resourceLocator = false, type = 'google-sheets' } = {}) {
-        return this.loaders[type](resourceLocator);
+        return this.loaders[type].bind(this)(resourceLocator);
     }
 
     static async _importJsonFile(resourceLocator) {
@@ -45,6 +46,7 @@ export default class Importer {
     }
 
     static async _importGoogleSheets(resourceLocator) {
+
         let monsters = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
             key: this.key
         }))
