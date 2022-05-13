@@ -38,7 +38,9 @@ function app() {
         nonDefaultFiltersCount: 0,
 
         loadedSources: Alpine.$persist([]).as('sources'),
+        importedSources: Alpine.$persist([]).as('importedSources'),
         loadedMonsters: Alpine.$persist([]).as('monsters'),
+        importedMonsters: Alpine.$persist([]).as('importedMonsters'),
 
         encounterHistory: Alpine.$persist([]).as('encounterHistory'),
         savedEncounters: Alpine.$persist([]).as('savedEncounters'),
@@ -396,21 +398,21 @@ function app() {
             this.sources = data.reduce((acc, source) => {
                 acc[source.name] = source;
                 return acc;
-            }, {});
+            }, this.sources);
         },
 
         formatMonsters(data){
-            this.allMonsters = data.map(data => {
+            this.allMonsters = this.allMonsters.concat(data.map(data => {
                 const monster = new Monster(this, data);
                 this.monsterLookupTable[monster.slug] = monster;
                 return monster;
-            });
-            this.environments = Object.values(this.environments);
-            this.environments.sort((a, b) => {
+            }));
+            let environments = Object.values(this.environments);
+            environments.sort((a, b) => {
                 return a.value > b.label ? -1 : 1;
             });
-            this.environments.unshift({ value: "any", label: "Any Environment" });
-            window.dispatchEvent(new CustomEvent('set-environments', { detail: this.environments }));
+            environments.unshift({ value: "any", label: "Any Environment" });
+            window.dispatchEvent(new CustomEvent('set-environments', { detail: environments }));
         },
 
         filterMonsters(crString = false, filterCallback = () => { return true; }){

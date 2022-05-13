@@ -9226,7 +9226,9 @@ function app() {
     searchPlaceholder: "",
     nonDefaultFiltersCount: 0,
     loadedSources: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('sources'),
+    importedSources: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('importedSources'),
     loadedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('monsters'),
+    importedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('importedMonsters'),
     encounterHistory: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('encounterHistory'),
     savedEncounters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('savedEncounters'),
     loadedEncounterIndex: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(null).as('loadedEncounterIndex'),
@@ -9682,26 +9684,26 @@ function app() {
       this.sources = data.reduce(function (acc, source) {
         acc[source.name] = source;
         return acc;
-      }, {});
+      }, this.sources);
     },
     formatMonsters: function formatMonsters(data) {
       var _this6 = this;
 
-      this.allMonsters = data.map(function (data) {
+      this.allMonsters = this.allMonsters.concat(data.map(function (data) {
         var monster = new _monster__WEBPACK_IMPORTED_MODULE_6__["default"](_this6, data);
         _this6.monsterLookupTable[monster.slug] = monster;
         return monster;
-      });
-      this.environments = Object.values(this.environments);
-      this.environments.sort(function (a, b) {
+      }));
+      var environments = Object.values(this.environments);
+      environments.sort(function (a, b) {
         return a.value > b.label ? -1 : 1;
       });
-      this.environments.unshift({
+      environments.unshift({
         value: "any",
         label: "Any Environment"
       });
       window.dispatchEvent(new CustomEvent('set-environments', {
-        detail: this.environments
+        detail: environments
       }));
     },
     filterMonsters: function filterMonsters() {
@@ -11327,7 +11329,6 @@ var Importer = /*#__PURE__*/function () {
             resourceLocator,
             _ref$type,
             type,
-            results,
             _args = arguments;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
@@ -11335,16 +11336,10 @@ var Importer = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 _ref = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, _ref$resourceLocator = _ref.resourceLocator, resourceLocator = _ref$resourceLocator === void 0 ? false : _ref$resourceLocator, _ref$type = _ref.type, type = _ref$type === void 0 ? 'google-sheets' : _ref$type;
-                _context.next = 3;
-                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
-                  key: this.key
-                }));
+                console.log(type, this.loaders[type]);
+                return _context.abrupt("return", this.loaders[type](resourceLocator));
 
               case 3:
-                results = _context.sent;
-                return _context.abrupt("return", results);
-
-              case 5:
               case "end":
                 return _context.stop();
             }
@@ -11363,7 +11358,87 @@ var Importer = /*#__PURE__*/function () {
   return Importer;
 }();
 
-_defineProperty(Importer, "key", 'AIzaSyASDsLebocDQEHt3-MV_a_tI8r25CHotT4');
+_defineProperty(Importer, "loaders", {
+  'google-sheets': function () {
+    var _googleSheets = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
+      var monsters, sources;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
+                key: Importer.key
+              })).then(function (response) {
+                return response.json();
+              }).then(function (jsonifiedBody) {
+                var headers = jsonifiedBody.values.splice(0, 1)[0];
+                return jsonifiedBody.values.map(function (item) {
+                  return {
+                    "name": item[headers.indexOf("name")],
+                    "cr": item[headers.indexOf("cr")],
+                    "size": item[headers.indexOf("size")],
+                    "type": item[headers.indexOf("type")],
+                    "tags": item[headers.indexOf("tags")],
+                    "section": item[headers.indexOf("section")],
+                    "alignment": item[headers.indexOf("alignment")],
+                    "environment": item[headers.indexOf("environment")],
+                    "ac": item[headers.indexOf("ac")],
+                    "hp": item[headers.indexOf("hp")],
+                    "init": item[headers.indexOf("init")],
+                    "lair": item[headers.indexOf("lair?")],
+                    "legendary": item[headers.indexOf("legendary?")],
+                    "unique": item[headers.indexOf("unique?")],
+                    "sources": item[headers.indexOf("sources")]
+                  };
+                });
+              })["catch"](function (err) {
+                return console.log(err);
+              });
+
+            case 2:
+              monsters = _context2.sent;
+              _context2.next = 5;
+              return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
+                key: Importer.key
+              })).then(function (response) {
+                return response.json();
+              }).then(function (jsonifiedBody) {
+                var headers = jsonifiedBody.values.splice(0, 1)[0];
+                return jsonifiedBody.values.map(function (item) {
+                  return {
+                    "name": item[headers.indexOf("name")],
+                    "type": 'Custom',
+                    "short_name": item[headers.indexOf("short name")],
+                    "link": item[headers.indexOf("link")]
+                  };
+                });
+              })["catch"](function (err) {
+                return console.log(err);
+              });
+
+            case 5:
+              sources = _context2.sent;
+              return _context2.abrupt("return", {
+                sources: sources,
+                monsters: monsters
+              });
+
+            case 7:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    function googleSheets(_x) {
+      return _googleSheets.apply(this, arguments);
+    }
+
+    return googleSheets;
+  }()
+});
 
 
 
