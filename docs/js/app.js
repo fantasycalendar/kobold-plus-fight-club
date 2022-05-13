@@ -11342,10 +11342,9 @@ var Importer = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 _ref = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, _ref$resourceLocator = _ref.resourceLocator, resourceLocator = _ref$resourceLocator === void 0 ? false : _ref$resourceLocator, _ref$type = _ref.type, type = _ref$type === void 0 ? 'google-sheets' : _ref$type;
-                console.log(type, this.loaders[type]);
                 return _context.abrupt("return", this.loaders[type](resourceLocator));
 
-              case 3:
+              case 2:
               case "end":
                 return _context.stop();
             }

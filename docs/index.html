@@ -1363,6 +1363,9 @@
 								formatMonsters(this.stagedMonsters);
 								this.stagedMonsters = [];
 
+								dispatchEvent(new CustomEvent('notification', {detail: {title: 'Import complete!', body: 'Your new source(s) have been imported'}}));
+
+								this.step = 1;
 								showImporterModal = false;
 							}
 						}">
@@ -1406,7 +1409,7 @@
 															<tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600">
 																<td class="whitespace-nowrap py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-200" x-text="source.name"></td>
 																<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.type"></td>
-																<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.short_name"></td>
+																<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.shortname"></td>
 																<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.link"></td>
 															</tr>
 														</template>

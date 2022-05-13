@@ -67,8 +67,6 @@ export default class Importer {
                     resourceLocator = false,
                     type = 'google-sheets'
                   } = {}) {
-        console.log(type, this.loaders[type]);
-
         return this.loaders[type](resourceLocator);
     }
 }
