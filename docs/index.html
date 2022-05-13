@@ -1339,7 +1339,7 @@
 					<div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
 						<div class="sm:flex flex-col sm:items-start w-full" x-data="{
 							importerResourceLocator: '163Yp3ljFrwDR9GJuobN8zOHjYGpTmJfXrXKNDU6Pais',
-							importerSourceType: 'json-file',
+							importerSourceType: 'google-sheet',
 							step: 1,
 							stagedMonsters: [],
 							stagedSources: [],
@@ -1378,11 +1378,14 @@
 								<select x-model="importerSourceType" name="importer_source" id="importer_source" class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
 									<optgroup label="More to come...">
 										<option value="google-sheets">Google Sheets</option>
+										<option value="json-raw">Raw JSON</option>
+										<option value="json-file">JSON File</option>
 									</optgroup>
 								</select>
 
 								<label for="import_resource_locator">Sheets ID</label>
 								<input class="mb-4" name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
+                                <!--<textarea id="import_resource_locator" x-model="importerResourceLocator" cols="30" rows="10"></textarea>-->
                                 <!--<input id="import_resource_locator" type="file" accept="text/json, text/csv" @change="importerResourceLocator = $event.target.files[0]">-->
 
 								<button class="button-primary-md" @click="startImport">Import</button>
