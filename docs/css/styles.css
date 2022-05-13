@@ -8583,6 +8583,9 @@ input[type=text]:disabled{
 .col-span-5{
   grid-column: span 5 / span 5;
 }
+.float-right{
+  float: right;
+}
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
