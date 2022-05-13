@@ -2,12 +2,14 @@ require('@fortawesome/fontawesome-free')
 
 import Choices from 'choices.js';
 import hotkeys from 'hotkeys-js';
-import encounter from "./encounter.js";
-import noUiSlider from "nouislider";
-import * as lib from "./lib.js";
-import CONST from "./constants.js";
-import Monster from "./monster.js";
+import encounter from "./encounter";
+import * as helpers from "./helpers";
+import CONST from "./constants";
+import Monster from "./monster";
+import Importer from "./importer";
+
 import tippy from 'tippy.js';
+import noUiSlider from "nouislider";
 
 import persist from '@alpinejs/persist'
 import Alpine from 'alpinejs'
@@ -27,6 +29,7 @@ function app() {
         showEncounterModal: false,
         showPartyModal: false,
         showKeyboardModal: false,
+        showImporterModal: true,
 
         mobileEncounterTab: false,
 
@@ -252,7 +255,7 @@ function app() {
         async fetchData() {
             this.formatSources(await this.fetchSources());
             this.formatMonsters(await this.fetchMonsters());
-            this.searchPlaceholder = lib.randomArrayElement(this.allMonsters).name;
+            this.searchPlaceholder = helpers.randomArrayElement(this.allMonsters).name;
 
             if (this.loadedEncounterIndex !== null){
                 this.encounter.load(this.savedEncounters[this.loadedEncounterIndex]);
@@ -323,7 +326,7 @@ function app() {
 
         async fetchSources(){
 
-            if(this.loadedSources.length > 0 && lib.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
+            if(this.loadedSources.length && helpers.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
 
@@ -358,7 +361,7 @@ function app() {
 
         async fetchMonsters(){
 
-            if(this.loadedMonsters.length > 0 && lib.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
+            if(this.loadedSources.length && helpers.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
                 return this.loadedMonsters;
             }
 
@@ -541,7 +544,7 @@ function app() {
             this.savedParties.forEach((party, partyIndex) => {
                 party.players.filter(player => player.active).forEach((player, playerIndex) => {
                     data.Combatants.push({
-                        Id: lib.slugify(`${party.name}-${player.name}`),
+                        Id: helpers.slugify(`${party.name}-${player.name}`),
                         Name: player.name,
                         InitiativeModifier: player.initiativeMod,
                         InitiativeAdvantage: player.initiativeAdvantage,
@@ -719,6 +722,7 @@ window.multiSlider = multiSlider;
 window.noUiSlider = noUiSlider;
 window.Choices = Choices;
 window.tippy = tippy;
+window.Importer = Importer;
 
 window.Alpine = Alpine
 

@@ -1,5 +1,5 @@
 import CONST from "./constants.js";
-import * as lib from "./lib.js";
+import * as helpers from "./helpers.js";
 
 const regexCache = {};
 let lastRegex = "";
@@ -11,7 +11,7 @@ export default class Monster {
         this.data = data;
         this.cr = CONST.CR[this.data.cr];
 
-        this.slug = lib.slugify(this.data.name+'-'+this.data.sources+"-"+this.cr.string);
+        this.slug = helpers.slugify(this.data.name+'-'+this.data.sources+"-"+this.cr.string);
 
         this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
 
@@ -48,7 +48,7 @@ export default class Monster {
             if (!isNaN(location)) {
                 source.reference = this.app.sources[book];
                 source.page = location;
-            } else if (lib.isValidHttpUrl(location)) {
+            } else if (helpers.isValidHttpUrl(location)) {
                 source.reference = {
                     name: book,
                     shortname: book,

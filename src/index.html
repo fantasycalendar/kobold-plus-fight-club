@@ -103,6 +103,7 @@
 					</div>
 					<div class="hidden lg:flex text-white lg:-my-px lg:ml-6 lg:space-x-8 items-center">
                         <a @click="showKeyboardModal = true" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Keyboard Shortcuts <span class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-emerald-800 text-emerald-100 ml-1">Ctrl+/</span></a>
+                        <a @click="showImporterModal = true" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Import Custom Monsters</a>
                         <a href="https://fantasy-calendar.com/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Fantasy Calendar</a>
                         <a href="https://fantasycomputer.works/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">About</a>
 						<a x-tippy="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">
@@ -1306,6 +1307,69 @@
 
 					<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
 						<button @click="showKeyboardModal = false" type="button" class="button-primary-md">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div x-show="showImporterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+			<div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+				<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
+					 x-show="showImporterModal"
+					 x-transition:enter="ease-out duration-300"
+					 x-transition:enter-start="opacity-0"
+					 x-transition:enter-end="opacity-100"
+					 x-transition:leave="ease-in duration-200"
+					 x-transition:leave-start="opacity-100"
+					 x-transition:leave-end="opacity-0"
+				></div>
+
+				<!-- This element is to trick the browser into centering the modal contents. -->
+				<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+				<div @mousedown.outside="showImporterModal = false" class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+					 x-show="showImporterModal"
+					 x-transition:enter="ease-out duration-300"
+					 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+					 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+					 x-transition:leave="ease-in duration-200"
+					 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+					 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+				>
+					<div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
+						<div class="sm:flex flex-col sm:items-start w-full" x-data="{
+							importerResourceLocator: '163Yp3ljFrwDR9GJuobN8zOHjYGpTmJfXrXKNDU6Pais',
+							importerSourceType: 'sheets',
+							async doImport() {
+								console.log(await Importer.import({
+									type: this.importerSourceType,
+									resourceLocator: this.importerResourceLocator
+								}));
+							}
+							
+						}">
+							<div class="w-full flex pb-3">
+								<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Keyboard Shortcuts</h3>
+							</div>
+
+							<div class="my-3 sm:mt-0 w-full">
+								<label for="importer_source">Import from</label>
+								<select x-model="importerSourceType" name="importer_source" id="importer_source" class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
+									<optgroup label="More to come...">
+										<option value="google-sheets">Google Sheets</option>
+									</optgroup>
+								</select>
+
+								<label for="import_resource_locator">Sheets ID</label>
+								<input class="mb-4" name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
+
+								<button class="button-primary-md" @click="doImport">Import</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
+						<button @click="showImporterModal = false" type="button" class="button-primary-md">Close</button>
 					</div>
 				</div>
 			</div>

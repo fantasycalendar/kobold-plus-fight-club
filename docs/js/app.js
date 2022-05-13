@@ -9161,15 +9161,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var choices_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! choices.js */ "./node_modules/choices.js/public/assets/scripts/choices.js");
 /* harmony import */ var choices_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(choices_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var hotkeys_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! hotkeys-js */ "./node_modules/hotkeys-js/dist/hotkeys.esm.js");
-/* harmony import */ var _encounter_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./encounter.js */ "./src/js/encounter.js");
-/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! nouislider */ "./node_modules/nouislider/dist/nouislider.js");
-/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(nouislider__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
-/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants.js */ "./src/js/constants.js");
-/* harmony import */ var _monster_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./monster.js */ "./src/js/monster.js");
-/* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
-/* harmony import */ var _alpinejs_persist__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @alpinejs/persist */ "./node_modules/@alpinejs/persist/dist/module.esm.js");
-/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
+/* harmony import */ var _encounter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./encounter */ "./src/js/encounter.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./src/js/constants.js");
+/* harmony import */ var _monster__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./monster */ "./src/js/monster.js");
+/* harmony import */ var _importer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./importer */ "./src/js/importer.js");
+/* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
+/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! nouislider */ "./node_modules/nouislider/dist/nouislider.js");
+/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(nouislider__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _alpinejs_persist__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @alpinejs/persist */ "./node_modules/@alpinejs/persist/dist/module.esm.js");
+/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -9206,29 +9207,31 @@ __webpack_require__(/*! @fortawesome/fontawesome-free */ "./node_modules/@fortaw
 
 
 
+
 var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
     sourcesVersion: "2.1.0",
-    storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("2.0.0").as('storedSourcesVersion'),
+    storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
     showSourcesModal: false,
     showEncounterModal: false,
     showPartyModal: false,
     showKeyboardModal: false,
+    showImporterModal: true,
     mobileEncounterTab: false,
     filters: {},
     searchPlaceholder: "",
     nonDefaultFiltersCount: 0,
-    loadedSources: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('sources'),
-    loadedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('monsters'),
-    encounterHistory: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('encounterHistory'),
-    savedEncounters: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('savedEncounters'),
-    loadedEncounterIndex: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(null).as('loadedEncounterIndex'),
-    loadedLastEncounter: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(false).as('loadedLastEncounter'),
-    savedParties: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('savedParties'),
+    loadedSources: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('sources'),
+    loadedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('monsters'),
+    encounterHistory: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('encounterHistory'),
+    savedEncounters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('savedEncounters'),
+    loadedEncounterIndex: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(null).as('loadedEncounterIndex'),
+    loadedLastEncounter: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(false).as('loadedLastEncounter'),
+    savedParties: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('savedParties'),
     sources: {},
     enabledSources: [],
     allMonsters: [],
@@ -9236,23 +9239,23 @@ function app() {
     monsterLookupTable: {},
     environments: {},
     totalPages: 1,
-    currentPage: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(1).as('currentPage'),
+    currentPage: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(1).as('currentPage'),
     pagination: [],
-    monstersPerPage: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(10).as("monstersPerPage"),
-    encounterType: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("random").as("encounterType"),
+    monstersPerPage: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(10).as("monstersPerPage"),
+    encounterType: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("random").as("encounterType"),
     encounterTypeSelectOpen: false,
-    encounterTypes: Object.fromEntries(Object.entries(_constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].ENCOUNTER_TYPES).map(function (entry) {
+    encounterTypes: Object.fromEntries(Object.entries(_constants__WEBPACK_IMPORTED_MODULE_5__["default"].ENCOUNTER_TYPES).map(function (entry) {
       return [entry[0], {
         key: entry[0],
         label: entry[1].name
       }];
     })),
     difficultySelectOpen: false,
-    difficulty: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("medium").as("difficulty"),
-    search: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("").as("search"),
-    encounter: _encounter_js__WEBPACK_IMPORTED_MODULE_3__["default"],
-    sortBy: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("name").as("sortBy"),
-    sortByDesc: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(true).as("sortByDesc"),
+    difficulty: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("medium").as("difficulty"),
+    search: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("").as("search"),
+    encounter: _encounter__WEBPACK_IMPORTED_MODULE_3__["default"],
+    sortBy: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("name").as("sortBy"),
+    sortByDesc: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(true).as("sortByDesc"),
     setSortBy: function setSortBy(type) {
       if (type === this.sortBy) {
         this.sortByDesc = !this.sortByDesc;
@@ -9329,7 +9332,7 @@ function app() {
     },
 
     party: {
-      groups: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([{
+      groups: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([{
         players: 4,
         level: 1,
         getsXP: true
@@ -9356,7 +9359,7 @@ function app() {
       getGroupExperience: function getGroupExperience(acc, group) {
         var _acc$easy, _group$players, _acc$medium, _group$players2, _acc$hard, _group$players3, _acc$deadly, _group$players4, _acc$daily, _group$players5;
 
-        var groupExp = _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].EXP[group.level];
+        var groupExp = _constants__WEBPACK_IMPORTED_MODULE_5__["default"].EXP[group.level];
         return {
           easy: ((_acc$easy = acc === null || acc === void 0 ? void 0 : acc.easy) !== null && _acc$easy !== void 0 ? _acc$easy : 0) + groupExp.easy * ((_group$players = group === null || group === void 0 ? void 0 : group.players) !== null && _group$players !== void 0 ? _group$players : 1),
           medium: ((_acc$medium = acc === null || acc === void 0 ? void 0 : acc.medium) !== null && _acc$medium !== void 0 ? _acc$medium : 0) + groupExp.medium * ((_group$players2 = group === null || group === void 0 ? void 0 : group.players) !== null && _group$players2 !== void 0 ? _group$players2 : 1),
@@ -9463,7 +9466,7 @@ function app() {
 
                 _context.t2.formatMonsters.call(_context.t2, _context.t3);
 
-                _this2.searchPlaceholder = _lib_js__WEBPACK_IMPORTED_MODULE_5__.randomArrayElement(_this2.allMonsters).name;
+                _this2.searchPlaceholder = _helpers__WEBPACK_IMPORTED_MODULE_4__.randomArrayElement(_this2.allMonsters).name;
 
                 if (_this2.loadedEncounterIndex !== null) {
                   _this2.encounter.load(_this2.savedEncounters[_this2.loadedEncounterIndex]);
@@ -9574,7 +9577,7 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                if (!(_this4.loadedSources.length > 0 && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
+                if (!(_this4.loadedSources.length && _helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
                   _context2.next = 2;
                   break;
                 }
@@ -9630,7 +9633,7 @@ function app() {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!(_this5.loadedMonsters.length > 0 && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
+                if (!(_this5.loadedSources.length && _helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
                   _context3.next = 2;
                   break;
                 }
@@ -9685,7 +9688,7 @@ function app() {
       var _this6 = this;
 
       this.allMonsters = data.map(function (data) {
-        var monster = new _monster_js__WEBPACK_IMPORTED_MODULE_7__["default"](_this6, data);
+        var monster = new _monster__WEBPACK_IMPORTED_MODULE_6__["default"](_this6, data);
         _this6.monsterLookupTable[monster.slug] = monster;
         return monster;
       });
@@ -9741,7 +9744,7 @@ function app() {
             return filter.min !== 0 || filter.max !== 30;
 
           case "alignment":
-            return filter !== _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].ALL_ALIGNMENTS;
+            return filter !== _constants__WEBPACK_IMPORTED_MODULE_5__["default"].ALL_ALIGNMENTS;
 
           default:
             return filter.length && !filter.includes('any');
@@ -9870,7 +9873,7 @@ function app() {
           return player.active;
         }).forEach(function (player, playerIndex) {
           data.Combatants.push({
-            Id: _lib_js__WEBPACK_IMPORTED_MODULE_5__.slugify("".concat(party.name, "-").concat(player.name)),
+            Id: _helpers__WEBPACK_IMPORTED_MODULE_4__.slugify("".concat(party.name, "-").concat(player.name)),
             Name: player.name,
             InitiativeModifier: player.initiativeMod,
             InitiativeAdvantage: player.initiativeAdvantage,
@@ -9913,14 +9916,14 @@ function multiSlider($el, name, options, updateCallback) {
       max: '30'
     },
     options: options,
-    value: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist({
+    value: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist({
       min: '0',
       max: '30'
     }).as(name),
     init: function init() {
       var _this10 = this;
 
-      this.slider = nouislider__WEBPACK_IMPORTED_MODULE_4___default().create($el, {
+      this.slider = nouislider__WEBPACK_IMPORTED_MODULE_8___default().create($el, {
         start: [options.findIndex(function (option) {
           return option.value === _this10.value.min;
         }), options.findIndex(function (option) {
@@ -9951,8 +9954,8 @@ function multiSlider($el, name, options, updateCallback) {
         detail: {
           name: "cr",
           value: {
-            min: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.min].numeric,
-            max: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.max].numeric
+            min: _constants__WEBPACK_IMPORTED_MODULE_5__["default"].CR[this.value.min].numeric,
+            max: _constants__WEBPACK_IMPORTED_MODULE_5__["default"].CR[this.value.max].numeric
           }
         }
       }));
@@ -9990,7 +9993,7 @@ function multiSlider($el, name, options, updateCallback) {
 function multiSelect($el, name, options) {
   return {
     multiple: true,
-    value: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(['any']).as(name),
+    value: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(['any']).as(name),
     name: name,
     options: options,
     init: function init() {
@@ -10069,12 +10072,13 @@ window.hotkeys = hotkeys_js__WEBPACK_IMPORTED_MODULE_2__["default"];
 window.app = app;
 window.multiSelect = multiSelect;
 window.multiSlider = multiSlider;
-window.noUiSlider = (nouislider__WEBPACK_IMPORTED_MODULE_4___default());
+window.noUiSlider = (nouislider__WEBPACK_IMPORTED_MODULE_8___default());
 window.Choices = (choices_js__WEBPACK_IMPORTED_MODULE_1___default());
-window.tippy = tippy_js__WEBPACK_IMPORTED_MODULE_10__["default"];
-window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"];
-alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].plugin(_alpinejs_persist__WEBPACK_IMPORTED_MODULE_8__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].start();
+window.tippy = tippy_js__WEBPACK_IMPORTED_MODULE_11__["default"];
+window.Importer = _importer__WEBPACK_IMPORTED_MODULE_7__["default"];
+window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"];
+alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].plugin(_alpinejs_persist__WEBPACK_IMPORTED_MODULE_9__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].start();
 
 /***/ }),
 
@@ -10089,7 +10093,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers.js */ "./src/js/helpers.js");
 
 var CONST = {
   EXP: {
@@ -10640,7 +10644,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers.js */ "./src/js/helpers.js");
 /* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants.js */ "./src/js/constants.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -10723,11 +10727,11 @@ var encounter = {
           upperKey = _levels$i[0],
           upperValue = _levels$i[1];
 
-      var _ratio = _lib_js__WEBPACK_IMPORTED_MODULE_0__.ratio(lowerValue, upperValue, exp);
+      var _ratio = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.ratio(lowerValue, upperValue, exp);
 
       if (upperKey === "daily" && _ratio >= 0.0) {
         if (_ratio >= 0.2) {
-          return _ratio >= 1.0 ? "like " + _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(this.insaneDifficultyStrings) : _ratio >= 0.6 ? 'extremely deadly' : "really deadly";
+          return _ratio >= 1.0 ? "like " + _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(this.insaneDifficultyStrings) : _ratio >= 0.6 ? 'extremely deadly' : "really deadly";
         }
 
         return lowerKey;
@@ -10740,7 +10744,7 @@ var encounter = {
       }
     }
 
-    var ratio = _lib_js__WEBPACK_IMPORTED_MODULE_0__.ratio(0, levels[0][1], exp);
+    var ratio = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.ratio(0, levels[0][1], exp);
     return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
   },
 
@@ -10884,13 +10888,13 @@ var encounter = {
       });
     }
 
-    return _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
+    return _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
   },
   getEncounterTemplate: function getEncounterTemplate() {
-    var template = _lib_js__WEBPACK_IMPORTED_MODULE_0__.clone(_constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCOUNTER_TYPES[this.app.encounterType]);
+    var template = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.clone(_constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCOUNTER_TYPES[this.app.encounterType]);
 
     if (template.samples) {
-      template = _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(template.samples);
+      template = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(template.samples);
 
       if (this.app.encounterType === "random") {
         template = {
@@ -10911,7 +10915,7 @@ var encounter = {
           part = part.replaceAll("players", players);
           return eval(part);
         });
-        group.count = parts.length > 1 ? _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomIntBetween.apply(_lib_js__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(parts)) : parts[0];
+        group.count = parts.length > 1 ? _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomIntBetween.apply(_helpers_js__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(parts)) : parts[0];
       }
 
       return group;
@@ -10964,7 +10968,7 @@ var encounter = {
       });
     });
     if (!monsterList.length) return;
-    group.monster = _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
+    group.monster = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
     this.saveToHistory();
   },
   addMonster: function addMonster(monster) {
@@ -11075,7 +11079,7 @@ var encounter = {
   load: function load(encounter) {
     var _this2 = this;
 
-    var groups = _lib_js__WEBPACK_IMPORTED_MODULE_0__.clone(encounter).map(function (group) {
+    var groups = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.clone(encounter).map(function (group) {
       group.monster = _this2.app.monsterLookupTable[group.monster.slug];
       if (!group.monster) return false;
       return group;
@@ -11119,10 +11123,10 @@ var encounter = {
 
 /***/ }),
 
-/***/ "./src/js/lib.js":
-/*!***********************!*\
-  !*** ./src/js/lib.js ***!
-  \***********************/
+/***/ "./src/js/helpers.js":
+/*!***************************!*\
+  !*** ./src/js/helpers.js ***!
+  \***************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -11273,6 +11277,98 @@ function versionCompare(v1, v2, options) {
 
 /***/ }),
 
+/***/ "./src/js/importer.js":
+/*!****************************!*\
+  !*** ./src/js/importer.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Importer)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Importer = /*#__PURE__*/function () {
+  function Importer() {
+    _classCallCheck(this, Importer);
+  }
+
+  _createClass(Importer, null, [{
+    key: "import",
+    value:
+    /* import({
+    *      resourceLocator = false,
+    *      type = 'google-sheets',
+    * }={})
+    *
+    * <- Exact format needed for localStorage
+    *
+     */
+    function () {
+      var _import2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var _ref,
+            _ref$resourceLocator,
+            resourceLocator,
+            _ref$type,
+            type,
+            results,
+            _args = arguments;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _ref = _args.length > 0 && _args[0] !== undefined ? _args[0] : {}, _ref$resourceLocator = _ref.resourceLocator, resourceLocator = _ref$resourceLocator === void 0 ? false : _ref$resourceLocator, _ref$type = _ref.type, type = _ref$type === void 0 ? 'google-sheets' : _ref$type;
+                _context.next = 3;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
+                  key: this.key
+                }));
+
+              case 3:
+                results = _context.sent;
+                return _context.abrupt("return", results);
+
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function _import() {
+        return _import2.apply(this, arguments);
+      }
+
+      return _import;
+    }()
+  }]);
+
+  return Importer;
+}();
+
+_defineProperty(Importer, "key", 'AIzaSyASDsLebocDQEHt3-MV_a_tI8r25CHotT4');
+
+
+
+/***/ }),
+
 /***/ "./src/js/monster.js":
 /*!***************************!*\
   !*** ./src/js/monster.js ***!
@@ -11285,7 +11381,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Monster)
 /* harmony export */ });
 /* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants.js */ "./src/js/constants.js");
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers.js */ "./src/js/helpers.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -11320,7 +11416,7 @@ var Monster = /*#__PURE__*/function () {
     this.app = app;
     this.data = data;
     this.cr = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].CR[this.data.cr];
-    this.slug = _lib_js__WEBPACK_IMPORTED_MODULE_1__.slugify(this.data.name + '-' + this.data.sources + "-" + this.cr.string);
+    this.slug = _helpers_js__WEBPACK_IMPORTED_MODULE_1__.slugify(this.data.name + '-' + this.data.sources + "-" + this.cr.string);
     this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
     this.special = !!this.data.special;
     this.legendary = !!this.data.legendary;
@@ -11349,7 +11445,7 @@ var Monster = /*#__PURE__*/function () {
       if (!isNaN(location)) {
         source.reference = _this.app.sources[book];
         source.page = location;
-      } else if (_lib_js__WEBPACK_IMPORTED_MODULE_1__.isValidHttpUrl(location)) {
+      } else if (_helpers_js__WEBPACK_IMPORTED_MODULE_1__.isValidHttpUrl(location)) {
         source.reference = {
           name: book,
           shortname: book,
