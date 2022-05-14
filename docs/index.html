@@ -389,7 +389,7 @@
 										<input type="checkbox" x-model="group.getsXP" class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded">
 									</div>
 
-									<button @click="party.removePlayerGroup(index)" type="button" class="inline-flex items-center px-3 py-1 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white dark:bg-red-800 dark:hover:bg-red-700 hover:bg-red-700 focus:outline-none">
+									<button @click="party.removePlayerGroup(index)" type="button" class="button-danger-outline-md justify-center">
 										<i class="fas fa-times"></i>
 									</button>
 								</div>
@@ -398,7 +398,7 @@
 						</div>
 
 						<div class="w-full">
-							<button @click="party.addPlayerGroup()" type="button" class="button-secondary-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
+							<button @click="party.addPlayerGroup()" type="button" class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
 								<span>
 									<i class="fas fa-plus mr-2"></i> Add Generic Group
 								</span>
@@ -406,7 +406,7 @@
 						</div>
 
 						<div class="w-full" x-show="!(activePlayers.length || party.groups.length)">
-							<button @click="enablePartyModal" type="button" class="button-secondary-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
+							<button @click="enablePartyModal" type="button" class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
 								<span>
 									<i class="fas fa-plus mr-2"></i> Use Detailed Party
 								</span>
@@ -663,7 +663,7 @@
 											<span class="w-full text-center">Manage sources</span>
 										</button>
 
-										<button :disabled="!nonDefaultFiltersCount" @click="$dispatch('reset-filters')" class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2">
+										<button :disabled="!nonDefaultFiltersCount" @click="$dispatch('reset-filters')" class="w-full button-primary-outline-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2">
 											<span class="inline-block w-full"><i class="fa fa-undo pr-1"></i> Reset Filters</span>
 										</button>
 									</div>
@@ -816,7 +816,7 @@
 												},
 												classes(value) {
 													return {
-														'bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900 text-white': this.total & value,
+														'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-900 text-white': this.total & value,
 														'bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border text-gray-700 dark:text-white': !(this.total & value),
 														'cursor-pointer grid place-items-center text-center select-none text-white': true,
 													};
@@ -846,8 +846,8 @@
 											<div @click="toggle(chaotic_evil)" :class="classes(chaotic_evil)" class="col-span-4 h-12" x-tippy="Chaotic Evil">CE</div>
 
 											<div @click="toggle((lawful_evil | neutral | chaotic_good))" :class="classes(lawful_evil | neutral | chaotic_good)" class="col-span-2 rounded-bl-md"></div>
-											<div @click="total = (total === 1023) ? 0 : 1023" :class="{ 'bg-emerald-700 text-white hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 1023) === 1023, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 1023) !== 1023 }" class="select-none text-gray-900 col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Any</div>
-											<div @click="total = total ^ 512" :class="{ 'bg-emerald-700 text-white hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 512) === 512, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 512) !== 512 }" class="select-none text-gray-900 rounded-br-md col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Unaligned</div>
+											<div @click="total = (total === 1023) ? 0 : 1023" :class="{ 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 1023) === 1023, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 1023) !== 1023 }" class="select-none text-gray-900 col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Any</div>
+											<div @click="total = total ^ 512" :class="{ 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 512) === 512, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 512) !== 512 }" class="select-none text-gray-900 rounded-br-md col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Unaligned</div>
 										</div>
 									</div>
 
@@ -936,9 +936,9 @@
 				></div>
 
 				<!-- This element is to trick the browser into centering the modal contents. -->
-				<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+				<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-				<div @mousedown.outside="showSourcesModal = false" class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+				<div @mousedown.outside="showSourcesModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl w-full"
 					 x-show="showSourcesModal"
 					 x-transition:enter="ease-out duration-300"
 					x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -960,11 +960,50 @@
 
 									<template x-for="type of sourcesByType">
 										<div class="mb-4">
-											<h4 class="font-bold text-gray-900 dark:text-gray-300 leading-6 mb-2" x-text="type.title"></h4>
+											<h4 class="text-gray-700 dark:text-gray-300 leading-6 mb-2" x-text="type.title"></h4>
 
-											<div class="grid gap-2 md:grid-cols-2 w-full">
+											<div class="grid gap-2 grid-cols-6 md:grid-cols-12 w-full">
 												<template x-for="source of type.sources">
-													<button class="text-left" @click="source.enabled =! source.enabled; updateFilteredMonsters();" :class="{ 'button-secondary-md': !source.enabled, 'button-primary-md': source.enabled }" x-text="source.name"></button>
+													<div class="col-span-6 grid gap-2"
+														 :class="{
+														 	'grid-cols-[1fr_42px]': type.title === 'Custom' && !deleting,
+														 	'grid-cols-[42px_1fr_42px]': type.title === 'Custom' && deleting
+														 }"
+														 x-data="{ deleting: false }"
+														 @click.away="deleting = false"
+													>
+														<button class="text-left text-sm max-w-full truncate"
+																x-show="!deleting"
+																@click="source.enabled =! source.enabled; updateFilteredMonsters();"
+																:title="source.name"
+																:class="{
+																'button-primary-outline-md': !source.enabled,
+																'button-primary-md': source.enabled
+															}">
+															<i class="fa pr-1" :class="{
+																'fa-toggle-on': source.enabled,
+																'fa-toggle-off': !source.enabled
+															}"></i>
+															<span class="truncate" x-text="source.name"></span>
+														</button>
+
+														<button x-show="type.title === 'Custom' && !deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" @click="deleting = true">
+															<i class="fa fa-trash"></i>
+														</button>
+
+														<button x-show="deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" @click="deleteImportedSource(source.name)">
+															<i class="fa fa-check"></i>
+														</button>
+
+														<div x-show="deleting" class="border dark:border-gray-700 rounded-md inline-flex items-center px-4 py-2">
+															<i class="fa fa-exclamation-triangle pr-1 text-orange-500 dark:text-orange-700"></i>
+															Are you sure?
+														</div>
+
+														<button x-show="deleting" class="!px-0 w-[42px] justify-center button-primary-outline-md" @click="deleting = false">
+															<i class="fa fa-times"></i>
+														</button>
+													</div>
 												</template>
 											</div>
 										</div>
@@ -974,6 +1013,7 @@
 							</div>
 						</div>
 					</div>
+
 					<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
 						<button @click="showSourcesModal = false" type="button" class="button-primary-md">Done</button>
 <!--						<button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>-->
@@ -996,9 +1036,9 @@
                 ></div>
 
                 <!-- This element is to trick the browser into centering the modal contents. -->
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div @mousedown.outside="showEncounterModal = false" class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+                <div @mousedown.outside="showEncounterModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
                      x-show="showEncounterModal"
                      x-transition:enter="ease-out duration-300"
                      x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -1118,9 +1158,9 @@
 			></div>
 
 			<!-- This element is to trick the browser into centering the modal contents. -->
-			<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+			<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-			<div @mousedown.outside="showPartyModal = false" class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+			<div @mousedown.outside="showPartyModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
 				 x-show="showPartyModal"
 				 x-transition:enter="ease-out duration-300"
 				 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -1236,7 +1276,7 @@
 													</div>
 												</template>
 
-												<button @click="createPlayer(partyIndex)" type="button" class="button-secondary-md col-span-6 justify-center" :class="{ 'h-24': !party.players.length }"> Create player </button>
+												<button @click="createPlayer(partyIndex)" type="button" class="button-primary-outline-md col-span-6 justify-center" :class="{ 'h-24': !party.players.length }"> Create player </button>
 												<button x-show="!party.players.length" @click="deleteParty(partyIndex)" type="button" class="button-danger-outline-md col-span-6 justify-center"> Delete Party </button>
 											</div>
 										</div>
@@ -1273,9 +1313,9 @@
 				></div>
 
 				<!-- This element is to trick the browser into centering the modal contents. -->
-				<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+				<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-				<div @mousedown.outside="showKeyboardModal = false" class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+				<div @mousedown.outside="showKeyboardModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
 					 x-show="showKeyboardModal"
 					 x-transition:enter="ease-out duration-300"
 					 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -1325,9 +1365,9 @@
 				></div>
 
 				<!-- This element is to trick the browser into centering the modal contents. -->
-				<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+				<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-				<div @mousedown.outside="showImporterModal = false" class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+				<div @mousedown.outside="showImporterModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-xl md:max-w-2xl lg:max-w-4xl w-full"
 					 x-show="showImporterModal"
 					 x-transition:enter="ease-out duration-300"
 					 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"

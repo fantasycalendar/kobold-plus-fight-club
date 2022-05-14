@@ -9216,11 +9216,11 @@ function app() {
     storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
-    showSourcesModal: false,
+    showSourcesModal: true,
     showEncounterModal: false,
     showPartyModal: false,
     showKeyboardModal: false,
-    showImporterModal: true,
+    showImporterModal: false,
     mobileEncounterTab: false,
     filters: {},
     searchPlaceholder: "",
@@ -11532,6 +11532,8 @@ var Importer = /*#__PURE__*/function () {
 
   return Importer;
 }();
+
+_defineProperty(Importer, "key", 'AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI');
 
 _defineProperty(Importer, "loaders", {
   'google-sheets': Importer._importGoogleSheets,
