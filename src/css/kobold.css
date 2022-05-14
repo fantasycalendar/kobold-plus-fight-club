@@ -3,6 +3,7 @@
 @import '~choices.js/public/assets/styles/choices.min.css';
 @import '~tippy.js/dist/tippy.css';
 @import '~tippy.js/themes/light.css';
+@import '~flowbite/dist/flowbite.min.css';
 
 @tailwind base;
 @tailwind components;

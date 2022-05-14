@@ -1,9 +1,76 @@
+import * as helpers from './helpers';
+
 export default class Importer {
+    static key = 'AIzaSyDzQndw__ieQX2WMK06ROjFhn_jFAFelk8';
 
     static loaders = {
         'google-sheets': this._importGoogleSheets,
         'json-raw': this._importJson,
         'json-file': this._importJsonFile,
+    }
+
+    static validators = {
+        'google-sheets': this._validateGoogleSheets,
+        'json-raw': this._validateJson,
+        'json-file': this._validateJsonFile
+    }
+
+    static async _validateGoogleSheets(resourceLocator) {
+        return await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}?` + new URLSearchParams({
+                key: this.key
+            }))
+            .then(response => response.json())
+            .then(jsonifiedBody => {
+                if(!jsonifiedBody.sheets.filter(sheet => sheet.properties.title === 'Monsters').length) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
+                }
+
+                if(!jsonifiedBody.sheets.filter(sheet => sheet.properties.title === 'Sources').length) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
+                }
+
+                return [true, ''];
+            });
+    }
+
+    static async _validateJson(resourceLocator) {
+        let results = await this._importJson(resourceLocator);
+
+        if(!results) {
+            return [false, "Couldn't resolve K+FC data, import source is probably invalid JSON."];
+        }
+
+        if(!results.sources) {
+            return [false, "Your JSON must contain sources."];
+        }
+
+        if(!results.monsters) {
+            return [false, "Your JSON has sources, but must also contain monsters."];
+        }
+
+        return [true, ""];
+    }
+
+    static async _validateJsonFile(resourceLocator) {
+        if(resourceLocator.type !== 'application/json') {
+            return [false, "The file you provided isn't a text file containing JSON"];
+        }
+
+        let results = await this._importJsonFile(resourceLocator);
+
+        if(!results) {
+            return [false, "Couldn't resolve K+FC data, import source is probably invalid JSON."];
+        }
+
+        if(!results.sources) {
+            return [false, "Your JSON must contain sources."];
+        }
+
+        if(!results.monsters) {
+            return [false, "Your JSON has sources, but must also contain monsters."];
+        }
+
+        return [true, ""];
     }
 
     static loadersHtml = {
@@ -15,7 +82,7 @@ export default class Importer {
         },
         'json-raw': () => {
             return `
-                <label for="import_resource_locator">Raw JSON</label> - <a href="javascript:true" @click="downloadExampleJson">download example</a>
+                <label for="import_resource_locator">Raw JSON</label> - <a href="javascript:true" class="primary-link" @click="downloadExampleJson">download example</a>
                 <div class="mt-1">
                     <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
                 </div>
@@ -23,19 +90,25 @@ export default class Importer {
         },
         'json-file': () => {
             return `
-                <label for="import_resource_locator" class="block mb-2 text-gray-900 dark:text-gray-300">Upload JSON file</label> - <a href="javascript:true" @click="downloadExampleJson">download example</a>
-                <input id="import_resource_locator" type="file" accept="text/json" @change="importerResourceLocator = $event.target.files[0]" class="block w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
+                <label class="block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleJson">download an example file to edit</a></label>                
+                <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
             `;
         },
     }
 
+    static async canImport(resourceLocator, type) {
+        if(!resourceLocator) {
+            return [false, "You must provide an import source."];
+        }
+
+        return this.validators[type].bind(this)(resourceLocator);
+    }
 
     static async import({ resourceLocator = false, type = 'google-sheets' } = {}) {
         return this.loaders[type].bind(this)(resourceLocator);
     }
 
     static async _importGoogleSheets(resourceLocator) {
-
         let monsters = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
             key: this.key
         }))
@@ -114,7 +187,6 @@ export default class Importer {
 
 
     static downloadExampleJson(){
-
         const jsonExample = {
             "sources": [
                 {
