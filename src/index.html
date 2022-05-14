@@ -1401,6 +1401,8 @@
                 this.stagedSources = [];
                 this.stagedMonsters = [];
                 this.step = 1;
+                this.canImport = false;
+                this.importError = '';
             },
             downloadExampleJson(){
                 Importer.downloadExampleJson();
@@ -1559,7 +1561,7 @@
 						</div>
 
 						<!--			Always shown			-->
-						<button @click="showImporterModal = false; if(step === 2){ abortImport() };" type="button" class="button-secondary-md">Cancel</button>
+						<button @click="showImporterModal = false; abortImport();" type="button" class="button-secondary-md">Cancel</button>
 					</div>
 				</div>
 			</div>
