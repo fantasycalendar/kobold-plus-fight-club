@@ -1352,7 +1352,52 @@
 			</div>
 		</div>
 
-		<div x-show="showImporterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+		<div x-show="showImporterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" x-cloak aria-modal="true" x-data="{
+            importerResourceLocator: '163Yp3ljFrwDR9GJuobN8zOHjYGpTmJfXrXKNDU6Pais',
+            importerSourceType: 'json-file',
+            importerHtml: '',
+            step: 1,
+            stagedMonsters: [],
+            stagedSources: [],
+            init(){
+                this.loadImporter();
+            },
+            loadImporter(){
+                this.importerHtml = '';
+                this.importerHtml = Importer.loadersHtml[this.importerSourceType]();
+            },
+            async startImport() {
+                const importResults = await Importer.import({
+                    type: this.importerSourceType,
+                    resourceLocator: this.importerResourceLocator
+                });
+
+                this.stagedMonsters = importResults.monsters;
+                this.stagedSources = importResults.sources;
+
+                this.step = 2;
+            },
+            finishImport() {
+                importedSources = importedSources.concat(this.stagedSources)
+                formatSources(this.stagedSources);
+                this.stagedSources = [];
+
+                importedMonsters = importedMonsters.concat(this.stagedMonsters)
+                formatMonsters(this.stagedMonsters);
+                this.stagedMonsters = [];
+
+                dispatchEvent(new CustomEvent('notification', {detail: {title: 'Import complete!', body: 'Your new source(s) have been imported'}}));
+
+                this.step = 1;
+                showImporterModal = false;
+            },
+            abortImport() {
+                this.loadImporter();
+                this.stagedSources = [];
+                this.stagedMonsters = [];
+                this.step = 1;
+            }
+        }">
 			<div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 				<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
 					 x-show="showImporterModal"
@@ -1377,45 +1422,14 @@
 					 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 				>
 					<div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
-						<div class="sm:flex flex-col sm:items-start w-full" x-data="{
-							importerResourceLocator: '163Yp3ljFrwDR9GJuobN8zOHjYGpTmJfXrXKNDU6Pais',
-							importerSourceType: 'google-sheets',
-							step: 1,
-							stagedMonsters: [],
-							stagedSources: [],
-							async startImport() {
-								importResults = await Importer.import({
-									type: this.importerSourceType,
-									resourceLocator: this.importerResourceLocator
-								});
-
-								this.stagedMonsters = importResults.monsters;
-								this.stagedSources = importResults.sources;
-
-								this.step = 2;
-							},
-							finishImport() {
-								importedSources = importedSources.concat(this.stagedSources)
-								formatSources(this.stagedSources);
-								this.stagedSources = [];
-
-								importedMonsters = importedMonsters.concat(this.stagedMonsters)
-								formatMonsters(this.stagedMonsters);
-								this.stagedMonsters = [];
-
-								dispatchEvent(new CustomEvent('notification', {detail: {title: 'Import complete!', body: 'Your new source(s) have been imported'}}));
-
-								this.step = 1;
-								showImporterModal = false;
-							}
-						}">
+						<div class="sm:flex flex-col sm:items-start w-full">
 							<div class="w-full flex pb-3">
 								<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Import Custom Monsters</h3>
 							</div>
 
 							<div class="my-3 sm:mt-0 w-full" x-show="step === 1">
 								<label for="importer_source">Import from</label>
-								<select x-model="importerSourceType" name="importer_source" id="importer_source" class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
+								<select x-model="importerSourceType" @change="loadImporter" name="importer_source" id="importer_source" class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
 									<optgroup label="More to come...">
 										<option value="google-sheets">Google Sheets</option>
 										<option value="json-raw">Raw JSON</option>
@@ -1423,8 +1437,8 @@
 									</optgroup>
 								</select>
 
-								<label for="import_resource_locator">Sheets ID</label>
-								<input class="mb-4" name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
+                                <div class="mb-4" x-html="importerHtml"></div>
+								<!--<input class="mb-4" name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">-->
                                 <!--<textarea id="import_resource_locator" x-model="importerResourceLocator" cols="30" rows="10"></textarea>-->
                                 <!--<input id="import_resource_locator" type="file" accept="text/json, text/csv" @change="importerResourceLocator = $event.target.files[0]">-->
 
@@ -1524,13 +1538,14 @@
 									</div>
 								</div>
 
+								<button class="float-left mt-4 button-danger-outline-md" @click="abortImport">Nope, go back!</button>
 								<button class="float-right mt-4 button-primary-md" @click="finishImport">Looks Good, Import Them!</button>
 							</div>
 						</div>
 					</div>
 
-					<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-						<button @click="showImporterModal = false" type="button" class="button-primary-md">Close</button>
+					<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between" x-show="step === 1">
+						<button @click="showImporterModal = false; if(step === 2){ abortImport() };" type="button" class="button-primary-md">Close</button>
 					</div>
 				</div>
 			</div>

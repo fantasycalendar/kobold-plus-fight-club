@@ -1,5 +1,4 @@
 export default class Importer {
-    static key = 'AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI';
 
     static loaders = {
         'google-sheets': this._importGoogleSheets,
@@ -7,14 +6,29 @@ export default class Importer {
         'json-file': this._importJsonFile,
     }
 
-    /* import({
-    *      resourceLocator = false,
-    *      type = 'google-sheets',
-    * }={})
-    *
-    * <- Exact format needed for localStorage
-    *
-     */
+    static loadersHtml = {
+        'google-sheets': () => {
+            return `
+                <label for="import_resource_locator">Sheets ID</label>
+                <input name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
+            `;
+        },
+        'json-raw': () => {
+            return `
+                <label for="import_resource_locator">Raw JSON</label>
+                <div class="mt-1">
+                    <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
+                </div>
+            `;
+        },
+        'json-file': () => {
+            return `
+                <label for="import_resource_locator" class="block mb-2 text-gray-900 dark:text-gray-300">Upload JSON file</label>
+                <input id="import_resource_locator" type="file" accept="text/json" @change="importerResourceLocator = $event.target.files[0]" class="block w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
+            `;
+        },
+    }
+
     static async import({ resourceLocator = false, type = 'google-sheets' } = {}) {
         return this.loaders[type].bind(this)(resourceLocator);
     }

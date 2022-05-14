@@ -25,11 +25,11 @@ function app() {
 
         menu: false,
         showFilters: false,
-        showSourcesModal: true,
+        showSourcesModal: false,
         showEncounterModal: false,
         showPartyModal: false,
         showKeyboardModal: false,
-        showImporterModal: false,
+        showImporterModal: true,
 
         mobileEncounterTab: false,
 

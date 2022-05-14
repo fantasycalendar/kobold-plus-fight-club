@@ -9216,11 +9216,11 @@ function app() {
     storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
-    showSourcesModal: true,
+    showSourcesModal: false,
     showEncounterModal: false,
     showPartyModal: false,
     showKeyboardModal: false,
-    showImporterModal: false,
+    showImporterModal: true,
     mobileEncounterTab: false,
     filters: {},
     searchPlaceholder: "",
@@ -11340,16 +11340,7 @@ var Importer = /*#__PURE__*/function () {
 
   _createClass(Importer, null, [{
     key: "import",
-    value:
-    /* import({
-    *      resourceLocator = false,
-    *      type = 'google-sheets',
-    * }={})
-    *
-    * <- Exact format needed for localStorage
-    *
-     */
-    function () {
+    value: function () {
       var _import2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         var _ref,
             _ref$resourceLocator,
@@ -11533,12 +11524,22 @@ var Importer = /*#__PURE__*/function () {
   return Importer;
 }();
 
-_defineProperty(Importer, "key", 'AIzaSyA6AlaWOOlyFIXE6KSs1QsiALp26JbHzdI');
-
 _defineProperty(Importer, "loaders", {
   'google-sheets': Importer._importGoogleSheets,
   'json-raw': Importer._importJson,
   'json-file': Importer._importJsonFile
+});
+
+_defineProperty(Importer, "loadersHtml", {
+  'google-sheets': function googleSheets() {
+    return "\n                <label for=\"import_resource_locator\">Sheets ID</label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
+  },
+  'json-raw': function jsonRaw() {
+    return "\n                <label for=\"import_resource_locator\">Raw JSON</label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
+  },
+  'json-file': function jsonFile() {
+    return "\n                <label for=\"import_resource_locator\" class=\"block mb-2 text-gray-900 dark:text-gray-300\">Upload JSON file</label>\n                <input id=\"import_resource_locator\" type=\"file\" accept=\"text/json\" @change=\"importerResourceLocator = $event.target.files[0]\" class=\"block w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\">\n            ";
+  }
 });
 
 
