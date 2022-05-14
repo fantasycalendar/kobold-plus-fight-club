@@ -11371,82 +11371,15 @@ var Importer = /*#__PURE__*/function () {
       return _import;
     }()
   }, {
-    key: "_importJsonFile",
+    key: "_importGoogleSheets",
     value: function () {
-      var _importJsonFile2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
+      var _importGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
+        var monsters, sources;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                return _context2.abrupt("return", new Promise(function (resolve, reject) {
-                  var reader = new FileReader();
-                  reader.addEventListener('load', function () {
-                    try {
-                      var data = JSON.parse(reader.result);
-                      resolve(data);
-                    } catch (err) {
-                      console.error(err);
-                      reject(err);
-                    }
-                  });
-                  reader.readAsText(resourceLocator);
-                }));
-
-              case 1:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-
-      function _importJsonFile(_x) {
-        return _importJsonFile2.apply(this, arguments);
-      }
-
-      return _importJsonFile;
-    }()
-  }, {
-    key: "_importJson",
-    value: function () {
-      var _importJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(resourceLocator) {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.prev = 0;
-                return _context3.abrupt("return", JSON.parse(resourceLocator));
-
-              case 4:
-                _context3.prev = 4;
-                _context3.t0 = _context3["catch"](0);
-                console.error(_context3.t0);
-                return _context3.abrupt("return", false);
-
-              case 8:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, null, [[0, 4]]);
-      }));
-
-      function _importJson(_x2) {
-        return _importJson2.apply(this, arguments);
-      }
-
-      return _importJson;
-    }()
-  }, {
-    key: "_importGoogleSheets",
-    value: function () {
-      var _importGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(resourceLocator) {
-        var monsters, sources;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
+                _context2.next = 2;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -11477,8 +11410,8 @@ var Importer = /*#__PURE__*/function () {
                 });
 
               case 2:
-                monsters = _context4.sent;
-                _context4.next = 5;
+                monsters = _context2.sent;
+                _context2.next = 5;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -11499,26 +11432,149 @@ var Importer = /*#__PURE__*/function () {
                 });
 
               case 5:
-                sources = _context4.sent;
-                return _context4.abrupt("return", {
+                sources = _context2.sent;
+                return _context2.abrupt("return", {
                   sources: sources,
                   monsters: monsters
                 });
 
               case 7:
               case "end":
-                return _context4.stop();
+                return _context2.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee2, this);
       }));
 
-      function _importGoogleSheets(_x3) {
+      function _importGoogleSheets(_x) {
         return _importGoogleSheets2.apply(this, arguments);
       }
 
       return _importGoogleSheets;
     }()
+  }, {
+    key: "_importJsonFile",
+    value: function () {
+      var _importJsonFile2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(resourceLocator) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                return _context3.abrupt("return", new Promise(function (resolve, reject) {
+                  var reader = new FileReader();
+                  reader.addEventListener('load', function () {
+                    try {
+                      var data = JSON.parse(reader.result);
+                      resolve(data);
+                    } catch (err) {
+                      console.error(err);
+                      reject(err);
+                    }
+                  });
+                  reader.readAsText(resourceLocator);
+                }));
+
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }));
+
+      function _importJsonFile(_x2) {
+        return _importJsonFile2.apply(this, arguments);
+      }
+
+      return _importJsonFile;
+    }()
+  }, {
+    key: "_importJson",
+    value: function () {
+      var _importJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(resourceLocator) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.prev = 0;
+                return _context4.abrupt("return", JSON.parse(resourceLocator));
+
+              case 4:
+                _context4.prev = 4;
+                _context4.t0 = _context4["catch"](0);
+                console.error(_context4.t0);
+                return _context4.abrupt("return", false);
+
+              case 8:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, null, [[0, 4]]);
+      }));
+
+      function _importJson(_x3) {
+        return _importJson2.apply(this, arguments);
+      }
+
+      return _importJson;
+    }()
+  }, {
+    key: "downloadExampleJson",
+    value: function downloadExampleJson() {
+      var jsonExample = {
+        "sources": [{
+          "name": "Custom Source",
+          "shortname": "CS",
+          "link": ""
+        }, {
+          "name": "Another Custom Source",
+          "shortname": "ACS",
+          "link": ""
+        }],
+        "monsters": [{
+          "name": "Zombie",
+          "cr": "1/4",
+          "size": "Medium",
+          "type": "Undead",
+          "tags": "",
+          "section": "Zombies",
+          "alignment": "neutral evil",
+          "environment": "aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",
+          "ac": 8,
+          "hp": 22,
+          "init": -2,
+          "lair?": "",
+          "legendary": "",
+          "unique": "",
+          "sources": "Custom Source: 5"
+        }, {
+          "name": "Bigger Zombie",
+          "cr": "1/2",
+          "size": "Large",
+          "type": "Undead",
+          "tags": "",
+          "section": "Zombies",
+          "alignment": "neutral evil",
+          "environment": "my custom place",
+          "ac": 10,
+          "hp": 41,
+          "init": -2,
+          "lair?": "",
+          "legendary": "legendary",
+          "unique": "unique",
+          "sources": "Another Custom Source: 32"
+        }]
+      };
+      var a = document.createElement("a");
+      var file = new Blob([JSON.stringify(jsonExample, null, 4)], {
+        type: "text/json"
+      });
+      a.href = URL.createObjectURL(file);
+      a.download = "example.json";
+      a.click();
+      a.remove();
+    }
   }]);
 
   return Importer;
@@ -11535,10 +11591,10 @@ _defineProperty(Importer, "loadersHtml", {
     return "\n                <label for=\"import_resource_locator\">Sheets ID</label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
   },
   'json-raw': function jsonRaw() {
-    return "\n                <label for=\"import_resource_locator\">Raw JSON</label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
+    return "\n                <label for=\"import_resource_locator\">Raw JSON</label> - <a href=\"javascript:true\" @click=\"downloadExampleJson\">download example</a>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
   },
   'json-file': function jsonFile() {
-    return "\n                <label for=\"import_resource_locator\" class=\"block mb-2 text-gray-900 dark:text-gray-300\">Upload JSON file</label>\n                <input id=\"import_resource_locator\" type=\"file\" accept=\"text/json\" @change=\"importerResourceLocator = $event.target.files[0]\" class=\"block w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\">\n            ";
+    return "\n                <label for=\"import_resource_locator\" class=\"block mb-2 text-gray-900 dark:text-gray-300\">Upload JSON file</label> - <a href=\"javascript:true\" @click=\"downloadExampleJson\">download example</a>\n                <input id=\"import_resource_locator\" type=\"file\" accept=\"text/json\" @change=\"importerResourceLocator = $event.target.files[0]\" class=\"block w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\">\n            ";
   }
 });
 

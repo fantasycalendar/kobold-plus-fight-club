@@ -15,7 +15,7 @@ export default class Importer {
         },
         'json-raw': () => {
             return `
-                <label for="import_resource_locator">Raw JSON</label>
+                <label for="import_resource_locator">Raw JSON</label> - <a href="javascript:true" @click="downloadExampleJson">download example</a>
                 <div class="mt-1">
                     <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
                 </div>
@@ -23,39 +23,15 @@ export default class Importer {
         },
         'json-file': () => {
             return `
-                <label for="import_resource_locator" class="block mb-2 text-gray-900 dark:text-gray-300">Upload JSON file</label>
+                <label for="import_resource_locator" class="block mb-2 text-gray-900 dark:text-gray-300">Upload JSON file</label> - <a href="javascript:true" @click="downloadExampleJson">download example</a>
                 <input id="import_resource_locator" type="file" accept="text/json" @change="importerResourceLocator = $event.target.files[0]" class="block w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
             `;
         },
     }
 
+
     static async import({ resourceLocator = false, type = 'google-sheets' } = {}) {
         return this.loaders[type].bind(this)(resourceLocator);
-    }
-
-    static async _importJsonFile(resourceLocator) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.addEventListener('load', function() {
-                try {
-                    const data = JSON.parse(reader.result);
-                    resolve(data);
-                }catch (err) {
-                    console.error(err);
-                    reject(err);
-                }
-            });
-            reader.readAsText(resourceLocator);
-        });
-    }
-
-    static async _importJson(resourceLocator) {
-        try {
-            return JSON.parse(resourceLocator);
-        }catch (err) {
-            console.error(err);
-            return false;
-        }
     }
 
     static async _importGoogleSheets(resourceLocator) {
@@ -109,6 +85,94 @@ export default class Importer {
             );
 
         return {sources, monsters};
+    }
+
+    static async _importJsonFile(resourceLocator) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', function() {
+                try {
+                    const data = JSON.parse(reader.result);
+                    resolve(data);
+                }catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+            reader.readAsText(resourceLocator);
+        });
+    }
+
+    static async _importJson(resourceLocator) {
+        try {
+            return JSON.parse(resourceLocator);
+        }catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+
+    static downloadExampleJson(){
+
+        const jsonExample = {
+            "sources": [
+                {
+                    "name": "Custom Source",
+                    "shortname": "CS",
+                    "link": ""
+                },
+                {
+                    "name": "Another Custom Source",
+                    "shortname": "ACS",
+                    "link": ""
+                },
+            ],
+            "monsters": [
+                {
+                    "name": "Zombie",
+                    "cr": "1/4",
+                    "size": "Medium",
+                    "type": "Undead",
+                    "tags": "",
+                    "section": "Zombies",
+                    "alignment": "neutral evil",
+                    "environment": "aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",
+                    "ac": 8,
+                    "hp": 22,
+                    "init": -2,
+                    "lair?": "",
+                    "legendary": "",
+                    "unique": "",
+                    "sources": "Custom Source: 5"
+                },
+                {
+                    "name": "Bigger Zombie",
+                    "cr": "1/2",
+                    "size": "Large",
+                    "type": "Undead",
+                    "tags": "",
+                    "section": "Zombies",
+                    "alignment": "neutral evil",
+                    "environment": "my custom place",
+                    "ac": 10,
+                    "hp": 41,
+                    "init": -2,
+                    "lair?": "",
+                    "legendary": "legendary",
+                    "unique": "unique",
+                    "sources": "Another Custom Source: 32"
+                },
+            ]
+        };
+
+        const a = document.createElement("a");
+        const file = new Blob([JSON.stringify(jsonExample, null, 4)], { type: "text/json" });
+        a.href = URL.createObjectURL(file);
+        a.download = "example.json";
+        a.click();
+        a.remove();
+
     }
 
 }

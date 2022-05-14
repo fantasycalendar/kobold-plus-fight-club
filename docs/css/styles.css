@@ -8586,9 +8586,6 @@ input[type=text]:disabled{
 .float-left{
   float: left;
 }
-.m-0{
-  margin: 0px;
-}
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
@@ -8694,9 +8691,6 @@ input[type=text]:disabled{
 }
 .\!mb-0{
   margin-bottom: 0px !important;
-}
-.mb-5{
-  margin-bottom: 1.25rem;
 }
 .block{
   display: block;
@@ -9145,9 +9139,6 @@ input[type=text]:disabled{
 .border-b-2{
   border-bottom-width: 2px;
 }
-.border-solid{
-  border-style: solid;
-}
 .border-dashed{
   border-style: dashed;
 }
@@ -9242,9 +9233,6 @@ input[type=text]:disabled{
 }
 .to-transparent{
   --tw-gradient-to: transparent;
-}
-.bg-clip-padding{
-  background-clip: padding-box;
 }
 .fill-white{
   fill: #fff;
@@ -10413,18 +10401,6 @@ body .choices__input:focus{
 .focus\:border-emerald-500:focus{
   --tw-border-opacity: 1;
   border-color: rgb(16 185 129 / var(--tw-border-opacity));
-}
-.focus\:border-blue-600:focus{
-  --tw-border-opacity: 1;
-  border-color: rgb(37 99 235 / var(--tw-border-opacity));
-}
-.focus\:bg-white:focus{
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-.focus\:text-gray-700:focus{
-  --tw-text-opacity: 1;
-  color: rgb(55 65 81 / var(--tw-text-opacity));
 }
 .focus\:outline-none:focus{
   outline: 2px solid transparent;
