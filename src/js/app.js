@@ -1,6 +1,5 @@
 require('@fortawesome/fontawesome-free');
 
-import 'flowbite';
 import Choices from 'choices.js';
 import hotkeys from 'hotkeys-js';
 import encounter from "./encounter";

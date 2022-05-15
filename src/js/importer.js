@@ -1,18 +1,24 @@
 import * as helpers from './helpers';
 
 export default class Importer {
-    static key = 'AIzaSyDzQndw__ieQX2WMK06ROjFhn_jFAFelk8';
 
     static loaders = {
         'google-sheets': this._importGoogleSheets,
         'json-raw': this._importJson,
         'json-file': this._importJsonFile,
+        'csv-file': this._importCSV,
     }
 
     static validators = {
         'google-sheets': this._validateGoogleSheets,
         'json-raw': this._validateJson,
-        'json-file': this._validateJsonFile
+        'json-file': this._validateJsonFile,
+        'csv-file': this._validateCSV,
+    }
+
+    static exampleFiles = {
+        'json-file': this._downloadExampleJson,
+        'csv-file': this._downloadExampleCSV,
     }
 
     static async _validateGoogleSheets(resourceLocator) {
@@ -21,11 +27,11 @@ export default class Importer {
             }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-                if(!jsonifiedBody.sheets.filter(sheet => sheet.properties.title === 'Monsters').length) {
+                if(!jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Monsters')) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
                 }
 
-                if(!jsonifiedBody.sheets.filter(sheet => sheet.properties.title === 'Sources').length) {
+                if(!jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Sources')) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
                 }
 
@@ -53,7 +59,7 @@ export default class Importer {
 
     static async _validateJsonFile(resourceLocator) {
         if(resourceLocator.type !== 'application/json') {
-            return [false, "The file you provided isn't a text file containing JSON"];
+            return [false, "The file you provided isn't a text file containing JSON."];
         }
 
         let results = await this._importJsonFile(resourceLocator);
@@ -73,6 +79,38 @@ export default class Importer {
         return [true, ""];
     }
 
+    static async _validateCSV(resourceLocators) {
+
+        if(!resourceLocators[0] || !resourceLocators[1]){
+            return [false, '']
+        }
+
+        if(resourceLocators[0].type !== 'text/csv' || resourceLocators[1].type !== 'text/csv') {
+            return [false, "The files you provided aren't valid CSV text files."];
+        }
+
+        let results = await this._importCSV(resourceLocators);
+
+        if(!results) {
+            return [false, "Couldn't resolve K+FC data, import source is probably an invalid CSV file."];
+        }
+
+        for(let key of ["name", "shortname", "link"]){
+            if(!Object.keys(results.sources[0]).includes(key)){
+                return [false, `Sources are missing the required header: '${key}' - Please refer to the example files.`];
+            }
+        }
+
+        for(let key of ["name","cr","size","type","tags","section","alignment","environment","ac","hp","init","lair?","legendary","unique","sources"]){
+            if(!Object.keys(results.monsters[0]).includes(key)){
+                return [false, `Monsters are missing the required header: '${key}' - Please refer to the example files.`];
+            }
+        }
+
+        return [true, ""];
+
+    }
+
     static loadersHtml = {
         'google-sheets': () => {
             return `
@@ -90,8 +128,19 @@ export default class Importer {
         },
         'json-file': () => {
             return `
-                <label class="block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleJson">download an example file to edit</a></label>                
+                <label class="block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download an example file to edit</a></label>                
                 <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
+            `;
+        },
+        'csv-file': () => {
+            return `
+                <label>Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download example files to edit</a></label>
+                <div class="grid grid-cols-2 gap-2 mt-2">                
+                    <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
+                    <label class="" id="file_input_label_1" for="import_resource_locator_file_2">Monsters CSV</label>                
+                    <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
+                    <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
+                </div>
             `;
         },
     }
@@ -161,32 +210,25 @@ export default class Importer {
     }
 
     static async _importJsonFile(resourceLocator) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.addEventListener('load', function() {
-                try {
-                    const data = JSON.parse(reader.result);
-                    resolve(data);
-                }catch (err) {
-                    console.error(err);
-                    reject(err);
-                }
-            });
-            reader.readAsText(resourceLocator);
-        });
+        const data = await this._loadFile(resourceLocator);
+        return this._importJson(data);
     }
 
     static async _importJson(resourceLocator) {
         try {
-            return JSON.parse(resourceLocator);
+            const data = JSON.parse(resourceLocator);
+            for(let source of data.sources){
+                source.type = "Custom";
+            }
+            return data;
         }catch (err) {
             console.error(err);
             return false;
         }
     }
 
+    static _downloadExampleJson(){
 
-    static downloadExampleJson(){
         const jsonExample = {
             "sources": [
                 {
@@ -197,7 +239,7 @@ export default class Importer {
                 {
                     "name": "Another Custom Source",
                     "shortname": "ACS",
-                    "link": ""
+                    "link": "https://google.com/"
                 },
             ],
             "monsters": [
@@ -238,13 +280,69 @@ export default class Importer {
             ]
         };
 
-        const a = document.createElement("a");
-        const file = new Blob([JSON.stringify(jsonExample, null, 4)], { type: "text/json" });
-        a.href = URL.createObjectURL(file);
-        a.download = "example.json";
-        a.click();
-        a.remove();
+        helpers.downloadFile("example.json", JSON.stringify(jsonExample, null, 4), "application/json");
 
+    }
+
+    static async _importCSV(resourceLocators){
+
+        const sources = await this._loadFile(resourceLocators[0]);
+        if(!sources){
+            return false;
+        }
+
+        const monsters = await this._loadFile(resourceLocators[1]);
+        if(!monsters){
+            return false;
+        }
+
+        return {
+            sources: this._formatCSV(sources),
+            monsters: this._formatCSV(monsters)
+        }
+
+    }
+
+    static _formatCSV(str){
+        const headers = str.slice(0, str.indexOf("\n")).split(',');
+        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+        return rows.map(row => {
+            const values = row.split(',');
+            return headers.reduce((obj, header, index) => {
+                obj[header] = values[index];
+                return obj;
+            }, {});
+        })
+    }
+
+    static _downloadExampleCSV(){
+
+        let sources = "name,shortname,link\n";
+        sources += "Custom Source,CS,\n"
+        sources += "Another Custom Source,ACS,https://google.com/"
+
+        helpers.downloadFile("example_sources.csv", sources, "text/csv");
+
+        let monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair?,legendary,unique,sources\n";
+        monsters += `Zombie,1/4,Medium,Undead,,Zombies,neutral evil,"aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",8,22, -2,,,,Custom Source: 5\n`
+        monsters += `Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,,legendary,unique,Another Custom Source: 32`
+
+        helpers.downloadFile("example_monsters.csv", monsters, "text/csv");
+    }
+
+    static _loadFile(file){
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', function() {
+                try {
+                    resolve(reader.result);
+                }catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+            reader.readAsText(file);
+        });
     }
 
 }

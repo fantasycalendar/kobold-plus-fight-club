@@ -143,4 +143,13 @@ export function validateJSON(jsonString){
     catch (e) { }
 
     return false;
-};
+}
+
+export function downloadFile(fileName, data, type){
+    const a = document.createElement("a");
+    const file = new Blob([data], { type: type });
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+    a.remove();
+}
