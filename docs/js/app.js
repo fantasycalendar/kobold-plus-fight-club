@@ -11352,17 +11352,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11380,9 +11380,81 @@ var Importer = /*#__PURE__*/function () {
   }
 
   _createClass(Importer, null, [{
+    key: "_validateSources",
+    value: function _validateSources(sources) {
+      var _iterator = _createForOfIteratorHelper(sources),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var source = _step.value;
+
+          var _iterator2 = _createForOfIteratorHelper(this.sourcesRequiredHeaders),
+              _step2;
+
+          try {
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              var key = _step2.value;
+
+              if (!Object.keys(source).includes(key)) {
+                return [false, "Sources are missing the required header: '".concat(key, "' - Please refer to the example files.")];
+              }
+            }
+          } catch (err) {
+            _iterator2.e(err);
+          } finally {
+            _iterator2.f();
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return [true];
+    }
+  }, {
+    key: "_validateMonsters",
+    value: function _validateMonsters(monsters) {
+      var _iterator3 = _createForOfIteratorHelper(monsters),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var monster = _step3.value;
+
+          var _iterator4 = _createForOfIteratorHelper(this.monstersRequiredHeaders),
+              _step4;
+
+          try {
+            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+              var key = _step4.value;
+
+              if (!Object.keys(monster).includes(key)) {
+                return [false, "Monsters are missing the required header: '".concat(key, "' - Please refer to the example files.")];
+              }
+            }
+          } catch (err) {
+            _iterator4.e(err);
+          } finally {
+            _iterator4.f();
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
+      return [true];
+    }
+  }, {
     key: "_validateGoogleSheets",
     value: function () {
       var _validateGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(resourceLocator) {
+        var _this = this;
+
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -11393,20 +11465,40 @@ var Importer = /*#__PURE__*/function () {
                 })).then(function (response) {
                   return response.json();
                 }).then(function (jsonifiedBody) {
-                  if (!jsonifiedBody.sheets.find(function (sheet) {
+                  if (jsonifiedBody.error) {
+                    return [false, "Google responded with an error: \"".concat(jsonifiedBody.error.message, "\" - is your sheet public?")];
+                  }
+
+                  var monsters = jsonifiedBody.sheets.find(function (sheet) {
                     return sheet.properties.title === 'Monsters';
-                  })) {
+                  });
+
+                  if (!monsters) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
                       return sheet.properties.title;
                     }).join(', ') + "'"];
                   }
 
-                  if (!jsonifiedBody.sheets.find(function (sheet) {
+                  var validMonsters = _this._validateMonsters(monsters);
+
+                  if (!validMonsters[0]) {
+                    return validMonsters;
+                  }
+
+                  var sources = jsonifiedBody.sheets.find(function (sheet) {
                     return sheet.properties.title === 'Sources';
-                  })) {
+                  });
+
+                  if (!sources) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
                       return sheet.properties.title;
                     }).join(', ') + "'"];
+                  }
+
+                  var validSources = _this._validateSources(sources);
+
+                  if (!validSources[0]) {
+                    return validSources;
                   }
 
                   return [true, ''];
@@ -11433,7 +11525,7 @@ var Importer = /*#__PURE__*/function () {
     key: "_validateJson",
     value: function () {
       var _validateJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
-        var results;
+        var results, validMonsters, validSources;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -11468,9 +11560,29 @@ var Importer = /*#__PURE__*/function () {
                 return _context2.abrupt("return", [false, "Your JSON has sources, but must also contain monsters."]);
 
               case 9:
+                validMonsters = this._validateMonsters(results.monsters);
+
+                if (validMonsters[0]) {
+                  _context2.next = 12;
+                  break;
+                }
+
+                return _context2.abrupt("return", validMonsters);
+
+              case 12:
+                validSources = this._validateSources(results.sources);
+
+                if (validSources[0]) {
+                  _context2.next = 15;
+                  break;
+                }
+
+                return _context2.abrupt("return", validSources);
+
+              case 15:
                 return _context2.abrupt("return", [true, ""]);
 
-              case 10:
+              case 16:
               case "end":
                 return _context2.stop();
             }
@@ -11488,7 +11600,7 @@ var Importer = /*#__PURE__*/function () {
     key: "_validateJsonFile",
     value: function () {
       var _validateJsonFile2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(resourceLocator) {
-        var results;
+        var results, validMonsters, validSources;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -11531,9 +11643,29 @@ var Importer = /*#__PURE__*/function () {
                 return _context3.abrupt("return", [false, "Your JSON has sources, but must also contain monsters."]);
 
               case 11:
+                validMonsters = this._validateMonsters(results.monsters);
+
+                if (validMonsters[0]) {
+                  _context3.next = 14;
+                  break;
+                }
+
+                return _context3.abrupt("return", validMonsters);
+
+              case 14:
+                validSources = this._validateSources(results.sources);
+
+                if (validSources[0]) {
+                  _context3.next = 17;
+                  break;
+                }
+
+                return _context3.abrupt("return", validSources);
+
+              case 17:
                 return _context3.abrupt("return", [true, ""]);
 
-              case 12:
+              case 18:
               case "end":
                 return _context3.stop();
             }
@@ -11551,8 +11683,7 @@ var Importer = /*#__PURE__*/function () {
     key: "_validateCSV",
     value: function () {
       var _validateCSV2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(resourceLocators) {
-        var results, _i, _arr, key, _i2, _arr2, _key;
-
+        var results, validMonsters, validSources;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -11587,55 +11718,29 @@ var Importer = /*#__PURE__*/function () {
                 return _context4.abrupt("return", [false, "Couldn't resolve K+FC data, import source is probably an invalid CSV file."]);
 
               case 9:
-                _i = 0, _arr = ["name", "shortname", "link"];
+                validMonsters = this._validateMonsters(results.monsters);
 
-              case 10:
-                if (!(_i < _arr.length)) {
-                  _context4.next = 17;
+                if (validMonsters[0]) {
+                  _context4.next = 12;
                   break;
                 }
 
-                key = _arr[_i];
+                return _context4.abrupt("return", validMonsters);
 
-                if (Object.keys(results.sources[0]).includes(key)) {
-                  _context4.next = 14;
+              case 12:
+                validSources = this._validateSources(results.sources);
+
+                if (validSources[0]) {
+                  _context4.next = 15;
                   break;
                 }
 
-                return _context4.abrupt("return", [false, "Sources are missing the required header: '".concat(key, "' - Please refer to the example files.")]);
+                return _context4.abrupt("return", validSources);
 
-              case 14:
-                _i++;
-                _context4.next = 10;
-                break;
-
-              case 17:
-                _i2 = 0, _arr2 = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", "lair?", "legendary", "unique", "sources"];
-
-              case 18:
-                if (!(_i2 < _arr2.length)) {
-                  _context4.next = 25;
-                  break;
-                }
-
-                _key = _arr2[_i2];
-
-                if (Object.keys(results.monsters[0]).includes(_key)) {
-                  _context4.next = 22;
-                  break;
-                }
-
-                return _context4.abrupt("return", [false, "Monsters are missing the required header: '".concat(_key, "' - Please refer to the example files.")]);
-
-              case 22:
-                _i2++;
-                _context4.next = 18;
-                break;
-
-              case 25:
+              case 15:
                 return _context4.abrupt("return", [true, ""]);
 
-              case 26:
+              case 16:
               case "end":
                 return _context4.stop();
             }
@@ -11728,7 +11833,9 @@ var Importer = /*#__PURE__*/function () {
                 })).then(function (response) {
                   return response.json();
                 }).then(function (jsonifiedBody) {
-                  var headers = jsonifiedBody.values.splice(0, 1)[0];
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
                   return jsonifiedBody.values.map(function (item) {
                     return {
                       "name": item[headers.indexOf("name")],
@@ -11737,13 +11844,13 @@ var Importer = /*#__PURE__*/function () {
                       "type": item[headers.indexOf("type")],
                       "tags": item[headers.indexOf("tags")],
                       "section": item[headers.indexOf("section")],
-                      "alignment": item[headers.indexOf("alignment")],
-                      "environment": item[headers.indexOf("environment")],
+                      "alignment": item[headers.indexOf("alignment")].toLowerCase(),
+                      "environment": item[headers.indexOf("environment")].toLowerCase(),
                       "ac": item[headers.indexOf("ac")],
                       "hp": item[headers.indexOf("hp")],
                       "init": item[headers.indexOf("init")],
-                      "lair": item[headers.indexOf("lair?")],
-                      "legendary": item[headers.indexOf("legendary?")],
+                      "lair": item[headers.indexOf("lair?")] || item[headers.indexOf("lair")],
+                      "legendary": item[headers.indexOf("legendary?")] || item[headers.indexOf("legendary")],
                       "unique": item[headers.indexOf("unique?")],
                       "sources": item[headers.indexOf("sources")]
                     };
@@ -11760,12 +11867,15 @@ var Importer = /*#__PURE__*/function () {
                 })).then(function (response) {
                   return response.json();
                 }).then(function (jsonifiedBody) {
-                  var headers = jsonifiedBody.values.splice(0, 1)[0];
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
                   return jsonifiedBody.values.map(function (item) {
                     return {
                       "name": item[headers.indexOf("name")],
-                      "type": 'Custom',
-                      "shortname": item[headers.indexOf("short name")],
+                      "type": item[headers.indexOf("type")],
+                      "custom": true,
+                      "shortname": item[headers.indexOf("short name")] || item[headers.indexOf("shortname")],
                       "link": item[headers.indexOf("link")],
                       "enabled": true
                     };
@@ -11829,7 +11939,7 @@ var Importer = /*#__PURE__*/function () {
     key: "_importJson",
     value: function () {
       var _importJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee9(resourceLocator) {
-        var data, _iterator, _step, source;
+        var data, _iterator5, _step5, source;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee9$(_context9) {
           while (1) {
@@ -11837,17 +11947,17 @@ var Importer = /*#__PURE__*/function () {
               case 0:
                 _context9.prev = 0;
                 data = JSON.parse(resourceLocator);
-                _iterator = _createForOfIteratorHelper(data.sources);
+                _iterator5 = _createForOfIteratorHelper(data.sources);
 
                 try {
-                  for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                    source = _step.value;
-                    source.type = "Custom";
+                  for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+                    source = _step5.value;
+                    source.custom = true;
                   }
                 } catch (err) {
-                  _iterator.e(err);
+                  _iterator5.e(err);
                 } finally {
-                  _iterator.f();
+                  _iterator5.f();
                 }
 
                 return _context9.abrupt("return", data);
@@ -11878,10 +11988,12 @@ var Importer = /*#__PURE__*/function () {
       var jsonExample = {
         "sources": [{
           "name": "Custom Source",
+          "type": "Custom",
           "shortname": "CS",
           "link": ""
         }, {
           "name": "Another Custom Source",
+          "type": "Third-Party",
           "shortname": "ACS",
           "link": "https://google.com/"
         }],
@@ -11897,7 +12009,7 @@ var Importer = /*#__PURE__*/function () {
           "ac": 8,
           "hp": 22,
           "init": -2,
-          "lair?": "",
+          "lair": "",
           "legendary": "",
           "unique": "",
           "sources": "Custom Source: 5"
@@ -11913,7 +12025,7 @@ var Importer = /*#__PURE__*/function () {
           "ac": 10,
           "hp": 41,
           "init": -2,
-          "lair?": "",
+          "lair": "",
           "legendary": "legendary",
           "unique": "unique",
           "sources": "Another Custom Source: 32"
@@ -11944,26 +12056,29 @@ var Importer = /*#__PURE__*/function () {
                 return _context10.abrupt("return", false);
 
               case 5:
-                _context10.next = 7;
+                sources.forEach(function (source) {
+                  source.custom = true;
+                });
+                _context10.next = 8;
                 return this._loadFile(resourceLocators[1]);
 
-              case 7:
+              case 8:
                 monsters = _context10.sent;
 
                 if (monsters) {
-                  _context10.next = 10;
+                  _context10.next = 11;
                   break;
                 }
 
                 return _context10.abrupt("return", false);
 
-              case 10:
+              case 11:
                 return _context10.abrupt("return", {
                   sources: this._formatCSV(sources),
                   monsters: this._formatCSV(monsters)
                 });
 
-              case 11:
+              case 12:
               case "end":
                 return _context10.stop();
             }
@@ -11993,11 +12108,11 @@ var Importer = /*#__PURE__*/function () {
   }, {
     key: "_downloadExampleCSV",
     value: function _downloadExampleCSV() {
-      var sources = "name,shortname,link\n";
-      sources += "Custom Source,CS,\n";
-      sources += "Another Custom Source,ACS,https://google.com/";
+      var sources = "name,type,shortname,link\n";
+      sources += "Custom Source,Custom,CS,\n";
+      sources += "Another Custom Source,Third-Party,ACS,https://google.com/";
       _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example_sources.csv", sources, "text/csv");
-      var monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair?,legendary,unique,sources\n";
+      var monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair,legendary,unique,sources\n";
       monsters += "Zombie,1/4,Medium,Undead,,Zombies,neutral evil,\"aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban\",8,22, -2,,,,Custom Source: 5\n";
       monsters += "Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,,legendary,unique,Another Custom Source: 32";
       _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example_monsters.csv", monsters, "text/csv");
@@ -12041,6 +12156,10 @@ _defineProperty(Importer, "exampleFiles", {
   'json-file': Importer._downloadExampleJson,
   'csv-file': Importer._downloadExampleCSV
 });
+
+_defineProperty(Importer, "sourcesRequiredHeaders", ["name", "type", "shortname", "link"]);
+
+_defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", "lair", "legendary", "unique", "sources"]);
 
 _defineProperty(Importer, "loadersHtml", {
   'google-sheets': function googleSheets() {

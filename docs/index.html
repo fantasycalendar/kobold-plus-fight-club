@@ -966,8 +966,8 @@
 												<template x-for="source of type.sources">
 													<div class="col-span-6 grid gap-2"
 														 :class="{
-														 	'grid-cols-[1fr_42px]': type.title === 'Custom' && !deleting,
-														 	'grid-cols-[42px_1fr_42px]': type.title === 'Custom' && deleting
+														 	'grid-cols-[1fr_42px]': source.custom && !deleting,
+														 	'grid-cols-[42px_1fr_42px]': source.custom && deleting
 														 }"
 														 x-data="{ deleting: false }"
 														 @click.away="deleting = false"
@@ -987,7 +987,7 @@
 															<span class="truncate" x-text="source.name"></span>
 														</button>
 
-														<button x-show="type.title === 'Custom' && !deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" @click="deleting = true">
+														<button x-show="source.custom && !deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" @click="deleting = true">
 															<i class="fa fa-trash"></i>
 														</button>
 

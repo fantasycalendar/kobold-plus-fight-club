@@ -21,18 +21,60 @@ export default class Importer {
         'csv-file': this._downloadExampleCSV,
     }
 
+    static sourcesRequiredHeaders = ["name", "type", "shortname", "link"];
+    static monstersRequiredHeaders = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", "lair", "legendary", "unique", "sources"];
+
+    static _validateSources(sources){
+        for(let source of sources) {
+            for (let key of this.sourcesRequiredHeaders) {
+                if (!Object.keys(source).includes(key)) {
+                    return [false, `Sources are missing the required header: '${key}' - Please refer to the example files.`];
+                }
+            }
+        }
+        return [true];
+    }
+
+    static _validateMonsters(monsters){
+        for(let monster of monsters) {
+            for(let key of this.monstersRequiredHeaders){
+                if(!Object.keys(monster).includes(key)){
+                    return [false, `Monsters are missing the required header: '${key}' - Please refer to the example files.`];
+                }
+            }
+        }
+        return [true];
+    }
+
     static async _validateGoogleSheets(resourceLocator) {
         return await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}?` + new URLSearchParams({
                 key: this.key
             }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-                if(!jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Monsters')) {
+
+                if(jsonifiedBody.error){
+                    return [false, `Google responded with an error: "${jsonifiedBody.error.message}" - is your sheet public?`];
+                }
+
+                const monsters = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Monsters');
+                if(!monsters) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
                 }
 
-                if(!jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Sources')) {
+                const validMonsters = this._validateMonsters(monsters);
+                if(!validMonsters[0]){
+                    return validMonsters;
+                }
+
+                const sources = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Sources');
+                if(!sources) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
+                }
+
+                const validSources = this._validateSources(sources);
+                if(!validSources[0]){
+                    return validSources;
                 }
 
                 return [true, ''];
@@ -52,6 +94,16 @@ export default class Importer {
 
         if(!results.monsters) {
             return [false, "Your JSON has sources, but must also contain monsters."];
+        }
+
+        const validMonsters = this._validateMonsters(results.monsters);
+        if(!validMonsters[0]){
+            return validMonsters;
+        }
+
+        const validSources = this._validateSources(results.sources);
+        if(!validSources[0]){
+            return validSources;
         }
 
         return [true, ""];
@@ -76,6 +128,16 @@ export default class Importer {
             return [false, "Your JSON has sources, but must also contain monsters."];
         }
 
+        const validMonsters = this._validateMonsters(results.monsters);
+        if(!validMonsters[0]){
+            return validMonsters;
+        }
+
+        const validSources = this._validateSources(results.sources);
+        if(!validSources[0]){
+            return validSources;
+        }
+
         return [true, ""];
     }
 
@@ -95,16 +157,14 @@ export default class Importer {
             return [false, "Couldn't resolve K+FC data, import source is probably an invalid CSV file."];
         }
 
-        for(let key of ["name", "shortname", "link"]){
-            if(!Object.keys(results.sources[0]).includes(key)){
-                return [false, `Sources are missing the required header: '${key}' - Please refer to the example files.`];
-            }
+        const validMonsters = this._validateMonsters(results.monsters);
+        if(!validMonsters[0]){
+            return validMonsters;
         }
 
-        for(let key of ["name","cr","size","type","tags","section","alignment","environment","ac","hp","init","lair?","legendary","unique","sources"]){
-            if(!Object.keys(results.monsters[0]).includes(key)){
-                return [false, `Monsters are missing the required header: '${key}' - Please refer to the example files.`];
-            }
+        const validSources = this._validateSources(results.sources);
+        if(!validSources[0]){
+            return validSources;
         }
 
         return [true, ""];
@@ -163,8 +223,7 @@ export default class Importer {
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-                let headers = jsonifiedBody.values.splice(0, 1)[0];
-
+                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase());
                 return jsonifiedBody.values.map((item) => ({
                     "name": item[headers.indexOf("name")],
                     "cr": item[headers.indexOf("cr")],
@@ -172,13 +231,13 @@ export default class Importer {
                     "type": item[headers.indexOf("type")],
                     "tags": item[headers.indexOf("tags")],
                     "section": item[headers.indexOf("section")],
-                    "alignment": item[headers.indexOf("alignment")],
-                    "environment": item[headers.indexOf("environment")],
+                    "alignment": item[headers.indexOf("alignment")].toLowerCase(),
+                    "environment": item[headers.indexOf("environment")].toLowerCase(),
                     "ac": item[headers.indexOf("ac")],
                     "hp": item[headers.indexOf("hp")],
                     "init": item[headers.indexOf("init")],
-                    "lair": item[headers.indexOf("lair?")],
-                    "legendary": item[headers.indexOf("legendary?")],
+                    "lair": item[headers.indexOf("lair?")] || item[headers.indexOf("lair")],
+                    "legendary": item[headers.indexOf("legendary?")] || item[headers.indexOf("legendary")],
                     "unique": item[headers.indexOf("unique?")],
                     "sources": item[headers.indexOf("sources")],
                 }));
@@ -192,12 +251,12 @@ export default class Importer {
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-                let headers = jsonifiedBody.values.splice(0, 1)[0];
-
+                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase());
                 return jsonifiedBody.values.map((item) => ({
                     "name": item[headers.indexOf("name")],
-                    "type": 'Custom',
-                    "shortname": item[headers.indexOf("short name")],
+                    "type": item[headers.indexOf("type")],
+                    "custom": true,
+                    "shortname": item[headers.indexOf("short name")] || item[headers.indexOf("shortname")],
                     "link": item[headers.indexOf("link")],
                     "enabled": true,
                 }));
@@ -218,7 +277,7 @@ export default class Importer {
         try {
             const data = JSON.parse(resourceLocator);
             for(let source of data.sources){
-                source.type = "Custom";
+                source.custom = true;
             }
             return data;
         }catch (err) {
@@ -233,11 +292,13 @@ export default class Importer {
             "sources": [
                 {
                     "name": "Custom Source",
+                    "type": "Custom",
                     "shortname": "CS",
                     "link": ""
                 },
                 {
                     "name": "Another Custom Source",
+                    "type": "Third-Party",
                     "shortname": "ACS",
                     "link": "https://google.com/"
                 },
@@ -255,7 +316,7 @@ export default class Importer {
                     "ac": 8,
                     "hp": 22,
                     "init": -2,
-                    "lair?": "",
+                    "lair": "",
                     "legendary": "",
                     "unique": "",
                     "sources": "Custom Source: 5"
@@ -272,7 +333,7 @@ export default class Importer {
                     "ac": 10,
                     "hp": 41,
                     "init": -2,
-                    "lair?": "",
+                    "lair": "",
                     "legendary": "legendary",
                     "unique": "unique",
                     "sources": "Another Custom Source: 32"
@@ -290,6 +351,9 @@ export default class Importer {
         if(!sources){
             return false;
         }
+        sources.forEach((source) => {
+            source.custom = true;
+        });
 
         const monsters = await this._loadFile(resourceLocators[1]);
         if(!monsters){
@@ -317,13 +381,13 @@ export default class Importer {
 
     static _downloadExampleCSV(){
 
-        let sources = "name,shortname,link\n";
-        sources += "Custom Source,CS,\n"
-        sources += "Another Custom Source,ACS,https://google.com/"
+        let sources = "name,type,shortname,link\n";
+        sources += "Custom Source,Custom,CS,\n"
+        sources += "Another Custom Source,Third-Party,ACS,https://google.com/"
 
         helpers.downloadFile("example_sources.csv", sources, "text/csv");
 
-        let monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair?,legendary,unique,sources\n";
+        let monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair,legendary,unique,sources\n";
         monsters += `Zombie,1/4,Medium,Undead,,Zombies,neutral evil,"aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",8,22, -2,,,,Custom Source: 5\n`
         monsters += `Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,,legendary,unique,Another Custom Source: 32`
 
