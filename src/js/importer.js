@@ -22,12 +22,17 @@ export default class Importer {
     }
 
     static sourcesRequiredHeaders = ["name", "type", "shortname", "link"];
-    static monstersRequiredHeaders = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", "lair", "legendary", "unique", "sources"];
+    static monstersRequiredHeaders = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], "unique", "sources"];
 
     static _validateSources(sources){
         for(let source of sources) {
+            const sourceKeys = Object.keys(source);
             for (let key of this.sourcesRequiredHeaders) {
-                if (!Object.keys(source).includes(key)) {
+                if(Array.isArray(key)) {
+                    if (!key.find(option => sourceKeys.includes(option))) {
+                        return [false, `Sources are missing the required header: '${key[0]}' - Please refer to the example files.`];
+                    }
+                }else if (!sourceKeys.includes(key)) {
                     return [false, `Sources are missing the required header: '${key}' - Please refer to the example files.`];
                 }
             }
@@ -37,8 +42,13 @@ export default class Importer {
 
     static _validateMonsters(monsters){
         for(let monster of monsters) {
+            const monsterKeys = Object.keys(monster);
             for(let key of this.monstersRequiredHeaders){
-                if(!Object.keys(monster).includes(key)){
+                if(Array.isArray(key)) {
+                    if (!key.find(option => monsterKeys.includes(option))) {
+                        return [false, `Monsters are missing the required header: '${key[0]}' - Please refer to the example files.`];
+                    }
+                }else if(!monsterKeys.includes(key)){
                     return [false, `Monsters are missing the required header: '${key}' - Please refer to the example files.`];
                 }
             }
@@ -62,19 +72,9 @@ export default class Importer {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
                 }
 
-                const validMonsters = this._validateMonsters(monsters);
-                if(!validMonsters[0]){
-                    return validMonsters;
-                }
-
                 const sources = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Sources');
                 if(!sources) {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
-                }
-
-                const validSources = this._validateSources(sources);
-                if(!validSources[0]){
-                    return validSources;
                 }
 
                 return [true, ''];
@@ -255,9 +255,9 @@ export default class Importer {
                 return jsonifiedBody.values.map((item) => ({
                     "name": item[headers.indexOf("name")],
                     "type": item[headers.indexOf("type")],
-                    "custom": true,
                     "shortname": item[headers.indexOf("short name")] || item[headers.indexOf("shortname")],
                     "link": item[headers.indexOf("link")],
+                    "custom": true,
                     "enabled": true,
                 }));
             })
@@ -392,6 +392,7 @@ export default class Importer {
         monsters += `Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,,legendary,unique,Another Custom Source: 32`
 
         helpers.downloadFile("example_monsters.csv", monsters, "text/csv");
+
     }
 
     static _loadFile(file){

@@ -11358,6 +11358,8 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -11382,22 +11384,35 @@ var Importer = /*#__PURE__*/function () {
   _createClass(Importer, null, [{
     key: "_validateSources",
     value: function _validateSources(sources) {
+      var _this = this;
+
       var _iterator = _createForOfIteratorHelper(sources),
           _step;
 
       try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _loop = function _loop() {
           var source = _step.value;
+          var sourceKeys = Object.keys(source);
 
-          var _iterator2 = _createForOfIteratorHelper(this.sourcesRequiredHeaders),
+          var _iterator2 = _createForOfIteratorHelper(_this.sourcesRequiredHeaders),
               _step2;
 
           try {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var key = _step2.value;
 
-              if (!Object.keys(source).includes(key)) {
-                return [false, "Sources are missing the required header: '".concat(key, "' - Please refer to the example files.")];
+              if (Array.isArray(key)) {
+                if (!key.find(function (option) {
+                  return sourceKeys.includes(option);
+                })) {
+                  return {
+                    v: [false, "Sources are missing the required header: '".concat(key[0], "' - Please refer to the example files.")]
+                  };
+                }
+              } else if (!sourceKeys.includes(key)) {
+                return {
+                  v: [false, "Sources are missing the required header: '".concat(key, "' - Please refer to the example files.")]
+                };
               }
             }
           } catch (err) {
@@ -11405,6 +11420,12 @@ var Importer = /*#__PURE__*/function () {
           } finally {
             _iterator2.f();
           }
+        };
+
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _ret = _loop();
+
+          if (_typeof(_ret) === "object") return _ret.v;
         }
       } catch (err) {
         _iterator.e(err);
@@ -11417,22 +11438,35 @@ var Importer = /*#__PURE__*/function () {
   }, {
     key: "_validateMonsters",
     value: function _validateMonsters(monsters) {
+      var _this2 = this;
+
       var _iterator3 = _createForOfIteratorHelper(monsters),
           _step3;
 
       try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var _loop2 = function _loop2() {
           var monster = _step3.value;
+          var monsterKeys = Object.keys(monster);
 
-          var _iterator4 = _createForOfIteratorHelper(this.monstersRequiredHeaders),
+          var _iterator4 = _createForOfIteratorHelper(_this2.monstersRequiredHeaders),
               _step4;
 
           try {
             for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
               var key = _step4.value;
 
-              if (!Object.keys(monster).includes(key)) {
-                return [false, "Monsters are missing the required header: '".concat(key, "' - Please refer to the example files.")];
+              if (Array.isArray(key)) {
+                if (!key.find(function (option) {
+                  return monsterKeys.includes(option);
+                })) {
+                  return {
+                    v: [false, "Monsters are missing the required header: '".concat(key[0], "' - Please refer to the example files.")]
+                  };
+                }
+              } else if (!monsterKeys.includes(key)) {
+                return {
+                  v: [false, "Monsters are missing the required header: '".concat(key, "' - Please refer to the example files.")]
+                };
               }
             }
           } catch (err) {
@@ -11440,6 +11474,12 @@ var Importer = /*#__PURE__*/function () {
           } finally {
             _iterator4.f();
           }
+        };
+
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _ret2 = _loop2();
+
+          if (_typeof(_ret2) === "object") return _ret2.v;
         }
       } catch (err) {
         _iterator3.e(err);
@@ -11453,8 +11493,6 @@ var Importer = /*#__PURE__*/function () {
     key: "_validateGoogleSheets",
     value: function () {
       var _validateGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(resourceLocator) {
-        var _this = this;
-
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -11479,12 +11517,6 @@ var Importer = /*#__PURE__*/function () {
                     }).join(', ') + "'"];
                   }
 
-                  var validMonsters = _this._validateMonsters(monsters);
-
-                  if (!validMonsters[0]) {
-                    return validMonsters;
-                  }
-
                   var sources = jsonifiedBody.sheets.find(function (sheet) {
                     return sheet.properties.title === 'Sources';
                   });
@@ -11493,12 +11525,6 @@ var Importer = /*#__PURE__*/function () {
                     return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
                       return sheet.properties.title;
                     }).join(', ') + "'"];
-                  }
-
-                  var validSources = _this._validateSources(sources);
-
-                  if (!validSources[0]) {
-                    return validSources;
                   }
 
                   return [true, ''];
@@ -11874,9 +11900,9 @@ var Importer = /*#__PURE__*/function () {
                     return {
                       "name": item[headers.indexOf("name")],
                       "type": item[headers.indexOf("type")],
-                      "custom": true,
                       "shortname": item[headers.indexOf("short name")] || item[headers.indexOf("shortname")],
                       "link": item[headers.indexOf("link")],
+                      "custom": true,
                       "enabled": true
                     };
                   });
@@ -12159,7 +12185,7 @@ _defineProperty(Importer, "exampleFiles", {
 
 _defineProperty(Importer, "sourcesRequiredHeaders", ["name", "type", "shortname", "link"]);
 
-_defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", "lair", "legendary", "unique", "sources"]);
+_defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], "unique", "sources"]);
 
 _defineProperty(Importer, "loadersHtml", {
   'google-sheets': function googleSheets() {
