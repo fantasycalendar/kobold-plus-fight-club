@@ -9220,7 +9220,7 @@ function app() {
     showEncounterModal: false,
     showPartyModal: false,
     showKeyboardModal: false,
-    showImporterModal: true,
+    showImporterModal: false,
     mobileEncounterTab: false,
     filters: {},
     searchPlaceholder: "",
@@ -11501,12 +11501,22 @@ var Importer = /*#__PURE__*/function () {
       var _validateGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(resourceLocator) {
         var _this3 = this;
 
-        var initialLoad, monstersValid, sourcesValid;
+        var parts, i, initialLoad, monstersValid, sourcesValid;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                if (resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")) {
+                  parts = resourceLocator.split('/');
+
+                  for (i = 0; i < parts.length; i++) {
+                    if (parts[i] === "d") {
+                      resourceLocator = parts[i + 1];
+                    }
+                  }
+                }
+
+                _context.next = 3;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -11539,18 +11549,18 @@ var Importer = /*#__PURE__*/function () {
                   return [true];
                 });
 
-              case 2:
+              case 3:
                 initialLoad = _context.sent;
 
                 if (initialLoad[0]) {
-                  _context.next = 5;
+                  _context.next = 6;
                   break;
                 }
 
                 return _context.abrupt("return", initialLoad);
 
-              case 5:
-                _context.next = 7;
+              case 6:
+                _context.next = 8;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -11589,18 +11599,18 @@ var Importer = /*#__PURE__*/function () {
                   return false;
                 });
 
-              case 7:
+              case 8:
                 monstersValid = _context.sent;
 
                 if (monstersValid[0]) {
-                  _context.next = 10;
+                  _context.next = 11;
                   break;
                 }
 
                 return _context.abrupt("return", monstersValid);
 
-              case 10:
-                _context.next = 12;
+              case 11:
+                _context.next = 13;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -11639,20 +11649,20 @@ var Importer = /*#__PURE__*/function () {
                   return false;
                 });
 
-              case 12:
+              case 13:
                 sourcesValid = _context.sent;
 
                 if (sourcesValid[0]) {
-                  _context.next = 15;
+                  _context.next = 16;
                   break;
                 }
 
                 return _context.abrupt("return", sourcesValid);
 
-              case 15:
+              case 16:
                 return _context.abrupt("return", [true, '']);
 
-              case 16:
+              case 17:
               case "end":
                 return _context.stop();
             }
@@ -11967,12 +11977,22 @@ var Importer = /*#__PURE__*/function () {
     key: "_importGoogleSheets",
     value: function () {
       var _importGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7(resourceLocator) {
-        var monsters, sources;
+        var parts, i, monsters, sources;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                _context7.next = 2;
+                if (resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")) {
+                  parts = resourceLocator.split('/');
+
+                  for (i = 0; i < parts.length; i++) {
+                    if (parts[i] === "d") {
+                      resourceLocator = parts[i + 1];
+                    }
+                  }
+                }
+
+                _context7.next = 3;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -11996,7 +12016,7 @@ var Importer = /*#__PURE__*/function () {
                       "init": item[headers.indexOf("init")],
                       "lair": item[headers.indexOf("lair?")] || item[headers.indexOf("lair")],
                       "legendary": item[headers.indexOf("legendary?")] || item[headers.indexOf("legendary")],
-                      "unique": item[headers.indexOf("unique?")],
+                      "unique": item[headers.indexOf("unique")] || item[headers.indexOf("unique?")],
                       "sources": item[headers.indexOf("sources")]
                     };
                   });
@@ -12004,9 +12024,9 @@ var Importer = /*#__PURE__*/function () {
                   return console.error(err);
                 });
 
-              case 2:
+              case 3:
                 monsters = _context7.sent;
-                _context7.next = 5;
+                _context7.next = 6;
                 return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
                   key: this.key
                 })).then(function (response) {
@@ -12029,14 +12049,14 @@ var Importer = /*#__PURE__*/function () {
                   return console.error(err);
                 });
 
-              case 5:
+              case 6:
                 sources = _context7.sent;
                 return _context7.abrupt("return", {
                   sources: sources,
                   monsters: monsters
                 });
 
-              case 7:
+              case 8:
               case "end":
                 return _context7.stop();
             }
@@ -12170,7 +12190,7 @@ var Importer = /*#__PURE__*/function () {
           "ac": 10,
           "hp": 41,
           "init": -2,
-          "lair": "",
+          "lair": "lair",
           "legendary": "legendary",
           "unique": "unique",
           "sources": "Another Custom Source: 32"
@@ -12259,7 +12279,7 @@ var Importer = /*#__PURE__*/function () {
       _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example_sources.csv", sources, "text/csv");
       var monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair,legendary,unique,sources\n";
       monsters += "Zombie,1/4,Medium,Undead,,Zombies,neutral evil,\"aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban\",8,22, -2,,,,Custom Source: 5\n";
-      monsters += "Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,,legendary,unique,Another Custom Source: 32";
+      monsters += "Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,lair,legendary,unique,Another Custom Source: 32";
       _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example_monsters.csv", monsters, "text/csv");
     }
   }, {
@@ -12308,16 +12328,16 @@ _defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "typ
 
 _defineProperty(Importer, "loadersHtml", {
   'google-sheets': function googleSheets() {
-    return "\n                <label for=\"import_resource_locator\">Sheets ID</label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Insert the Google Sheet link or <a class=\"primary-link\" target=\"_blank\" href=\"https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing\">make your own</a></label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
   },
   'json-raw': function jsonRaw() {
-    return "\n                <label for=\"import_resource_locator\">Raw JSON</label> - <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleJson\">download example</a>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Input raw JSON or <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleJson\">download an example file to edit</a></label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
   },
   'json-file': function jsonFile() {
-    return "\n                <label class=\"block\" id=\"file_input_label\" for=\"import_resource_locator_file\">Upload JSON text file below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download an example file to edit</a></label>                \n                <input accept=\"application/json\" class=\"block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"importerResourceLocator = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file\" type=\"file\">\n            ";
+    return "\n                <label class=\"mb-1 block\" id=\"file_input_label\" for=\"import_resource_locator_file\">Upload JSON text file below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download an example file to edit</a></label>                \n                <input accept=\"application/json\" class=\"block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"importerResourceLocator = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file\" type=\"file\">\n            ";
   },
   'csv-file': function csvFile() {
-    return "\n                <label>Upload CSV text files below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download example files to edit</a></label>\n                <div class=\"grid grid-cols-2 gap-2 mt-2\">                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_1\">Sources CSV</label>                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_2\">Monsters CSV</label>                \n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_1\" type=\"file\">\n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_2\" type=\"file\">\n                </div>\n            ";
+    return "\n                <label class=\"mb-1\">Upload CSV text files below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download example files to edit</a></label>\n                <div class=\"grid grid-cols-2 gap-2 mt-2\">                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_1\">Sources CSV</label>                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_2\">Monsters CSV</label>                \n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_1\" type=\"file\">\n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_2\" type=\"file\">\n                </div>\n            ";
   }
 });
 

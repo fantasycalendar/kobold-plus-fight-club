@@ -58,6 +58,15 @@ export default class Importer {
 
     static async _validateGoogleSheets(resourceLocator) {
 
+        if(resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")){
+            const parts = resourceLocator.split('/');
+            for(let i = 0; i < parts.length; i++){
+                if(parts[i] === "d"){
+                    resourceLocator = parts[i+1];
+                }
+            }
+        }
+
         const initialLoad = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}?` + new URLSearchParams({
             key: this.key
         }))
@@ -234,13 +243,13 @@ export default class Importer {
     static loadersHtml = {
         'google-sheets': () => {
             return `
-                <label for="import_resource_locator">Sheets ID</label>
+                <label class="mb-1" for="import_resource_locator">Insert the Google Sheet link or <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">make your own</a></label>
                 <input name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
             `;
         },
         'json-raw': () => {
             return `
-                <label for="import_resource_locator">Raw JSON</label> - <a href="javascript:true" class="primary-link" @click="downloadExampleJson">download example</a>
+                <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="downloadExampleJson">download an example file to edit</a></label>
                 <div class="mt-1">
                     <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
                 </div>
@@ -248,13 +257,13 @@ export default class Importer {
         },
         'json-file': () => {
             return `
-                <label class="block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download an example file to edit</a></label>                
+                <label class="mb-1 block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download an example file to edit</a></label>                
                 <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
             `;
         },
         'csv-file': () => {
             return `
-                <label>Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download example files to edit</a></label>
+                <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download example files to edit</a></label>
                 <div class="grid grid-cols-2 gap-2 mt-2">                
                     <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
                     <label class="" id="file_input_label_1" for="import_resource_locator_file_2">Monsters CSV</label>                
@@ -278,6 +287,16 @@ export default class Importer {
     }
 
     static async _importGoogleSheets(resourceLocator) {
+
+        if(resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")){
+            const parts = resourceLocator.split('/');
+            for(let i = 0; i < parts.length; i++){
+                if(parts[i] === "d"){
+                    resourceLocator = parts[i+1];
+                }
+            }
+        }
+
         let monsters = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
             key: this.key
         }))
@@ -298,7 +317,7 @@ export default class Importer {
                     "init": item[headers.indexOf("init")],
                     "lair": item[headers.indexOf("lair?")] || item[headers.indexOf("lair")],
                     "legendary": item[headers.indexOf("legendary?")] || item[headers.indexOf("legendary")],
-                    "unique": item[headers.indexOf("unique?")],
+                    "unique": item[headers.indexOf("unique")] || item[headers.indexOf("unique?")],
                     "sources": item[headers.indexOf("sources")],
                 }));
             })
@@ -393,7 +412,7 @@ export default class Importer {
                     "ac": 10,
                     "hp": 41,
                     "init": -2,
-                    "lair": "",
+                    "lair": "lair",
                     "legendary": "legendary",
                     "unique": "unique",
                     "sources": "Another Custom Source: 32"
@@ -449,7 +468,7 @@ export default class Importer {
 
         let monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair,legendary,unique,sources\n";
         monsters += `Zombie,1/4,Medium,Undead,,Zombies,neutral evil,"aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",8,22, -2,,,,Custom Source: 5\n`
-        monsters += `Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,,legendary,unique,Another Custom Source: 32`
+        monsters += `Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,lair,legendary,unique,Another Custom Source: 32`
 
         helpers.downloadFile("example_monsters.csv", monsters, "text/csv");
 

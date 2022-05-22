@@ -29,7 +29,7 @@ function app() {
         showEncounterModal: false,
         showPartyModal: false,
         showKeyboardModal: false,
-        showImporterModal: true,
+        showImporterModal: false,
 
         mobileEncounterTab: false,
 
