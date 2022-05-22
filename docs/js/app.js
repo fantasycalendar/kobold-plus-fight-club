@@ -9693,11 +9693,17 @@ function app() {
     formatMonsters: function formatMonsters(data) {
       var _this6 = this;
 
-      this.allMonsters = this.allMonsters.concat(data.map(function (data) {
+      var newMonsters = data.map(function (data) {
         var monster = new _monster__WEBPACK_IMPORTED_MODULE_6__["default"](_this6, data);
+
+        if (_this6.monsterLookupTable[monster.slug]) {
+          return false;
+        }
+
         _this6.monsterLookupTable[monster.slug] = monster;
         return monster;
-      }));
+      }).filter(Boolean);
+      this.allMonsters = this.allMonsters.concat(newMonsters);
       var environments = Object.values(this.environments);
       environments.sort(function (a, b) {
         return a.value > b.label ? -1 : 1;
@@ -12367,11 +12373,6 @@ var Monster = /*#__PURE__*/function () {
     this.data = data;
     this.cr = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].CR[this.data.cr];
     this.slug = _helpers_js__WEBPACK_IMPORTED_MODULE_1__.slugify(this.data.name + '-' + this.data.sources + "-" + this.cr.string);
-
-    if (this.data.sources.includes("Monster-A-Day")) {
-      console.log(this.data.name);
-    }
-
     this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
     this.special = !!this.data.special;
     this.legendary = !!this.data.legendary;

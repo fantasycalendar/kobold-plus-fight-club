@@ -13,10 +13,6 @@ export default class Monster {
 
         this.slug = helpers.slugify(this.data.name+'-'+this.data.sources+"-"+this.cr.string);
 
-        if(this.data.sources.includes("Monster-A-Day")){
-            console.log(this.data.name)
-        }
-
         this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
 
         this.special = !!this.data.special;

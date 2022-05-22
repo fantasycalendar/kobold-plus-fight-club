@@ -17,7 +17,7 @@ import Alpine from 'alpinejs'
 const internationalNumberFormat = new Intl.NumberFormat('en-US')
 
 function app() {
-    
+
     return {
 
         sourcesVersion: "2.1.0",
@@ -194,7 +194,7 @@ function app() {
                     return acc + (group.getsXP ? parseInt(group.players) : 0)
                 }, 0) + this.app.activePlayers.length;
             },
-            
+
             get totalExperiencePerPlayer(){
                 return Math.round(this.app.encounter.totalExp / this.totalPlayersToGainXP);
             },
@@ -406,15 +406,22 @@ function app() {
         },
 
         formatMonsters(data){
-            this.allMonsters = this.allMonsters.concat(data.map(data => {
+            const newMonsters = data.map(data => {
                 const monster = new Monster(this, data);
+                if(this.monsterLookupTable[monster.slug]){
+                    return false;
+                }
                 this.monsterLookupTable[monster.slug] = monster;
                 return monster;
-            }));
+            }).filter(Boolean);
+
+            this.allMonsters = this.allMonsters.concat(newMonsters);
+
             let environments = Object.values(this.environments);
             environments.sort((a, b) => {
                 return a.value > b.label ? -1 : 1;
             });
+
             environments.unshift({ value: "any", label: "Any Environment" });
             window.dispatchEvent(new CustomEvent('set-environments', { detail: environments }));
         },
