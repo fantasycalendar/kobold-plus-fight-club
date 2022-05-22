@@ -11406,12 +11406,12 @@ var Importer = /*#__PURE__*/function () {
                   return sourceKeys.includes(option);
                 })) {
                   return {
-                    v: [false, "Sources are missing the required header: '".concat(key[0], "' - Please refer to the example files.")]
+                    v: [false, "Sources are missing the required header: '".concat(key[0], "'")]
                   };
                 }
               } else if (!sourceKeys.includes(key)) {
                 return {
-                  v: [false, "Sources are missing the required header: '".concat(key, "' - Please refer to the example files.")]
+                  v: [false, "Sources are missing the required header: '".concat(key, "'")]
                 };
               }
             }
@@ -11460,12 +11460,12 @@ var Importer = /*#__PURE__*/function () {
                   return monsterKeys.includes(option);
                 })) {
                   return {
-                    v: [false, "Monsters are missing the required header: '".concat(key[0], "' - Please refer to the example files.")]
+                    v: [false, "Monsters are missing the required header: '".concat(key[0], "'")]
                   };
                 }
               } else if (!monsterKeys.includes(key)) {
                 return {
-                  v: [false, "Monsters are missing the required header: '".concat(key, "' - Please refer to the example files.")]
+                  v: [false, "Monsters are missing the required header: '".concat(key, "'")]
                 };
               }
             }
@@ -11493,6 +11493,9 @@ var Importer = /*#__PURE__*/function () {
     key: "_validateGoogleSheets",
     value: function () {
       var _validateGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(resourceLocator) {
+        var _this3 = this;
+
+        var initialLoad, monstersValid, sourcesValid;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -11507,33 +11510,123 @@ var Importer = /*#__PURE__*/function () {
                     return [false, "Google responded with an error: \"".concat(jsonifiedBody.error.message, "\" - is your sheet public?")];
                   }
 
-                  var monsters = jsonifiedBody.sheets.find(function (sheet) {
-                    return sheet.properties.title === 'Monsters';
-                  });
-
-                  if (!monsters) {
-                    return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
-                      return sheet.properties.title;
-                    }).join(', ') + "'"];
-                  }
-
-                  var sources = jsonifiedBody.sheets.find(function (sheet) {
-                    return sheet.properties.title === 'Sources';
-                  });
-
-                  if (!sources) {
-                    return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
-                      return sheet.properties.title;
-                    }).join(', ') + "'"];
-                  }
-
-                  return [true, ''];
+                  return [true];
                 });
 
               case 2:
-                return _context.abrupt("return", _context.sent);
+                initialLoad = _context.sent;
 
-              case 3:
+                if (initialLoad[0]) {
+                  _context.next = 5;
+                  break;
+                }
+
+                return _context.abrupt("return", initialLoad);
+
+              case 5:
+                _context.next = 7;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
+
+                  var _iterator5 = _createForOfIteratorHelper(_this3.monstersRequiredHeaders),
+                      _step5;
+
+                  try {
+                    for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+                      var key = _step5.value;
+
+                      if (Array.isArray(key)) {
+                        if (!key.find(function (option) {
+                          return headers.includes(option);
+                        })) {
+                          return [false, "Monsters are missing the required header: '".concat(key[0], "'")];
+                        }
+                      } else if (!headers.includes(key)) {
+                        return [false, "Monsters are missing the required header: '".concat(key, "'")];
+                      }
+                    }
+                  } catch (err) {
+                    _iterator5.e(err);
+                  } finally {
+                    _iterator5.f();
+                  }
+
+                  return [true];
+                })["catch"](function (err) {
+                  console.error(err);
+                  return false;
+                });
+
+              case 7:
+                monstersValid = _context.sent;
+
+                if (monstersValid[0]) {
+                  _context.next = 10;
+                  break;
+                }
+
+                return _context.abrupt("return", monstersValid);
+
+              case 10:
+                _context.next = 12;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
+
+                  var _iterator6 = _createForOfIteratorHelper(_this3.sourcesRequiredHeaders),
+                      _step6;
+
+                  try {
+                    for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+                      var key = _step6.value;
+
+                      if (Array.isArray(key)) {
+                        if (!key.find(function (option) {
+                          return headers.includes(option);
+                        })) {
+                          return [false, "Sources are missing the required header: '".concat(key[0], "'")];
+                        }
+                      } else if (!headers.includes(key)) {
+                        return [false, "Sources are missing the required header: '".concat(key, "'")];
+                      }
+                    }
+                  } catch (err) {
+                    _iterator6.e(err);
+                  } finally {
+                    _iterator6.f();
+                  }
+
+                  return [true];
+                })["catch"](function (err) {
+                  console.error(err);
+                  return false;
+                });
+
+              case 12:
+                sourcesValid = _context.sent;
+
+                if (sourcesValid[0]) {
+                  _context.next = 15;
+                  break;
+                }
+
+                return _context.abrupt("return", sourcesValid);
+
+              case 15:
+                return _context.abrupt("return", [true, '']);
+
+              case 16:
               case "end":
                 return _context.stop();
             }
@@ -11965,7 +12058,7 @@ var Importer = /*#__PURE__*/function () {
     key: "_importJson",
     value: function () {
       var _importJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee9(resourceLocator) {
-        var data, _iterator5, _step5, source;
+        var data, _iterator7, _step7, source;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee9$(_context9) {
           while (1) {
@@ -11973,17 +12066,17 @@ var Importer = /*#__PURE__*/function () {
               case 0:
                 _context9.prev = 0;
                 data = JSON.parse(resourceLocator);
-                _iterator5 = _createForOfIteratorHelper(data.sources);
+                _iterator7 = _createForOfIteratorHelper(data.sources);
 
                 try {
-                  for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-                    source = _step5.value;
+                  for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+                    source = _step7.value;
                     source.custom = true;
                   }
                 } catch (err) {
-                  _iterator5.e(err);
+                  _iterator7.e(err);
                 } finally {
-                  _iterator5.f();
+                  _iterator7.f();
                 }
 
                 return _context9.abrupt("return", data);
@@ -12183,9 +12276,9 @@ _defineProperty(Importer, "exampleFiles", {
   'csv-file': Importer._downloadExampleCSV
 });
 
-_defineProperty(Importer, "sourcesRequiredHeaders", ["name", "type", "shortname", "link"]);
+_defineProperty(Importer, "sourcesRequiredHeaders", ["name", "type", ["shortname", "short name"], "link"]);
 
-_defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], "unique", "sources"]);
+_defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], ["unique", "unique?"], "sources"]);
 
 _defineProperty(Importer, "loadersHtml", {
   'google-sheets': function googleSheets() {
@@ -12254,6 +12347,11 @@ var Monster = /*#__PURE__*/function () {
     this.data = data;
     this.cr = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].CR[this.data.cr];
     this.slug = _helpers_js__WEBPACK_IMPORTED_MODULE_1__.slugify(this.data.name + '-' + this.data.sources + "-" + this.cr.string);
+
+    if (this.data.sources.includes("Monster-A-Day")) {
+      console.log(this.data.name);
+    }
+
     this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
     this.special = !!this.data.special;
     this.legendary = !!this.data.legendary;
@@ -12330,7 +12428,7 @@ var Monster = /*#__PURE__*/function () {
     key: "sourceEnabled",
     get: function get() {
       return this.sources.find(function (source) {
-        return source.reference.enabled;
+        return source.actual_source.enabled;
       });
     }
   }, {

@@ -21,8 +21,8 @@ export default class Importer {
         'csv-file': this._downloadExampleCSV,
     }
 
-    static sourcesRequiredHeaders = ["name", "type", "shortname", "link"];
-    static monstersRequiredHeaders = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], "unique", "sources"];
+    static sourcesRequiredHeaders = ["name", "type", ["shortname", "short name"], "link"];
+    static monstersRequiredHeaders = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], ["unique", "unique?"], "sources"];
 
     static _validateSources(sources){
         for(let source of sources) {
@@ -30,10 +30,10 @@ export default class Importer {
             for (let key of this.sourcesRequiredHeaders) {
                 if(Array.isArray(key)) {
                     if (!key.find(option => sourceKeys.includes(option))) {
-                        return [false, `Sources are missing the required header: '${key[0]}' - Please refer to the example files.`];
+                        return [false, `Sources are missing the required header: '${key[0]}'`];
                     }
                 }else if (!sourceKeys.includes(key)) {
-                    return [false, `Sources are missing the required header: '${key}' - Please refer to the example files.`];
+                    return [false, `Sources are missing the required header: '${key}'`];
                 }
             }
         }
@@ -46,10 +46,10 @@ export default class Importer {
             for(let key of this.monstersRequiredHeaders){
                 if(Array.isArray(key)) {
                     if (!key.find(option => monsterKeys.includes(option))) {
-                        return [false, `Monsters are missing the required header: '${key[0]}' - Please refer to the example files.`];
+                        return [false, `Monsters are missing the required header: '${key[0]}'`];
                     }
                 }else if(!monsterKeys.includes(key)){
-                    return [false, `Monsters are missing the required header: '${key}' - Please refer to the example files.`];
+                    return [false, `Monsters are missing the required header: '${key}'`];
                 }
             }
         }
@@ -57,28 +57,77 @@ export default class Importer {
     }
 
     static async _validateGoogleSheets(resourceLocator) {
-        return await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}?` + new URLSearchParams({
-                key: this.key
-            }))
+
+        const initialLoad = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}?` + new URLSearchParams({
+            key: this.key
+        }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-
-                if(jsonifiedBody.error){
+                if (jsonifiedBody.error) {
                     return [false, `Google responded with an error: "${jsonifiedBody.error.message}" - is your sheet public?`];
                 }
-
-                const monsters = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Monsters');
-                if(!monsters) {
-                    return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
-                }
-
-                const sources = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Sources');
-                if(!sources) {
-                    return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
-                }
-
-                return [true, ''];
+                return [true];
             });
+
+        if(!initialLoad[0]){
+            return initialLoad;
+        }
+
+        let monstersValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
+            key: this.key
+        }))
+            .then(response => response.json())
+            .then(jsonifiedBody => {
+                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase())
+
+                for(let key of this.monstersRequiredHeaders){
+                    if(Array.isArray(key)) {
+                        if (!key.find(option => headers.includes(option))) {
+                            return [false, `Monsters are missing the required header: '${key[0]}'`];
+                        }
+                    }else if(!headers.includes(key)){
+                        return [false, `Monsters are missing the required header: '${key}'`];
+                    }
+                }
+                return [true];
+            })
+            .catch(err => {
+                console.error(err)
+                return false;
+            });
+
+        if(!monstersValid[0]){
+            return monstersValid;
+        }
+
+        let sourcesValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Sources?` + new URLSearchParams({
+            key: this.key
+        }))
+            .then(response => response.json())
+            .then(jsonifiedBody => {
+                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase());
+
+                for(let key of this.sourcesRequiredHeaders){
+                    if(Array.isArray(key)) {
+                        if (!key.find(option => headers.includes(option))) {
+                            return [false, `Sources are missing the required header: '${key[0]}'`];
+                        }
+                    }else if(!headers.includes(key)){
+                        return [false, `Sources are missing the required header: '${key}'`];
+                    }
+                }
+                return [true];
+            })
+            .catch(err => {
+                console.error(err)
+                return false;
+            });
+
+        if(!sourcesValid[0]){
+            return sourcesValid;
+        }
+
+        return [true, ''];
     }
 
     static async _validateJson(resourceLocator) {
