@@ -13,6 +13,10 @@ export default class Monster {
 
         this.slug = helpers.slugify(this.data.name+'-'+this.data.sources+"-"+this.cr.string);
 
+        if(this.data.sources.includes("Monster-A-Day")){
+            console.log(this.data.name)
+        }
+
         this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
 
         this.special = !!this.data.special;
@@ -86,7 +90,7 @@ export default class Monster {
     }
 
     get sourceEnabled() {
-        return this.sources.find(source => source.reference.enabled);
+        return this.sources.find(source => source.actual_source.enabled);
     }
 
     static parseAlignment(str = "") {
