@@ -97,15 +97,15 @@
 					<div class="flex">
 						<div class="flex-shrink-0 flex items-center">
 							<a href="" class="flex items-center">
-								<img class="h-8 w-auto" src="images/header_logo.png" alt="Fantasy Calendar"> <span class="hidden md:inline pl-2 text-lg font-bold text-white">Kobold+ Fight Club</span>
+								<img class="h-8 w-auto" src="images/header_logo.png" alt="Kobold Plus Fight Club"> <span class="hidden md:inline pl-2 text-lg font-bold text-white">Kobold+ Fight Club</span>
 							</a>
 						</div>
 					</div>
 					<div class="hidden lg:flex text-white lg:-my-px lg:ml-6 lg:space-x-8 items-center">
                         <a @click="showKeyboardModal = true" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Keyboard Shortcuts <span class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-emerald-800 text-emerald-100 ml-1">Ctrl+/</span></a>
                         <a @click="showImporterModal = true" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Import Custom Monsters</a>
-                        <a href="https://fantasy-calendar.com/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Fantasy Calendar</a>
-                        <a href="https://fantasycomputer.works/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">About</a>
+                        <a target="_blank" href="https://ko-fi.com/fantasycomputerworks" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">Donate</a>
+                        <a target="_blank" href="https://fantasycomputer.works/" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300">About</a>
 						<a x-tippy="Toggle light mode (ctrl+shift+\)" @click="toggleTheme()" href="javascript:" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">
 							<i :class="{ 'fa-moon': theme === 'light', 'fa-sun': theme === 'dark' }" class="fa"></i>
 						</a>
