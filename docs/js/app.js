@@ -11510,6 +11510,26 @@ var Importer = /*#__PURE__*/function () {
                     return [false, "Google responded with an error: \"".concat(jsonifiedBody.error.message, "\" - is your sheet public?")];
                   }
 
+                  var monsters = jsonifiedBody.sheets.find(function (sheet) {
+                    return sheet.properties.title === 'Monsters';
+                  });
+
+                  if (!monsters) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
+                      return sheet.properties.title;
+                    }).join(', ') + "'"];
+                  }
+
+                  var sources = jsonifiedBody.sheets.find(function (sheet) {
+                    return sheet.properties.title === 'Sources';
+                  });
+
+                  if (!sources) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
+                      return sheet.properties.title;
+                    }).join(', ') + "'"];
+                  }
+
                   return [true];
                 });
 

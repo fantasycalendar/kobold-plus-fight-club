@@ -66,6 +66,17 @@ export default class Importer {
                 if (jsonifiedBody.error) {
                     return [false, `Google responded with an error: "${jsonifiedBody.error.message}" - is your sheet public?`];
                 }
+
+                const monsters = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Monsters');
+                if(!monsters) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
+                }
+
+                const sources = jsonifiedBody.sheets.find(sheet => sheet.properties.title === 'Sources');
+                if(!sources) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + (jsonifiedBody.sheets.map(sheet => sheet.properties.title).join(', ')) + "'"];
+                }
+
                 return [true];
             });
 
