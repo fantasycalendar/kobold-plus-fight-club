@@ -16,11 +16,6 @@ export default class Importer {
         'csv-file': this._validateCSV,
     }
 
-    static exampleFiles = {
-        'json-file': this._downloadExampleJson,
-        'csv-file': this._downloadExampleCSV,
-    }
-
     static sourcesRequiredHeaders = ["name", "type", ["shortname", "short name"], "link"];
     static monstersRequiredHeaders = ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], ["unique", "unique?"], "sources"];
 
