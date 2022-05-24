@@ -12320,6 +12320,7 @@ _defineProperty(Importer, "validators", {
 });
 
 _defineProperty(Importer, "exampleFiles", {
+  'json-raw': Importer._downloadExampleJson,
   'json-file': Importer._downloadExampleJson,
   'csv-file': Importer._downloadExampleCSV
 });

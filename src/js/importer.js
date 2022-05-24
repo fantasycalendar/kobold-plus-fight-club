@@ -19,6 +19,7 @@ export default class Importer {
     }
 
     static exampleFiles = {
+        'json-raw': this._downloadExampleJson,
         'json-file': this._downloadExampleJson,
         'csv-file': this._downloadExampleCSV,
     }
