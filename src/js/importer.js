@@ -1,6 +1,8 @@
 import * as helpers from './helpers';
 
 export default class Importer {
+    static key = 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM';
+
 
     static loaders = {
         'google-sheets': this._importGoogleSheets,
@@ -238,13 +240,13 @@ export default class Importer {
     static loadersHtml = {
         'google-sheets': () => {
             return `
-                <label class="mb-1" for="import_resource_locator">Insert the Google Sheet link or <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">make your own</a></label>
+                <label class="mb-1" for="import_resource_locator">Insert a Google Sheet ID or link. To create your own, you can <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">refer to this example</a></label>
                 <input name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
             `;
         },
         'json-raw': () => {
             return `
-                <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="downloadExampleJson">download an example file to edit</a></label>
+                <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="downloadExampleFile">download an example file to edit</a></label>
                 <div class="mt-1">
                     <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
                 </div>

@@ -12303,6 +12303,8 @@ var Importer = /*#__PURE__*/function () {
   return Importer;
 }();
 
+_defineProperty(Importer, "key", 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM');
+
 _defineProperty(Importer, "loaders", {
   'google-sheets': Importer._importGoogleSheets,
   'json-raw': Importer._importJson,
@@ -12323,10 +12325,10 @@ _defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "typ
 
 _defineProperty(Importer, "loadersHtml", {
   'google-sheets': function googleSheets() {
-    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Insert the Google Sheet link or <a class=\"primary-link\" target=\"_blank\" href=\"https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing\">make your own</a></label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Insert a Google Sheet ID or link. To create your own, you can <a class=\"primary-link\" target=\"_blank\" href=\"https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing\">refer to this example</a></label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
   },
   'json-raw': function jsonRaw() {
-    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Input raw JSON or <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleJson\">download an example file to edit</a></label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Input raw JSON or <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleFile\">download an example file to edit</a></label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
   },
   'json-file': function jsonFile() {
     return "\n                <label class=\"mb-1 block\" id=\"file_input_label\" for=\"import_resource_locator_file\">Upload JSON text file below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download an example file to edit</a></label>                \n                <input accept=\"application/json\" class=\"block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"importerResourceLocator = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file\" type=\"file\">\n            ";
