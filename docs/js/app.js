@@ -12319,6 +12319,11 @@ _defineProperty(Importer, "validators", {
   'csv-file': Importer._validateCSV
 });
 
+_defineProperty(Importer, "exampleFiles", {
+  'json-file': Importer._downloadExampleJson,
+  'csv-file': Importer._downloadExampleCSV
+});
+
 _defineProperty(Importer, "sourcesRequiredHeaders", ["name", "type", ["shortname", "short name"], "link"]);
 
 _defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], ["unique", "unique?"], "sources"]);
