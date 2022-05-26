@@ -11345,14 +11345,16 @@ var Monster = /*#__PURE__*/function () {
           location = _str$split2[1];
 
       var source = {};
+      var reference = _this.app.sources[book];
 
       if (!isNaN(location)) {
-        source.reference = _this.app.sources[book];
+        source.reference = reference;
         source.page = location;
       } else if (_lib_js__WEBPACK_IMPORTED_MODULE_1__.isValidHttpUrl(location)) {
         source.reference = {
-          name: book,
-          shortname: book,
+          name: reference.name,
+          shortname: reference.shortname,
+          enabled: reference.enabled,
           link: location
         };
       }

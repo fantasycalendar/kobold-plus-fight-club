@@ -45,13 +45,15 @@ export default class Monster {
         this.sources = this.data.sources.split(', ').map(str => {
             const [book, location] = str.split(": ");
             let source = {};
+            const reference = this.app.sources[book];
             if (!isNaN(location)) {
-                source.reference = this.app.sources[book];
+                source.reference = reference;
                 source.page = location;
             } else if (lib.isValidHttpUrl(location)) {
                 source.reference = {
-                    name: book,
-                    shortname: book,
+                    name: reference.name,
+                    shortname: reference.shortname,
+                    enabled: reference.enabled,
                     link: location
                 }
             }
