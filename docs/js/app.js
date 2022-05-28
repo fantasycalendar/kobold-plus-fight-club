@@ -9722,7 +9722,24 @@ function app() {
         return monster;
       }).filter(Boolean);
       this.allMonsters = this.allMonsters.concat(newMonsters);
-      var environments = Object.values(this.environments);
+      var environments = {};
+      var creatureTypes = new Set();
+      var creatureSizes = new Set();
+      this.allMonsters.forEach(function (monster) {
+        monster.environments.split(',').forEach(function (environment) {
+          if (environment && !environments[environment]) {
+            var label = environment = environment.trim();
+            label = label.slice(0, 1).toUpperCase() + label.slice(1);
+            environments[environment] = {
+              value: environment,
+              label: label
+            };
+          }
+        });
+        creatureTypes.add(monster.data.type);
+        creatureSizes.add(monster.data.size);
+      });
+      environments = Object.values(environments);
       environments.sort(function (a, b) {
         return a.value > b.label ? -1 : 1;
       });
@@ -9732,6 +9749,21 @@ function app() {
       });
       window.dispatchEvent(new CustomEvent('set-environments', {
         detail: environments
+      }));
+      creatureTypes = Array.from(creatureTypes);
+      creatureTypes.sort();
+      creatureTypes = creatureTypes.map(function (type) {
+        return {
+          label: type,
+          value: type.toLowerCase()
+        };
+      });
+      creatureTypes.unshift({
+        value: "any",
+        label: "Any Type"
+      });
+      window.dispatchEvent(new CustomEvent('set-creature-types', {
+        detail: creatureTypes
       }));
     },
     deleteImportedSource: function deleteImportedSource(sourceName) {
@@ -11541,7 +11573,7 @@ var Importer = /*#__PURE__*/function () {
                   return response.json();
                 }).then(function (jsonifiedBody) {
                   if (jsonifiedBody.error) {
-                    return [false, "Google responded with an error: \"".concat(jsonifiedBody.error.message, "\" - is your sheet public?")];
+                    return [false, "Google responded with an error: \"".concat(jsonifiedBody.error.message, "\"")];
                   }
 
                   var monsters = jsonifiedBody.sheets.find(function (sheet) {
@@ -12349,16 +12381,16 @@ _defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "typ
 
 _defineProperty(Importer, "loadersHtml", {
   'google-sheets': function googleSheets() {
-    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Insert a Google Sheet ID or link. To create your own, you can <a class=\"primary-link\" target=\"_blank\" href=\"https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing\">refer to this example</a></label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Insert a Google Sheet ID or link. To create your own, you can <a class=\"primary-link\" target=\"_blank\" href=\"https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing\">refer to this example.</a></label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
   },
   'json-raw': function jsonRaw() {
-    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Input raw JSON or <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleFile\">download an example file to edit</a></label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Input raw JSON or <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleFile\">download an example file to edit.</a></label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
   },
   'json-file': function jsonFile() {
-    return "\n                <label class=\"mb-1 block\" id=\"file_input_label\" for=\"import_resource_locator_file\">Upload JSON text file below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download an example file to edit</a></label>                \n                <input accept=\"application/json\" class=\"block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"importerResourceLocator = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file\" type=\"file\">\n            ";
+    return "\n                <label class=\"mb-1 block\" id=\"file_input_label\" for=\"import_resource_locator_file\">Upload JSON text file below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download an example file to edit.</a></label>                \n                <input accept=\"application/json\" class=\"block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"importerResourceLocator = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file\" type=\"file\">\n            ";
   },
   'csv-file': function csvFile() {
-    return "\n                <label class=\"mb-1\">Upload CSV text files below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download example files to edit</a></label>\n                <div class=\"grid grid-cols-2 gap-2 mt-2\">                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_1\">Sources CSV</label>                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_2\">Monsters CSV</label>                \n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_1\" type=\"file\">\n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_2\" type=\"file\">\n                </div>\n            ";
+    return "\n                <label class=\"mb-1\">Upload CSV text files below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download example files to edit.</a></label>\n                <div class=\"grid grid-cols-2 gap-2 mt-2\">                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_1\">Sources CSV</label>                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_2\">Monsters CSV</label>                \n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_1\" type=\"file\">\n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_2\" type=\"file\">\n                </div>\n            ";
   }
 });
 
@@ -12420,16 +12452,6 @@ var Monster = /*#__PURE__*/function () {
     this.lair = !!this.data.lair;
     this.unique = !!this.data.unique;
     this.alignment = this.data.alignment ? Monster.parseAlignment(this.data.alignment) : "";
-    this.environments.split(',').forEach(function (environment) {
-      if (environment && !_this.app.environments[environment]) {
-        var label = environment = environment.trim();
-        label = label.slice(0, 1).toUpperCase() + label.slice(1);
-        _this.app.environments[environment] = {
-          value: environment,
-          label: label
-        };
-      }
-    });
     this.searchable = [this.data.name, this.data.section, this.data.type, this.data.size, this.data.alignment ? this.alignment.text : "", this.data.cr.string].concat(this.tags).join("|").toLowerCase();
     this.sources = this.data.sources.split(', ').map(function (str) {
       var _str$split = str.split(": "),

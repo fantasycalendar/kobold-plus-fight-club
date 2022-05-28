@@ -436,13 +436,40 @@ function app() {
 
             this.allMonsters = this.allMonsters.concat(newMonsters);
 
-            let environments = Object.values(this.environments);
+            let environments = {};
+            let creatureTypes = new Set();
+            let creatureSizes = new Set();
+            this.allMonsters.forEach(monster => {
+                monster.environments.split(',').forEach(environment => {
+                    if(environment && !environments[environment]){
+                        let label = environment = environment.trim();
+                        label = label.slice(0,1).toUpperCase() + label.slice(1);
+                        environments[environment] = {
+                            value: environment,
+                            label: label
+                        }
+                    }
+                });
+
+                creatureTypes.add(monster.data.type)
+                creatureSizes.add(monster.data.size)
+            });
+
+            environments = Object.values(environments);
             environments.sort((a, b) => {
                 return a.value > b.label ? -1 : 1;
             });
-
             environments.unshift({ value: "any", label: "Any Environment" });
             window.dispatchEvent(new CustomEvent('set-environments', { detail: environments }));
+
+            creatureTypes = Array.from(creatureTypes)
+            creatureTypes.sort();
+            creatureTypes = creatureTypes.map(type => ({
+                label: type,
+                value: type.toLowerCase(),
+            }));
+            creatureTypes.unshift({ value: "any", label: "Any Type" });
+            window.dispatchEvent(new CustomEvent('set-creature-types', { detail: creatureTypes }));
         },
 
         deleteImportedSource(sourceName){

@@ -760,23 +760,7 @@
                                     <div>
                                         <div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Creature type</div>
 
-                                        <div @mousedown.stop x-data="multiSelect($refs.creature_type, 'type', [
-												{ value: 'any', label: 'Any Type' },
-												{ value: 'aberration', label: 'Aberration' },
-												{ value: 'beast', label: 'Beast' },
-												{ value: 'celestial', label: 'Celestial' },
-												{ value: 'construct', label: 'Construct' },
-												{ value: 'dragon', label: 'Dragon' },
-												{ value: 'elemental', label: 'Elemental' },
-												{ value: 'fey', label: 'Fey' },
-												{ value: 'fiend', label: 'Fiend' },
-												{ value: 'giant', label: 'Giant' },
-												{ value: 'humanoid', label: 'Humanoid' },
-												{ value: 'monstrosity', label: 'Monstrosity' },
-												{ value: 'ooze', label: 'Ooze' },
-												{ value: 'plant', label: 'Plant' },
-												{ value: 'undead', label: 'Undead' },
-											])" @reset-filters.window="reset()">
+                                        <div @mousedown.stop x-data="multiSelect($refs.creature_type, 'type', [])" @reset-filters.window="reset()" @set-creature-types.window="options = $event.detail; setUp();">
                                             <select x-ref="creature_type" multiple class="inline-block mb-2 mr-2 mt-1 w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"></select>
                                         </div>
                                     </div>
@@ -1443,7 +1427,7 @@
 										<option value="google-sheets">Google Sheets</option>
 										<option value="json-raw">Raw JSON</option>
 										<option value="json-file">JSON File</option>
-										<option value="csv-file">CSV File</option>
+										<option value="csv-file">CSV Files</option>
 									</optgroup>
 								</select>
 
