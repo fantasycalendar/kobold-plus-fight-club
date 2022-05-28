@@ -10,6 +10,7 @@
     "alpinejs": "^3.9.6",
     "browser-sync": "^2.27.7",
     "choices.js": "^10.1.0",
+    "flowbite": "^1.4.5",
     "hotkeys-js": "^3.8.9",
     "intro.js": "^4.3.0",
     "nouislider": "^15.5.1",
