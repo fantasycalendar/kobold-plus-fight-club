@@ -31,6 +31,8 @@ function app() {
         showKeyboardModal: false,
         showImporterModal: false,
 
+        hasShownCustomMonstersNotification: Alpine.$persist(false).as('hasShownCustomMonstersNotification'),
+
         mobileEncounterTab: false,
 
         filters: {},
@@ -222,6 +224,23 @@ function app() {
             }
 
             this.$watch('sources', () => { this.enabledSources = Object.values(this.sources).filter(source => source.enabled) });
+
+            if(!this.hasShownCustomMonstersNotification){
+                setTimeout(() => {
+                    dispatchEvent(new CustomEvent('notification', {
+                        detail: {
+                            title: 'Custom Monsters have arrived!',
+                            body: 'Add more creatures to challenge your players - click on the "Import Custom Monsters" in the top bar to get started!',
+                            icon: 'fa-skull text-4xl',
+                            icon_color: 'text-emerald-600',
+                            sticky: true,
+                            callback: () => {
+                                this.hasShownCustomMonstersNotification = true;
+                            }
+                        }
+                    }));
+                }, 1000)
+            }
         },
 
         get monsters(){

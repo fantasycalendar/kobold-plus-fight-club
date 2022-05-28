@@ -1578,12 +1578,15 @@
                             init: function() {
                                 setTimeout(() => this.show = true, 100);
                                 if(!this.info.sticky) {
-                                    setTimeout(() => this.show = false, 3000);
+                                    setTimeout(() => { this.remove() }, 3000);
                                     setTimeout(() => delete notifications[index], 4000);
                                 }
                             },
                             remove: function() {
                                 this.show = false;
+                                if(this.info.callback){
+                                    this.info.callback();
+                                }
                             }
                          }"
 					 x-show="show"
