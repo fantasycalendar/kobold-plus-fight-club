@@ -67,7 +67,7 @@
         <div class="-mr-2 flex items-center lg:hidden">
           <button
             class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
-            @click="menu = !menu"
+            @click="toggleMenu"
           >
             <span class="sr-only">Open main menu</span>
             <svg
@@ -106,8 +106,8 @@
     </div>
 
     <div
-      class="transition-all duration-400 ease-in-out overflow-hidden hidden"
-      :class="{ block: menu, hidden: !menu }"
+      class="transition-all duration-400 ease-in-out overflow-hidden"
+      v-show="menu"
     >
       <div class="pt-2 pb-3 space-y-1">
         <a
@@ -116,18 +116,24 @@
           >Fantasy Calendar</a
         >
         <a
+            @click="$emit('modal', { name: 'Importer' })"
+            href="javascript:"
+            class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
+        >Import Custom Monsters</a>
+        <a
           href="javascript:"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
-          >About</a
-        >
+          >
+          About
+        </a>
         <a
           title="Toggle light mode (ctrl+shift+\)"
-          @click="toggleTheme()"
+          @click="toggleTheme"
           href="javascript:"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
         >
           <i :class="theme === 'light' ? 'fa-moon' : 'fa-sun'" class="fa"></i>
-          <span x-text="`Toggle theme`"></span>
+          <span class="ml-1">Toggle theme</span>
         </a>
       </div>
     </div>
@@ -145,6 +151,9 @@ export default {
   },
 
   methods: {
+    toggleMenu() {
+      this.menu = !this.menu;
+    },
     toggleTheme() {
       this.theme = this.theme === "light" ? "dark" : "light";
       document.documentElement.classList.toggle('dark', this.theme === 'dark');
