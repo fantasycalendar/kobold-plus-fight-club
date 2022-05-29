@@ -1,6 +1,7 @@
 <script setup>
 import FiltersSlideover from "../components/FiltersSlideover.vue";
 import ImporterModal from "../components/ImporterModal.vue";
+import NotificationArea from "../components/NotificationArea.vue";
 </script>
 
 <script>
@@ -16,7 +17,7 @@ import tippy from 'tippy.js';
 const internationalNumberFormat = new Intl.NumberFormat('en-US')
 
 export default {
-  components: { FiltersSlideover, ImporterModal },
+  components: { FiltersSlideover, ImporterModal, NotificationArea },
 
   data() {
 	return {
@@ -41,12 +42,14 @@ export default {
 
 	  loadedSources: [],
 	  loadedMonsters: [],
+    tab: 'history',
 
 	  encounterHistory: [],
 	  savedEncounters: [],
 
 	  loadedEncounterIndex: null,
 	  loadedLastEncounter: false,
+    sourcesByType: [],
 
 	  savedParties: [],
 
@@ -1083,7 +1086,7 @@ export default {
 			   v-show="showFilters"
 		  ></div>
 
-		  <FiltersSidebar />
+		  <FiltersSlideover />
 		</div>
 	  </div>
 	</div>
@@ -1520,6 +1523,7 @@ export default {
 	</div>
 
 	<ImporterModal />
+  <NotificationArea />
 
   </div>
 </template>
