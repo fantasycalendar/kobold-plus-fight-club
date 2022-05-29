@@ -186,7 +186,7 @@ export default {
       dispatchEvent(new CustomEvent('notification', {detail: {title: 'Import complete!', body: 'Your new source(s) have been imported'}}));
 
       this.step = 1;
-      this.show = false;
+      this.$emit('update:show', false);
     },
     abortImport() {
       this.loadImporter();
@@ -197,7 +197,7 @@ export default {
       this.importError = '';
     },
     cancelImport() {
-      this.show = false;
+      this.$emit('update:show', false);
       this.abortImport();
     },
     downloadExampleFile(){
