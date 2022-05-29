@@ -9601,41 +9601,39 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                console.log(_helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion));
-
                 if (!(_this4.loadedSources.length && _helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
-                  _context2.next = 3;
+                  _context2.next = 2;
                   break;
                 }
 
                 return _context2.abrupt("return", _this4.loadedSources);
 
-              case 3:
+              case 2:
                 sources = [];
-                _context2.next = 6;
+                _context2.next = 5;
                 return fetch("json/se_sources.json").then(function (res) {
                   return res.json();
                 }).then(function (data) {
                   sources = sources.concat(data);
                 });
 
-              case 6:
-                _context2.next = 8;
+              case 5:
+                _context2.next = 7;
                 return fetch("json/se_third_party_sources.json").then(function (res) {
                   return res.json();
                 }).then(function (data) {
                   sources = sources.concat(data);
                 });
 
-              case 8:
-                _context2.next = 10;
+              case 7:
+                _context2.next = 9;
                 return fetch("json/se_community_sources.json").then(function (res) {
                   return res.json();
                 }).then(function (data) {
                   sources = sources.concat(data);
                 });
 
-              case 10:
+              case 9:
                 // This causes old sources that were enabled to remain enabled
                 if (_this4.loadedSources.length) {
                   _this4.loadedSources = sources.map(function (newSource) {
@@ -9660,7 +9658,7 @@ function app() {
 
                 return _context2.abrupt("return", _this4.loadedSources);
 
-              case 12:
+              case 11:
               case "end":
                 return _context2.stop();
             }

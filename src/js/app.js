@@ -351,8 +351,6 @@ function app() {
 
         async fetchSources(){
 
-            console.log(helpers.versionCompare(this.sourcesVersion, this.storedSourcesVersion))
-
             if(this.loadedSources.length && helpers.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
