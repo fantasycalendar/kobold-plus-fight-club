@@ -147,6 +147,7 @@ export default {
   methods: {
     toggleTheme() {
       this.theme = this.theme === "light" ? "dark" : "light";
+      document.documentElement.classList.toggle('dark', this.theme === 'dark');
     },
   },
 };

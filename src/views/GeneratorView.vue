@@ -27,7 +27,6 @@ export default {
 	  showSourcesModal: false,
 	  showEncounterModal: false,
 	  showPartyModal: false,
-	  showKeyboardModal: false,
 	  showImporterModal: false,
 
 	  mobileEncounterTab: false,
@@ -82,18 +81,6 @@ export default {
 	  sortByDesc: true,
 
 	  timer: null,
-
-	  keyboardHelp: [
-		{ key: 'ctrl+f', description: 'Toggle the filters sidebar' },
-		{ key: 'ctrl+/', description: 'Displays this help window' },
-		{ key: 'ctrl+shift+\\', description: 'Toggles light/dark theme' },
-		{ key: 'ctrl+]', description: 'Next monsters search page' },
-		{ key: 'ctrl+k', description: 'Focus the search box' },
-		{ key: 'ctrl+[', description: 'Previous monsters search page' },
-		{ key: 'ctrl+g', description: 'Generate an encounter' },
-		{ key: 'ctrl+s', description: 'Save the current encounter' },
-		{ key: 'esc', description: 'Close any open dialogs' },
-	  ],
 
 	  party: {
 
@@ -1458,58 +1445,6 @@ export default {
 		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
 			<button @click="showPartyModal = false" type="button" class="button-primary-md">Close</button>
 			<button @click="createParty" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-plus mr-1"></i> Create party </button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-
-	<div v-show="showKeyboardModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
-	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 v-show="showKeyboardModal"
-			 x-transition:enter="ease-out duration-300"
-			 x-transition:enter-start="opacity-0"
-			 x-transition:enter-end="opacity-100"
-			 x-transition:leave="ease-in duration-200"
-			 x-transition:leave-start="opacity-100"
-			 x-transition:leave-end="opacity-0"
-		></div>
-
-		<!-- This element is to trick the browser into centering the modal contents. -->
-		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-		<div @mousedown.outside="showKeyboardModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
-			 v-show="showKeyboardModal"
-			 x-transition:enter="ease-out duration-300"
-			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-			 x-transition:leave="ease-in duration-200"
-			 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-			 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-		>
-		  <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
-			<div class="sm:flex flex-col sm:items-start w-full">
-			  <div class="w-full flex pb-3">
-				<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Keyboard Shortcuts</h3>
-			  </div>
-
-			  <div class="my-3 sm:mt-0 w-full">
-				<div class="my-2 max-h-96 overflow-y-auto overflow-x-hidden text-gray-700 dark:text-gray-300">
-				  <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-					<div v-for="shortcut in keyboardHelp">
-					  <div class="flex justify-between">
-						<kbd class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400" v-text="shortcut.key"></kbd>
-						<div v-text="shortcut.description"></div>
-					  </div>
-					</div>
-				  </div>
-				</div>
-			  </div>
-			</div>
-		  </div>
-
-		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-			<button @click="showKeyboardModal = false" type="button" class="button-primary-md">Close</button>
 		  </div>
 		</div>
 	  </div>

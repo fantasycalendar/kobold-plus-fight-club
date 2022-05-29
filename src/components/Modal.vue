@@ -13,6 +13,7 @@
         <div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
              @click="$emit('update:show', false)"
         ></div>
+        <!--    TODO: Fix clicking the background.    -->
       </transition>
 
       <!-- This element is to trick the browser into centering the modal contents. -->

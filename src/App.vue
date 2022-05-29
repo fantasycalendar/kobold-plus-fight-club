@@ -1,12 +1,16 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import HeaderNav from './components/HeaderNav.vue';
+
 import ImporterModal from './components/ImporterModal.vue';
+import KeyboardModal from "./components/KeyboardModal.vue";
+
 import NotificationArea from "./components/NotificationArea.vue";
 </script>
 
 <script>
 export default {
+  components: { RouterView, HeaderNav, ImporterModal, KeyboardModal, NotificationArea },
   data() {
     return {
       theme: window.theme,
@@ -34,6 +38,8 @@ export default {
     <RouterView />
 
     <ImporterModal v-model:show="showImporterModal" />
+    <KeyboardModal v-model:show="showKeyboardModal" />
+
     <NotificationArea />
   </div>
 </template>

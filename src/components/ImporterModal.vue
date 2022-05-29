@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model:show="show" title="Import Custom Monsters">
+  <Modal v-model:show="showModal" title="Import Custom Monsters">
     <div class="my-3 sm:mt-0 w-full" v-show="step === 1">
       <label for="importer_source">Import from</label>
       <select v-model="importerSourceType" @change="loadImporter" name="importer_source" id="importer_source" class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none rounded-md focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
@@ -141,6 +141,7 @@ export default {
 
   data() {
     return {
+      showModal: false,
       importerResourceLocator: '',
       importerSourceType: 'google-sheets',
       importerHtml: '',
@@ -155,6 +156,8 @@ export default {
   mounted(){
     this.loadImporter();
     this.$watch('importerResourceLocator', async value => [this.canImport, this.importError] = await Importer.canImport(value, this.importerSourceType));
+    this.$watch('showModal', (value) => this.$emit('update:show', value));
+    this.$watch('show', (value) => this.showModal = value);
   },
 
   methods: {
