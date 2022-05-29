@@ -20,7 +20,7 @@ function app() {
 
     return {
 
-        sourcesVersion: "2.2.0",
+        sourcesVersion: "2.3.0",
         storedSourcesVersion: Alpine.$persist("2.0.0").as('storedSourcesVersion'),
 
         menu: false,
@@ -351,6 +351,8 @@ function app() {
 
         async fetchSources(){
 
+            console.log(helpers.versionCompare(this.sourcesVersion, this.storedSourcesVersion))
+
             if(this.loadedSources.length && helpers.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
@@ -377,7 +379,7 @@ function app() {
 
             // This causes old sources that were enabled to remain enabled
             if(this.loadedSources.length){
-                sources.map((newSource) => {
+                this.loadedSources = sources.map((newSource) => {
                     const foundOldSource = this.loadedSources.find(oldSource => {
                         return newSource['name'] === oldSource["name"];
                     });
@@ -386,6 +388,7 @@ function app() {
                     }else{
                         newSource.enabled = !!newSource.default;
                     }
+                    return newSource;
                 })
             }else{
                 this.loadedSources = sources.map(source => {

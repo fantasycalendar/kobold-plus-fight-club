@@ -9212,7 +9212,7 @@ var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
-    sourcesVersion: "2.2.0",
+    sourcesVersion: "2.3.0",
     storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
@@ -9601,42 +9601,44 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                console.log(_helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion));
+
                 if (!(_this4.loadedSources.length && _helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
-                  _context2.next = 2;
+                  _context2.next = 3;
                   break;
                 }
 
                 return _context2.abrupt("return", _this4.loadedSources);
 
-              case 2:
+              case 3:
                 sources = [];
-                _context2.next = 5;
+                _context2.next = 6;
                 return fetch("json/se_sources.json").then(function (res) {
                   return res.json();
                 }).then(function (data) {
                   sources = sources.concat(data);
                 });
 
-              case 5:
-                _context2.next = 7;
+              case 6:
+                _context2.next = 8;
                 return fetch("json/se_third_party_sources.json").then(function (res) {
                   return res.json();
                 }).then(function (data) {
                   sources = sources.concat(data);
                 });
 
-              case 7:
-                _context2.next = 9;
+              case 8:
+                _context2.next = 10;
                 return fetch("json/se_community_sources.json").then(function (res) {
                   return res.json();
                 }).then(function (data) {
                   sources = sources.concat(data);
                 });
 
-              case 9:
+              case 10:
                 // This causes old sources that were enabled to remain enabled
                 if (_this4.loadedSources.length) {
-                  sources.map(function (newSource) {
+                  _this4.loadedSources = sources.map(function (newSource) {
                     var foundOldSource = _this4.loadedSources.find(function (oldSource) {
                       return newSource['name'] === oldSource["name"];
                     });
@@ -9646,6 +9648,8 @@ function app() {
                     } else {
                       newSource.enabled = !!newSource["default"];
                     }
+
+                    return newSource;
                   });
                 } else {
                   _this4.loadedSources = sources.map(function (source) {
@@ -9656,7 +9660,7 @@ function app() {
 
                 return _context2.abrupt("return", _this4.loadedSources);
 
-              case 11:
+              case 12:
               case "end":
                 return _context2.stop();
             }
