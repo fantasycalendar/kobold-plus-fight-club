@@ -1,13 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="en" class="h-full">
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kobold Plus Fight Club - The first rule of Kobold Fight Club is 'Yip Yip!'</title>
+    <link rel="manifest" href="/src/assets/manifest.json">
+    <link rel="apple-touch-icon" href="/src/assets/images/logo.png" sizes="600x600">
+    <link rel="icon" href="/src/assets/images/logo.png" sizes="600x600">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+
+
     <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            window.theme = 'dark'
+            document.documentElement.classList.add('dark')
+            localStorage.theme = 'dark'
+        } else {
+            window.theme = 'light'
+            document.documentElement.classList.remove('dark')
+            localStorage.theme = 'light'
+        }
+
+        if(window.navigator.userAgent.includes('Surface Duo') && !window.navigator.userAgent.includes('Surface Duo 2')) {
+            document.documentElement.classList.add('surface-duo');
+        }
+        if(window.navigator.userAgent.includes('Surface Duo 2')) {
+            document.documentElement.classList.add('surface-duo-2');
+        }
+    </script>
+</head>
+<body class="h-full bg-gray-100 dark:bg-gray-800">
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
+</body>
 </html>
