@@ -9212,7 +9212,7 @@ var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
-    sourcesVersion: "2.1.0",
+    sourcesVersion: "2.2.0",
     storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
@@ -9634,10 +9634,26 @@ function app() {
                 });
 
               case 9:
-                _this4.loadedSources = sources.map(function (source) {
-                  source.enabled = !!source["default"];
-                  return source;
-                });
+                // This causes old sources that were enabled to remain enabled
+                if (_this4.loadedSources.length) {
+                  sources.map(function (newSource) {
+                    var foundOldSource = _this4.loadedSources.find(function (oldSource) {
+                      return newSource['name'] === oldSource["name"];
+                    });
+
+                    if (foundOldSource) {
+                      newSource.enabled = foundOldSource.enabled;
+                    } else {
+                      newSource.enabled = !!newSource["default"];
+                    }
+                  });
+                } else {
+                  _this4.loadedSources = sources.map(function (source) {
+                    source.enabled = !!source["default"];
+                    return source;
+                  });
+                }
+
                 return _context2.abrupt("return", _this4.loadedSources);
 
               case 11:
