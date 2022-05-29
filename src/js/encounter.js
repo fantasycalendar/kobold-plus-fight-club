@@ -1,4 +1,4 @@
-import * as lib from "./lib.js";
+import * as helpers from "./helpers.js";
 import CONST from "./constants.js";
 
 const encounter = {
@@ -60,12 +60,12 @@ const encounter = {
         for(let i = 1; i < levels.length; i++){
             const [lowerKey, lowerValue] = levels[i-1];
             const [upperKey, upperValue] = levels[i];
-            const ratio = lib.ratio(lowerValue, upperValue, exp);
+            const ratio = helpers.ratio(lowerValue, upperValue, exp);
 
             if(upperKey === "daily" && ratio >= 0.0) {
                 if (ratio >= 0.2) {
                     return ratio >= 1.0
-                        ? "like " + lib.randomArrayElement(this.insaneDifficultyStrings)
+                        ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
                         : ratio >= 0.6 ? 'extremely deadly' : "really deadly";
                 }
                 return lowerKey;
@@ -77,7 +77,7 @@ const encounter = {
             }
         }
 
-        const ratio = lib.ratio(0, levels[0][1], exp);
+        const ratio = helpers.ratio(0, levels[0][1], exp);
         return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
     },
 
@@ -216,16 +216,16 @@ const encounter = {
 
         }
 
-        return lib.randomArrayElement(monsterList);
+        return helpers.randomArrayElement(monsterList);
 
     },
 
     getEncounterTemplate() {
 
-        let template = lib.clone(CONST.ENCOUNTER_TYPES[this.app.encounterType]);
+        let template = helpers.clone(CONST.ENCOUNTER_TYPES[this.app.encounterType]);
 
         if (template.samples) {
-            template = lib.randomArrayElement(template.samples);
+            template = helpers.randomArrayElement(template.samples);
             if (this.app.encounterType === "random") {
                 template = {
                     subtractive: true,
@@ -243,7 +243,7 @@ const encounter = {
                     part = part.replaceAll("players", players);
                     return eval(part);
                 });
-                group.count = parts.length > 1 ? lib.randomIntBetween(...parts) : parts[0];
+                group.count = parts.length > 1 ? helpers.randomIntBetween(...parts) : parts[0];
             }
             return group;
         });
@@ -293,7 +293,7 @@ const encounter = {
             return !this.groups.some(group => group.monster === monster);
         });
         if (!monsterList.length) return;
-        group.monster = lib.randomArrayElement(monsterList);
+        group.monster = helpers.randomArrayElement(monsterList);
         this.saveToHistory();
     },
 
@@ -389,7 +389,7 @@ const encounter = {
     },
 
     load(encounter){
-        const groups = lib.clone(encounter).map(group => {
+        const groups = helpers.clone(encounter).map(group => {
             group.monster = this.app.monsterLookupTable[group.monster.slug];
             if (!group.monster) return false;
             return group;

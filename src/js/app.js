@@ -1,13 +1,15 @@
-require('@fortawesome/fontawesome-free')
+require('@fortawesome/fontawesome-free');
 
 import Choices from 'choices.js';
 import hotkeys from 'hotkeys-js';
-import encounter from "./encounter.js";
-import noUiSlider from "nouislider";
-import * as lib from "./lib.js";
-import CONST from "./constants.js";
-import Monster from "./monster.js";
+import encounter from "./encounter";
+import * as helpers from "./helpers";
+import CONST from "./constants";
+import Monster from "./monster";
+import Importer from "./importer";
+
 import tippy from 'tippy.js';
+import noUiSlider from "nouislider";
 
 import persist from '@alpinejs/persist'
 import Alpine from 'alpinejs'
@@ -15,7 +17,7 @@ import Alpine from 'alpinejs'
 const internationalNumberFormat = new Intl.NumberFormat('en-US')
 
 function app() {
-    
+
     return {
 
         sourcesVersion: "2.2.0",
@@ -27,6 +29,9 @@ function app() {
         showEncounterModal: false,
         showPartyModal: false,
         showKeyboardModal: false,
+        showImporterModal: false,
+
+        hasShownCustomMonstersNotification: Alpine.$persist(false).as('hasShownCustomMonstersNotification'),
 
         mobileEncounterTab: false,
 
@@ -35,7 +40,9 @@ function app() {
         nonDefaultFiltersCount: 0,
 
         loadedSources: Alpine.$persist([]).as('sources'),
+        importedSources: Alpine.$persist([]).as('importedSources'),
         loadedMonsters: Alpine.$persist([]).as('monsters'),
+        importedMonsters: Alpine.$persist([]).as('importedMonsters'),
 
         encounterHistory: Alpine.$persist([]).as('encounterHistory'),
         savedEncounters: Alpine.$persist([]).as('savedEncounters'),
@@ -189,7 +196,7 @@ function app() {
                     return acc + (group.getsXP ? parseInt(group.players) : 0)
                 }, 0) + this.app.activePlayers.length;
             },
-            
+
             get totalExperiencePerPlayer(){
                 return Math.round(this.app.encounter.totalExp / this.totalPlayersToGainXP);
             },
@@ -217,6 +224,23 @@ function app() {
             }
 
             this.$watch('sources', () => { this.enabledSources = Object.values(this.sources).filter(source => source.enabled) });
+
+            if(!this.hasShownCustomMonstersNotification){
+                setTimeout(() => {
+                    dispatchEvent(new CustomEvent('notification', {
+                        detail: {
+                            title: 'Custom Monsters have arrived!',
+                            body: 'Add more creatures to challenge your players - click on the "Import Custom Monsters" in the top bar to get started!',
+                            icon: 'fa-skull text-4xl',
+                            icon_color: 'text-emerald-600',
+                            sticky: true,
+                            callback: () => {
+                                this.hasShownCustomMonstersNotification = true;
+                            }
+                        }
+                    }));
+                }, 1000)
+            }
         },
 
         get monsters(){
@@ -251,8 +275,12 @@ function app() {
 
         async fetchData() {
             this.formatSources(await this.fetchSources());
+            this.formatSources(this.importedSources);
+
             this.formatMonsters(await this.fetchMonsters());
-            this.searchPlaceholder = lib.randomArrayElement(this.allMonsters).name;
+            this.formatMonsters(this.importedMonsters);
+
+            this.searchPlaceholder = helpers.randomArrayElement(this.allMonsters).name;
 
             if (this.loadedEncounterIndex !== null){
                 this.encounter.load(this.savedEncounters[this.loadedEncounterIndex]);
@@ -323,7 +351,7 @@ function app() {
 
         async fetchSources(){
 
-            if(this.loadedSources.length > 0 && lib.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
+            if(this.loadedSources.length && helpers.versionCompare(this.sourcesVersion, this.storedSourcesVersion) === 0){
                 return this.loadedSources;
             }
 
@@ -372,7 +400,7 @@ function app() {
 
         async fetchMonsters(){
 
-            if(this.loadedMonsters.length > 0 && lib.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
+            if(this.loadedSources.length && helpers.versionCompare(this.storedSourcesVersion, this.sourcesVersion) === 0){
                 return this.loadedMonsters;
             }
 
@@ -407,21 +435,75 @@ function app() {
             this.sources = data.reduce((acc, source) => {
                 acc[source.name] = source;
                 return acc;
-            }, {});
+            }, this.sources);
         },
 
         formatMonsters(data){
-            this.allMonsters = data.map(data => {
+            const newMonsters = data.map(data => {
                 const monster = new Monster(this, data);
+                if(this.monsterLookupTable[monster.slug]){
+                    return false;
+                }
                 this.monsterLookupTable[monster.slug] = monster;
                 return monster;
+            }).filter(Boolean);
+
+            this.allMonsters = this.allMonsters.concat(newMonsters);
+
+            let environments = {};
+            let creatureTypes = new Set();
+            let creatureSizes = new Set();
+            this.allMonsters.forEach(monster => {
+                monster.environments.split(',').forEach(environment => {
+                    if(environment && !environments[environment]){
+                        let label = environment = environment.trim();
+                        label = label.slice(0,1).toUpperCase() + label.slice(1);
+                        environments[environment] = {
+                            value: environment,
+                            label: label
+                        }
+                    }
+                });
+
+                creatureTypes.add(monster.data.type)
+                creatureSizes.add(monster.data.size)
             });
-            this.environments = Object.values(this.environments);
-            this.environments.sort((a, b) => {
+
+            environments = Object.values(environments);
+            environments.sort((a, b) => {
                 return a.value > b.label ? -1 : 1;
             });
-            this.environments.unshift({ value: "any", label: "Any Environment" });
-            window.dispatchEvent(new CustomEvent('set-environments', { detail: this.environments }));
+            environments.unshift({ value: "any", label: "Any Environment" });
+            window.dispatchEvent(new CustomEvent('set-environments', { detail: environments }));
+
+            creatureTypes = Array.from(creatureTypes)
+            creatureTypes.sort();
+            creatureTypes = creatureTypes.map(type => ({
+                label: type,
+                value: type.toLowerCase(),
+            }));
+            creatureTypes.unshift({ value: "any", label: "Any Type" });
+            window.dispatchEvent(new CustomEvent('set-creature-types', { detail: creatureTypes }));
+        },
+
+        deleteImportedSource(sourceName){
+
+            const sourceToDelete = this.sources[sourceName];
+
+            this.allMonsters = this.allMonsters.filter(monster => {
+                return !monster.sources.find(source => source.actual_source === sourceToDelete);
+            });
+
+            this.importedMonsters = this.importedMonsters.filter(monster => {
+                return !monster.sources.startsWith(sourceName);
+            });
+
+            delete this.sources[sourceName];
+            const index = this.importedSources.findIndex(source => source.name === sourceName);
+            this.importedSources.splice(index, 1);
+
+            this.updateFilteredMonsters();
+
         },
 
         filterMonsters(crString = false, filterCallback = () => { return true; }){
@@ -555,7 +637,7 @@ function app() {
             this.savedParties.forEach((party, partyIndex) => {
                 party.players.filter(player => player.active).forEach((player, playerIndex) => {
                     data.Combatants.push({
-                        Id: lib.slugify(`${party.name}-${player.name}`),
+                        Id: helpers.slugify(`${party.name}-${player.name}`),
                         Name: player.name,
                         InitiativeModifier: player.initiativeMod,
                         InitiativeAdvantage: player.initiativeAdvantage,
@@ -666,6 +748,7 @@ function multiSelect($el, name, options) {
         value: Alpine.$persist(['any']).as(name),
         name: name,
         options: options,
+        completedSetup: false,
         init() {
             if(!options.length) return;
             this.$nextTick(() => {
@@ -673,6 +756,10 @@ function multiSelect($el, name, options) {
             })
         },
         setUp(){
+            if(this.completedSetup) {
+                return;
+            }
+
             let choices = new Choices($el, {
                 allowHTML: true,
                 removeItemButton: true
@@ -711,6 +798,8 @@ function multiSelect($el, name, options) {
             this.$watch('options', () => refreshChoices())
 
             this.onFiltersChanged();
+
+            this.completedSetup = true;
         },
         onFiltersChanged() {
             window.dispatchEvent(new CustomEvent('filters-changed', { detail: {
@@ -733,6 +822,7 @@ window.multiSlider = multiSlider;
 window.noUiSlider = noUiSlider;
 window.Choices = Choices;
 window.tippy = tippy;
+window.Importer = Importer;
 
 window.Alpine = Alpine
 

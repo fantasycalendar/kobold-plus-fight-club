@@ -1,5 +1,5 @@
 import CONST from "./constants.js";
-import * as lib from "./lib.js";
+import * as helpers from "./helpers.js";
 
 const regexCache = {};
 let lastRegex = "";
@@ -11,7 +11,7 @@ export default class Monster {
         this.data = data;
         this.cr = CONST.CR[this.data.cr];
 
-        this.slug = lib.slugify(this.data.name+'-'+this.data.sources+"-"+this.cr.string);
+        this.slug = helpers.slugify(this.data.name+'-'+this.data.sources+"-"+this.cr.string);
 
         this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
 
@@ -20,18 +20,6 @@ export default class Monster {
         this.lair = !!this.data.lair;
         this.unique = !!this.data.unique;
         this.alignment = this.data.alignment ? Monster.parseAlignment(this.data.alignment) : "";
-
-        this.environments.split(',').forEach(environment => {
-
-            if(environment && !this.app.environments[environment]){
-                let label = environment = environment.trim();
-                label = label.slice(0,1).toUpperCase() + label.slice(1);
-                this.app.environments[environment] = {
-                    value: environment,
-                    label: label
-                }
-            }
-        });
 
         this.searchable = [
             this.data.name,
@@ -45,10 +33,11 @@ export default class Monster {
         this.sources = this.data.sources.split(', ').map(str => {
             const [book, location] = str.split(": ");
             let source = {};
-            if (!isNaN(location)) {
-                source.reference = this.app.sources[book];
+            source.actual_source = this.app.sources[book];
+            if (!isNaN(Number(location))) {
+                source.reference = source.actual_source;
                 source.page = location;
-            } else if (lib.isValidHttpUrl(location)) {
+            } else if (helpers.isValidHttpUrl(location)) {
                 source.reference = {
                     name: book,
                     shortname: book,
@@ -85,7 +74,7 @@ export default class Monster {
     }
 
     get sourceEnabled() {
-        return this.sources.find(source => source.reference.enabled);
+        return this.sources.find(source => source.actual_source.enabled);
     }
 
     static parseAlignment(str = "") {
