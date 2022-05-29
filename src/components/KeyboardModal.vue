@@ -1,5 +1,28 @@
 <script setup>
-import Modal from "./Modal.vue";
+  import Modal from "./Modal.vue";
+  import { watch, ref, defineEmits } from "vue";
+
+  const props = defineProps({
+    show: false
+  })
+
+  const emit = defineEmits(['update:show']);
+
+  const showModal = ref(false);
+  const keyboardHelp = [
+    { key: 'ctrl+f', description: 'Toggle the filters sidebar' },
+    { key: 'ctrl+/', description: 'Displays this help window' },
+    { key: 'ctrl+shift+\\', description: 'Toggles light/dark theme' },
+    { key: 'ctrl+]', description: 'Next monsters search page' },
+    { key: 'ctrl+k', description: 'Focus the search box' },
+    { key: 'ctrl+[', description: 'Previous monsters search page' },
+    { key: 'ctrl+g', description: 'Generate an encounter' },
+    { key: 'ctrl+s', description: 'Save the current encounter' },
+    { key: 'esc', description: 'Close any open dialogs' },
+  ];
+
+  watch(showModal, value => emit('update:show', value));
+  watch(() => props.show, value => showModal.value = value);
 </script>
 
 <template>
@@ -21,40 +44,5 @@ import Modal from "./Modal.vue";
     <template #footer>
       <button @click="$emit('update:show', false)" type="button" class="button-primary-md">Close</button>
     </template>
-  </Modal>>
+  </Modal>
 </template>
-
-<script>
-export default {
-  name: "KeyboardModal",
-  components: { Modal },
-  props: {
-    show: false
-  },
-  emits: ['update:show'],
-  mounted() {
-    this.$watch('showModal', (value) => this.$emit('update:show', value));
-    this.$watch('show', (value) => this.showModal = value);
-  },
-  data() {
-    return {
-      showModal: false,
-      keyboardHelp: [
-        { key: 'ctrl+f', description: 'Toggle the filters sidebar' },
-        { key: 'ctrl+/', description: 'Displays this help window' },
-        { key: 'ctrl+shift+\\', description: 'Toggles light/dark theme' },
-        { key: 'ctrl+]', description: 'Next monsters search page' },
-        { key: 'ctrl+k', description: 'Focus the search box' },
-        { key: 'ctrl+[', description: 'Previous monsters search page' },
-        { key: 'ctrl+g', description: 'Generate an encounter' },
-        { key: 'ctrl+s', description: 'Save the current encounter' },
-        { key: 'esc', description: 'Close any open dialogs' },
-      ]
-    }
-  }
-}
-</script>
-
-<style scoped>
-
-</style>
