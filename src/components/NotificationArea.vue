@@ -12,6 +12,7 @@ import Notification from "./Notification.vue";
         v-for="(notification, index) in notifications"
         :notification="notification"
         :key="index"
+        @dismiss="dismiss(index)"
       />
     </div>
   </div>
@@ -43,9 +44,13 @@ export default {
 
   methods: {
     notification(notification) {
-      console.log(notification);
+      notification.show = false;
       this.notifications.push(notification);
     },
+
+    dismiss(index) {
+      this.notifications.splice(index, 1);
+    }
   },
 };
 </script>

@@ -1,7 +1,5 @@
 <script setup>
 import FiltersSlideover from "../components/FiltersSlideover.vue";
-import ImporterModal from "../components/ImporterModal.vue";
-import NotificationArea from "../components/NotificationArea.vue";
 </script>
 
 <script>
@@ -17,11 +15,10 @@ import tippy from 'tippy.js';
 const internationalNumberFormat = new Intl.NumberFormat('en-US')
 
 export default {
-  components: { FiltersSlideover, ImporterModal, NotificationArea },
+  components: { FiltersSlideover },
 
   data() {
 	return {
-	  theme: window.theme,
 	  sourcesVersion: "2.1.0",
 	  storedSourcesVersion: "2.0.0",
 
@@ -585,15 +582,11 @@ export default {
 </script>
 
 <template>
-  <div
-	  class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-300 flex flex-col"
-  >
-
 	<div class="flex py-4 sm:py-6 lg:py-8 w-full max-w-[2560px] relative grow mx-auto flex-col md:flex-row">
 	  <div class="relative self-center mb-6 bg-gray-200 dark:bg-gray-800 rounded-lg p-0.5 flex sm:mt-8 h-10 md:hidden">
-		<div class="absolute bg-gray-100 dark:bg-gray-700 w-1/2 transition-all duration-300 inset-y-1 rounded-md" :class="{ 'translate-x-full -ml-1.5': mobileEncounterTab, 'left-1': !mobileEncounterTab }"></div>
-		<button @click="mobileEncounterTab = false" type="button" :class="{ 'text-gray-900 ': !mobileEncounterTab, 'text-gray-700': mobileEncounterTab }" class="relative border-gray-200 rounded-md shadow-sm py-2 text-sm font-medium dark:text-gray-100 whitespace-nowrap focus:outline-none focus:z-10 w-40">Encounter <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-300 dark:bg-gray-300 text-gray-800" v-text="encounter.groups.reduce((carry, item) => carry + item.count, 0)" v-show="encounter.groups.length"></span></button>
-		<button @click="mobileEncounterTab = true" type="button" :class="{ 'text-gray-900 ': mobileEncounterTab, 'text-gray-700': !mobileEncounterTab }" class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-none focus:z-10 w-40">Monsters</button>
+      <div class="absolute bg-gray-100 dark:bg-gray-700 w-1/2 transition-all duration-300 inset-y-1 rounded-md" :class="{ 'translate-x-full -ml-1.5': mobileEncounterTab, 'left-1': !mobileEncounterTab }"></div>
+      <button @click="mobileEncounterTab = false" type="button" :class="{ 'text-gray-900 ': !mobileEncounterTab, 'text-gray-700': mobileEncounterTab }" class="relative border-gray-200 rounded-md shadow-sm py-2 text-sm font-medium dark:text-gray-100 whitespace-nowrap focus:outline-none focus:z-10 w-40">Encounter <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-300 dark:bg-gray-300 text-gray-800" v-text="encounter.groups.reduce((carry, item) => carry + item.count, 0)" v-show="encounter.groups.length"></span></button>
+      <button @click="mobileEncounterTab = true" type="button" :class="{ 'text-gray-900 ': mobileEncounterTab, 'text-gray-700': !mobileEncounterTab }" class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-none focus:z-10 w-40">Monsters</button>
 	  </div>
 
 	  <div id="monsters_box" :class="{ 'hidden md:block': !mobileEncounterTab }" class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar">
@@ -625,7 +618,7 @@ export default {
 				</select>
 			  </div>
 
-			  <div class="relative inline-block text-left 2xl:hidden" x-data="{ filtersMenu: true }" x-tippy="Filter monsters (Ctrl+L)">
+			  <div class="relative inline-block text-left 2xl:hidden" x-data="{ filtersMenu: true }" title="Filter monsters (Ctrl+L)">
 				<button @click="showFilters =! showFilters" type="button" class="-ml-px h-full relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md bg-white disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 dark:text-gray-400 text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
 				  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -701,7 +694,7 @@ export default {
 				  <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none"
 											  @click="encounter.addMonster(monster)"
-											  x-tooltip="encounter.getDifficultyFromExperience(monster.cr.exp)"
+											  :title="encounter.getDifficultyFromExperience(monster.cr.exp)"
 										>Add</span>
 				  </td>
 				  <td class="w-full max-w-0 py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-100 w-64 max-w-64 truncate">
@@ -710,7 +703,7 @@ export default {
 					  <dt class="sr-only">Sources</dt>
 					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
 						<div v-for="(source, index) of monster.sources">
-                                                    <span x-tooltip="source.fullText"
+                                                    <span :title="source.fullText"
 														  x-html="
                                                         `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
                                                         + (index < monster.sources.length-1 ? ', ' : '')
@@ -825,7 +818,7 @@ export default {
 			<div v-show="party.groups.length" class="w-full grid grid-rows-[18px_1fr] grid-cols-[1fr_40px_1fr_50px_36px] gap-y-2 align-center mb-2">
 			  <label class="col-span-2 text-sm text-gray-700 dark:text-gray-300">Players</label>
 			  <label class="text-sm text-gray-700 dark:text-gray-300">Level</label>
-			  <label class="text-center text-sm text-gray-700 dark:text-gray-300" x-tippy="Determines whether these characters get a share of XP from the encounter.">XP</label>
+			  <label class="text-center text-sm text-gray-700 dark:text-gray-300" title="Determines whether these characters get a share of XP from the encounter.">XP</label>
 			  <div>&nbsp;</div>
 
 
@@ -993,8 +986,8 @@ export default {
 			<div class="flex flex-row w-full mb-4 relative">
 			  <div class="grow pb-2 min-w-0">
 				<div class="grid grid-cols-[1fr_20px] mb-2">
-				  <span x-tooltip="group.monster.name" data-tippy-placement="top-start" data-tippy-delay="1000" class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate" v-text="group.monster.name"></span>
-				  <div x-tippy="Shuffle monster" @click="encounter.getNewMonster(group)" class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"><i class="fas fa-random"></i></div>
+				  <span :title="group.monster.name" data-tippy-placement="top-start" data-tippy-delay="1000" class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate" v-text="group.monster.name"></span>
+				  <div title="Shuffle monster" @click="encounter.getNewMonster(group)" class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"><i class="fas fa-random"></i></div>
 				</div>
 
 				<div>
@@ -1003,7 +996,7 @@ export default {
 				  <div class='overflow-hidden whitespace-nowrap overflow-ellipsis pr-40'>
 					<ul class="list-none text-s italic max-w-full">
 					  <div v-for="source in group.monster.sources">
-						<li class="max-w-full truncate" x-tooltip="source.fullText" data-tippy-delay="1000" x-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
+						<li class="max-w-full truncate" :title="source.fullText" data-tippy-delay="1000" x-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
 					  </div>
 					</ul>
 				  </div>
@@ -1250,7 +1243,7 @@ export default {
 				<div class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
 				  <div v-for="(_, index) of savedEncounters">
 					<div @click="(loadedEncounterIndex !== savedEncounters.length-index-1) && encounter.loadFromSaved(savedEncounters.length-index-1)" class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
-						 x-tooltip="savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
+						 :title="savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 						 :key="index"
 						 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': loadedEncounterIndex !== savedEncounters.length-index-1 }"
 					>
@@ -1279,7 +1272,7 @@ export default {
 				<div class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
 				  <div v-for="(_, index) of encounterHistory">
 					<div class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
-						 x-tooltip="encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
+						 :title="encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 						 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': !(loadedEncounterIndex === null && index === 0 && encounter.groups.length) }"
 						 @click="!(loadedEncounterIndex === null && index === 0 && encounter.groups.length) && encounter.loadFromHistory(encounterHistory.length-index-1)"
 						 :key="index"
@@ -1353,7 +1346,7 @@ export default {
 					  <div>
 						<div class="flex px-4 py-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600"
 							 :class="{ 'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': party.editing }"
-							 x-tooltip="party.name"
+							 :title="party.name"
 							 :key="partyIndex"
 							 @click="party.editing =! party.editing"
 						>
@@ -1380,7 +1373,7 @@ export default {
 								   class="!mb-0 py-0.5 text-xl"
 							>
 							<div class="w-[30px] ml-2 flex justify-center">
-							  <i @click.stop="deleteParty(partyIndex)" x-tooltip="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
+							  <i @click.stop="deleteParty(partyIndex)" :title="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
 							</div>
 						  </div>
 
@@ -1422,7 +1415,7 @@ export default {
 
 							  <div class="relative order-5 md:order-4 mb-2 md:mb-0">
 								<input type="number" :id="'initiativeMod_'+playerIndex" x-model.number="player.initiativeMod" class="pl-1 pr-8 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
-								<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" x-tippy="Advantage on Initiative">
+								<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" title="Advantage on Initiative">
 								  <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="28" viewbox="0 0 173.20508075688772 200" style="fill: currentColor;"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path></svg>
 								</div>
 								<div class="pointer-events-none text-lg text-center text-white dark:text-gray-700 font-bold w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center">
@@ -1521,9 +1514,4 @@ export default {
 		</div>
 	  </div>
 	</div>
-
-	<ImporterModal />
-  <NotificationArea />
-
-  </div>
 </template>
