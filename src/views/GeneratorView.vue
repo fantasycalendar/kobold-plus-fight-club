@@ -1,5 +1,6 @@
 <script setup>
-
+import FiltersSlideover from "../components/FiltersSlideover.vue";
+import ImporterModal from "../components/ImporterModal.vue";
 </script>
 
 <script>
@@ -15,7 +16,7 @@ import tippy from 'tippy.js';
 const internationalNumberFormat = new Intl.NumberFormat('en-US')
 
 export default {
-  // components: { FiltersSlideover },
+  components: { FiltersSlideover, ImporterModal },
 
   data() {
 	return {
@@ -29,6 +30,7 @@ export default {
 	  showEncounterModal: false,
 	  showPartyModal: false,
 	  showKeyboardModal: false,
+	  showImporterModal: false,
 
 	  mobileEncounterTab: false,
 
@@ -130,6 +132,9 @@ export default {
   },
 
   computed: {
+	keyboardText() {
+	  return navigator.platform.toLowerCase().includes('mac') ? '⌘K' : 'Ctrl K';
+	},
 	totalPlayers() {
 	  return this.groups.reduce((acc, group) => {
 		return acc + parseInt(group.players)
@@ -165,6 +170,11 @@ export default {
   },
 
   methods: {
+	playerChange(player) {
+	  if(player.currentHp > player.maxHp) {
+		player.maxHp = player.currentHp;
+	  }
+	},
 	showDifficultySelect() {
 	  this.difficultySelectOpen = true;
 	  console.log(this.difficultySelectOpen);
@@ -579,8 +589,8 @@ export default {
 	<div class="flex py-4 sm:py-6 lg:py-8 w-full max-w-[2560px] relative grow mx-auto flex-col md:flex-row">
 	  <div class="relative self-center mb-6 bg-gray-200 dark:bg-gray-800 rounded-lg p-0.5 flex sm:mt-8 h-10 md:hidden">
 		<div class="absolute bg-gray-100 dark:bg-gray-700 w-1/2 transition-all duration-300 inset-y-1 rounded-md" :class="{ 'translate-x-full -ml-1.5': mobileEncounterTab, 'left-1': !mobileEncounterTab }"></div>
-		<button GONNABINDclick="mobileEncounterTab = false" type="button" :class="{ 'text-gray-900 ': !mobileEncounterTab, 'text-gray-700': mobileEncounterTab }" class="relative border-gray-200 rounded-md shadow-sm py-2 text-sm font-medium dark:text-gray-100 whitespace-nowrap focus:outline-none focus:z-10 w-40">Encounter <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-300 dark:bg-gray-300 text-gray-800" x-text="encounter.groups.reduce((carry, item) => carry + item.count, 0)" x-show="encounter.groups.length"></span></button>
-		<button GONNABINDclick="mobileEncounterTab = true" type="button" :class="{ 'text-gray-900 ': mobileEncounterTab, 'text-gray-700': !mobileEncounterTab }" class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-none focus:z-10 w-40">Monsters</button>
+		<button @click="mobileEncounterTab = false" type="button" :class="{ 'text-gray-900 ': !mobileEncounterTab, 'text-gray-700': mobileEncounterTab }" class="relative border-gray-200 rounded-md shadow-sm py-2 text-sm font-medium dark:text-gray-100 whitespace-nowrap focus:outline-none focus:z-10 w-40">Encounter <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-300 dark:bg-gray-300 text-gray-800" v-text="encounter.groups.reduce((carry, item) => carry + item.count, 0)" v-show="encounter.groups.length"></span></button>
+		<button @click="mobileEncounterTab = true" type="button" :class="{ 'text-gray-900 ': mobileEncounterTab, 'text-gray-700': !mobileEncounterTab }" class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-none focus:z-10 w-40">Monsters</button>
 	  </div>
 
 	  <div id="monsters_box" :class="{ 'hidden md:block': !mobileEncounterTab }" class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar">
@@ -595,16 +605,16 @@ export default {
 				</svg>
 			  </div>
 
-			  <input type="search" name="search" id="search" v-model="search" GONNABINDinput.debounce="updateFilteredMonsters" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none pl-10 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600" :placeholder="searchPlaceholder">
+			  <input type="search" name="search" id="search" v-model="search" @input.debounce="updateFilteredMonsters" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none pl-10 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600" :placeholder="searchPlaceholder">
 
 			  <div class="absolute inset-y-0 right-0 flex py-1.5 pr-2 hidden md:block">
-				<kbd class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400" x-text="navigator.platform.toLowerCase().includes('mac') ? '⌘K' : 'Ctrl K'"></kbd>
+				<kbd class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400" v-text="keyboardText"></kbd>
 			  </div>
 			</div>
 
 			<div class="flex w-full lg:w-auto mt-2 lg:mt-0">
 			  <div class="w-full lg:w-auto">
-				<select id="monstersPerPage" GONNABINDchange="setMonstersPerPage(Number($event.target.value))" name="location" class="block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-l-md lg:rounded-none 2xl:rounded-r-md border-gray-300 border-l-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
+				<select id="monstersPerPage" @change="setMonstersPerPage(Number($event.target.value))" name="location" class="block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-l-md lg:rounded-none 2xl:rounded-r-md border-gray-300 border-l-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
 				  <option value="10" :selected="monstersPerPage === 10">10 per page</option>
 				  <option value="25" :selected="monstersPerPage === 25">25 per page</option>
 				  <option value="50" :selected="monstersPerPage === 50">50 per page</option>
@@ -613,12 +623,12 @@ export default {
 			  </div>
 
 			  <div class="relative inline-block text-left 2xl:hidden" x-data="{ filtersMenu: true }" x-tippy="Filter monsters (Ctrl+L)">
-				<button GONNABINDclick="showFilters =! showFilters" type="button" class="-ml-px h-full relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md bg-white disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 dark:text-gray-400 text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
+				<button @click="showFilters =! showFilters" type="button" class="-ml-px h-full relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md bg-white disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 dark:text-gray-400 text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
 				  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
 				  </svg>
 				  <span>Filter</span>
-				  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-300 text-gray-800" x-show="nonDefaultFiltersCount > 0" x-text="nonDefaultFiltersCount"></span>
+				  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-300 text-gray-800" v-show="nonDefaultFiltersCount > 0" v-text="nonDefaultFiltersCount"></span>
 				</button>
 			  </div>
 			</div>
@@ -635,7 +645,7 @@ export default {
 				<th scope="col" class="py-3.5 px-3 text-center text-sm font-semibold text-gray-900 sm:pl-6 w-8 max-w-8">
 				  <span class="sr-only">Add to encounter</span>
 				</th>
-				<th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer group whitespace-nowrap w-64" GONNABINDclick="setSortBy('name')">
+				<th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer group whitespace-nowrap w-64" @click="setSortBy('name')">
 				  Name
 				  <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" :class="{ 'invisible': sortBy !== 'name' }">
                                         <i class="fa-solid" :class="{
@@ -644,7 +654,7 @@ export default {
                                         }"></i>
                                     </span>
 				</th>
-				<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer table-cell group whitespace-nowrap w-32" GONNABINDclick="setSortBy('size')">
+				<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer table-cell group whitespace-nowrap w-32" @click="setSortBy('size')">
 				  Size
 				  <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" :class="{ 'invisible': sortBy !== 'size' }">
                                         <i class="fa-solid" :class="{
@@ -653,7 +663,7 @@ export default {
                                         }"></i>
                                     </span>
 				</th>
-				<th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer sm:table-cell group whitespace-nowrap w-32" GONNABINDclick="setSortBy('cr')">
+				<th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer sm:table-cell group whitespace-nowrap w-32" @click="setSortBy('cr')">
 				  CR
 				  <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" :class="{ 'invisible': sortBy !== 'cr' }">
                                         <i class="fa-solid" :class="{
@@ -662,7 +672,7 @@ export default {
                                         }"></i>
                                     </span>
 				</th>
-				<th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer lg:table-cell group whitespace-nowrap w-32" GONNABINDclick="setSortBy('type')">
+				<th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer lg:table-cell group whitespace-nowrap w-32" @click="setSortBy('type')">
 				  Type
 				  <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" :class="{ 'invisible': sortBy !== 'type' }">
                                         <i class="fa-solid" :class="{
@@ -671,7 +681,7 @@ export default {
                                         }"></i>
                                     </span>
 				</th>
-				<th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer lg:table-cell group whitespace-nowrap w-32" GONNABINDclick="setSortBy('alignment')">
+				<th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer lg:table-cell group whitespace-nowrap w-32" @click="setSortBy('alignment')">
 				  Alignment
 				  <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" :class="{ 'invisible': sortBy !== 'alignment' }">
                                         <i class="fa-solid" :class="{
@@ -683,36 +693,36 @@ export default {
 			  </tr>
 			  </thead>
 			  <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
-			  <template x-for="monster in monsters">
+			  <div v-for="monster in monsters">
 				<tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
 				  <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none"
-											  GONNABINDclick="encounter.addMonster(monster)"
+											  @click="encounter.addMonster(monster)"
 											  x-tooltip="encounter.getDifficultyFromExperience(monster.cr.exp)"
 										>Add</span>
 				  </td>
 				  <td class="w-full max-w-0 py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-100 w-64 max-w-64 truncate">
-					<span class="truncate" x-text="monster.name"></span>
+					<span class="truncate" v-text="monster.name"></span>
 					<dl class="font-normal">
 					  <dt class="sr-only">Sources</dt>
 					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
-						<template x-for="(source, index) of monster.sources">
+						<div v-for="(source, index) of monster.sources">
                                                     <span x-tooltip="source.fullText"
 														  x-html="
                                                         `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
                                                         + (index < monster.sources.length-1 ? ', ' : '')
                                                     "></span>
-						</template>
+						</div>
 					  </dd>
 					  <dt class="sr-only sm:hidden">Type</dt>
-					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" x-text="monster.type"></dd>
+					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" v-text="monster.type"></dd>
 					</dl>
 				  </td>
 				  <td class="px-3 py-2 text-sm text-gray-500 dark:text-gray-300 table-cell w-32 max-w-32 truncate">
-					<span class="truncate" x-text="monster.size"></span>
+					<span class="truncate" v-text="monster.size"></span>
 					<dl class="font-normal">
 					  <dt class="sr-only sm:hidden">CR</dt>
-					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400 sm:hidden">CR <span x-text="monster.cr.string" :class="{
+					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400 sm:hidden">CR <span v-text="monster.cr.string" :class="{
 												'text-indigo-300 dark:text-indigo-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Trivial',
 												'text-green-300 dark:text-green-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Easy',
 												'text-yellow-300 dark:text-yellow-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Medium',
@@ -720,7 +730,7 @@ export default {
 												'text-rose-300 dark:text-rose-600': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly'
 											}"></span></dd>
 					  <dt class="sr-only sm:hidden">Alignment</dt>
-					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" x-text="monster.alignment.string"></dd>
+					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" v-text="monster.alignment.string"></dd>
 					</dl>
 				  </td>
 				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 sm:table-cell w-32">
@@ -731,25 +741,25 @@ export default {
 												'text-amber-600 dark:text-orange-400': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Hard',
 												'text-rose-600 dark:text-rose-500': encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly'
 											}">
-											<span x-text="monster.cr.string"></span>
-											<span x-text="'(' + encounter.getDifficultyFromExperience(monster.cr.exp) + ')'" class="text-xs"></span>
+											<span v-text="monster.cr.string"></span>
+											<span v-text="'(' + encounter.getDifficultyFromExperience(monster.cr.exp) + ')'" class="text-xs"></span>
 										</span>
 				  </td>
-				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" x-text="monster.type"></td>
-				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" x-text="monster.alignment.string"></td>
+				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" v-text="monster.type"></td>
+				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" v-text="monster.alignment.string"></td>
 				</tr>
-			  </template>
+			  </div>
 			  </tbody>
 			</table>
 		  </div>
 
-		  <div x-show="enabledSources.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" GONNABINDclick="showSourcesModal = true">enable some now</span></div>
-		  <div x-show="enabledSources.length > 0 && filteredMonsters.length === 0" class="w-full text-center text-lg my-4" x-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" GONNABINDclick="$dispatch('reset-filters')">reset filters</span></div>
+		  <div v-show="enabledSources.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" @click="showSourcesModal = true">enable some now</span></div>
+		  <div v-show="enabledSources.length > 0 && filteredMonsters.length === 0" class="w-full text-center text-lg my-4" x-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$dispatch('reset-filters')">reset filters</span></div>
 
 		  <!-- This example requires Tailwind CSS v2.0+ -->
-		  <nav x-show="totalPages > 1" x-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
+		  <nav v-show="totalPages > 1" x-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
 			<div class="-mt-px w-0 flex-1 flex">
-			  <a GONNABINDclick="setPageNumber(currentPage-1)" :disabled="currentPage === 1" href="#" class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400">
+			  <a @click="setPageNumber(currentPage-1)" :disabled="currentPage === 1" href="#" class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400">
 				<!-- Heroicon name: solid/arrow-narrow-left -->
 				<svg class="mr-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 				  <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -758,16 +768,16 @@ export default {
 			  </a>
 			</div>
 			<div class="hidden md:-mt-px md:flex">
-			  <template x-for="page of pagination">
+			  <div v-for="page of pagination">
 								<span :class="{
 									'cursor-pointer select-none border-emerald-600 text-emerald-600 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium': page.active && !page.divider,
 									'cursor-pointer select-none border-transparent text-gray-500 hover:text-gray-400 hover:border-gray-400 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium hidden lg:inline-block first-of-type:inline-block last-of-type:inline-block': !page.active && !page.divider,
 									'select-none border-transparent text-gray-500 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium': page.divider,
-								}" x-text="page.divider ? '...' : page.number" GONNABINDclick="setPage(page)" :key="page.number"></span>
-			  </template>
+								}" v-text="page.divider ? '...' : page.number" @click="setPage(page)" :key="page.number"></span>
+			  </div>
 			</div>
 			<div class="-mt-px w-0 flex-1 flex justify-end">
-			  <a href="#" GONNABINDclick="setPageNumber(currentPage+1)" class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400">
+			  <a href="#" @click="setPageNumber(currentPage+1)" class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400">
 				<span class="hidden lg:inline">Next</span>
 				<!-- Heroicon name: solid/arrow-narrow-right -->
 				<svg class="ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -788,66 +798,66 @@ export default {
 				Party
 			  </div>
 
-			  <a class="primary-link text-sm" GONNABINDclick="showPartyModal = true" href="javascript:">
+			  <a class="primary-link text-sm" @click="showPartyModal = true" href="javascript:">
 				Manage
 			  </a>
 			</div>
 
-			<div class="grid grid-cols-[1fr_34px] gap-y-2 align-center mb-2" x-show="activePlayers.length">
+			<div class="grid grid-cols-[1fr_34px] gap-y-2 align-center mb-2" v-show="activePlayers.length">
 
-			  <template x-for="party in savedParties">
-				<template x-for="player in party.players.filter(player => player.active)">
+			  <div v-for="party in savedParties">
+				<div v-for="player in party.players.filter(player => player.active)">
 				  <div class="contents">
-					<div x-text="player.name"></div>
+					<div v-text="player.name"></div>
 
-					<button GONNABINDclick="player.active = false" type="button" class="button-danger-outline-md inline-flex justify-center !py-0">
+					<button @click="player.active = false" type="button" class="button-danger-outline-md inline-flex justify-center !py-0">
 					  <i class="fas fa-times"></i>
 					</button>
 				  </div>
-				</template>
-			  </template>
+				</div>
+			  </div>
 
 			</div>
 
-			<div x-show="party.groups.length" class="w-full grid grid-rows-[18px_1fr] grid-cols-[1fr_40px_1fr_50px_36px] gap-y-2 align-center mb-2">
+			<div v-show="party.groups.length" class="w-full grid grid-rows-[18px_1fr] grid-cols-[1fr_40px_1fr_50px_36px] gap-y-2 align-center mb-2">
 			  <label class="col-span-2 text-sm text-gray-700 dark:text-gray-300">Players</label>
 			  <label class="text-sm text-gray-700 dark:text-gray-300">Level</label>
 			  <label class="text-center text-sm text-gray-700 dark:text-gray-300" x-tippy="Determines whether these characters get a share of XP from the encounter.">XP</label>
 			  <div>&nbsp;</div>
 
 
-			  <template x-for="(group, index) in party.groups">
+			  <div v-for="(group, index) in party.groups">
 				<div class="contents">
-				  <input type="number" min="1" :value="group.players" GONNABINDchange="group.players = Math.max(1, $event.target.value)" class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md" value="4">
+				  <input type="number" min="1" :value="group.players" @change="group.players = Math.max(1, $event.target.value)" class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md" value="4">
 
 				  <div class="text-center grid place-items-center text-gray-600 dark:text-gray-400 scale-150 md:transform-none">
 					<i class="fa fa-times"></i>
 				  </div>
 
-				  <input type="number" min="1" max="20" :value="group.level" GONNABINDchange="group.level = Math.max(1, Math.min(20, $event.target.value))" class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md" value="4">
+				  <input type="number" min="1" max="20" :value="group.level" @change="group.level = Math.max(1, Math.min(20, $event.target.value))" class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md" value="4">
 
 				  <div class="flex items-center justify-center scale-150 md:transform-none">
 					<input type="checkbox" v-model="group.getsXP" class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded">
 				  </div>
 
-				  <button GONNABINDclick="party.removePlayerGroup(index)" type="button" class="button-danger-outline-md justify-center">
+				  <button @click="party.removePlayerGroup(index)" type="button" class="button-danger-outline-md justify-center">
 					<i class="fas fa-times"></i>
 				  </button>
 				</div>
-			  </template>
+			  </div>
 
 			</div>
 
 			<div class="w-full">
-			  <button GONNABINDclick="party.addPlayerGroup()" type="button" class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
+			  <button @click="party.addPlayerGroup()" type="button" class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
 								<span>
 									<i class="fas fa-plus mr-2"></i> Add Generic Group
 								</span>
 			  </button>
 			</div>
 
-			<div class="w-full" x-show="!(activePlayers.length || party.groups.length)">
-			  <button GONNABINDclick="enablePartyModal" type="button" class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
+			<div class="w-full" v-show="!(activePlayers.length || party.groups.length)">
+			  <button @click="enablePartyModal" type="button" class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center">
 								<span>
 									<i class="fas fa-plus mr-2"></i> Use Detailed Party
 								</span>
@@ -858,24 +868,24 @@ export default {
 		  <div class="hidden md:block col-span-2">
 			<div class="grid text-sm text-right">
 			  <div class="hidden md:block mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400">XP Goals</div>
-			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Easy'}">Easy</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Easy'}" x-text="formatNumber(party.experience['easy'])"></div>
-			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Medium'}">Medium</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Medium'}" x-text="formatNumber(party.experience['medium'])"></div>
-			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Hard'}">Hard</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Hard'}" x-text="formatNumber(party.experience['hard'])"></div>
-			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Deadly'}">Deadly</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Deadly'}" x-text="formatNumber(party.experience['deadly'])"></div>
+			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Easy'}">Easy</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Easy'}" v-text="formatNumber(party.experience['easy'])"></div>
+			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Medium'}">Medium</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Medium'}" v-text="formatNumber(party.experience['medium'])"></div>
+			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Hard'}">Hard</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Hard'}" v-text="formatNumber(party.experience['hard'])"></div>
+			  <div :class="{ 'font-semibold': encounter.actualDifficulty === 'Deadly'}">Deadly</div><div :class="{ 'font-semibold': encounter.actualDifficulty === 'Deadly'}" v-text="formatNumber(party.experience['deadly'])"></div>
 
 			  <div class="mt-4">Daily budget</div>
-			  <div class="mt-4" x-text="formatNumber(party.experience.daily)"></div>
+			  <div class="mt-4" v-text="formatNumber(party.experience.daily)"></div>
 			</div>
 		  </div>
 
-		  <div class="md:hidden col-span-3 pt-4" x-show="party.experience.daily">
+		  <div class="md:hidden col-span-3 pt-4" v-show="party.experience.daily">
 			<div class="mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400">XP Goal</div>
 			<div class="flex justify-between">
 			  <div>
-				Daily budget <span x-text="formatNumber(party.experience.daily)"></span>
+				Daily budget <span v-text="formatNumber(party.experience.daily)"></span>
 			  </div>
 			  <div>
-				<span class="font-semibold" x-show="['Easy', 'Medium', 'Hard', 'Deadly'].includes(encounter.actualDifficulty)" x-text="encounter.actualDifficulty + ' ' + formatNumber(party.experience[encounter.actualDifficulty.toLowerCase()])"></span>
+				<span class="font-semibold" v-show="['Easy', 'Medium', 'Hard', 'Deadly'].includes(encounter.actualDifficulty)" v-text="encounter.actualDifficulty + ' ' + formatNumber(party.experience[encounter.actualDifficulty.toLowerCase()])"></span>
 			  </div>
 			</div>
 		  </div>
@@ -885,16 +895,16 @@ export default {
 		  <div class="flex pt-4 justify-between items-center mb-1">
 			<span class="text-gray-600 dark:text-gray-400">Encounter</span>
 
-			<a href="javascript:" class="primary-link text-sm" GONNABINDclick="showEncounterModal = true">History</a>
+			<a href="javascript:" class="primary-link text-sm" @click="showEncounterModal = true">History</a>
 		  </div>
 
 		  <div class="flex flex-col sm:flex-row pb-4 w-full space-x-2 items-end justify-between pb-4">
 			<div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
 			  <div class="w-full col-span-1 sm:col-span-3">
 				<label id="difficulty-label" class="sr-only"> Difficulty </label>
-				<div class="mt-1 relative" GONNABINDclick.outside="difficultySelectOpen = false">
-				  <button GONNABINDclick="difficultySelectOpen = true" type="button" class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
-					<span class="block truncate" x-text="(difficulty.slice(0,1).toUpperCase() + difficulty.slice(1))"></span>
+				<div class="mt-1 relative" @click.outside="difficultySelectOpen = false">
+				  <button @click="difficultySelectOpen = true" type="button" class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+					<span class="block truncate" v-text="(difficulty.slice(0,1).toUpperCase() + difficulty.slice(1))"></span>
 					<span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
 										<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 										  <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -902,7 +912,7 @@ export default {
 									  </span>
 				  </button>
 
-				  <ul x-show="difficultySelectOpen" class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabindex="-1" role="listbox" aria-labelledby="listbox-label"
+				  <ul v-show="difficultySelectOpen" class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabindex="-1" role="listbox" aria-labelledby="listbox-label"
 					  x-transition:enter=""
 					  x-transition:enter-start=""
 					  x-transition:enter-end=""
@@ -910,27 +920,27 @@ export default {
 					  x-transition:leave-start="opacity-100"
 					  x-transition:leave-end="opacity-0"
 				  >
-					<template x-for="option of ['easy', 'medium', 'hard', 'deadly']">
-					  <li GONNABINDclick="difficulty = option; difficultySelectOpen = false;" :class="{ 'text-white bg-emerald-600': difficulty === option, 'text-gray-900 dark:text-gray-300': difficulty !== option }" class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
+					<div v-for="option of ['easy', 'medium', 'hard', 'deadly']">
+					  <li @click="difficulty = option; difficultySelectOpen = false;" :class="{ 'text-white bg-emerald-600': difficulty === option, 'text-gray-900 dark:text-gray-300': difficulty !== option }" class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
 						<span class="group-hover:text-white font-normal block truncate" x-html="(option.slice(0,1).toUpperCase() + option.slice(1))"> </span>
-						<span :class="{ 'text-gray-200': difficulty === option, 'text-gray-600 dark:text-gray-400': difficulty !== option }" class="text-xs group-hover:text-gray-200" x-text="formatNumber(party.experience[option]) + 'xp'"></span>
+						<span :class="{ 'text-gray-200': difficulty === option, 'text-gray-600 dark:text-gray-400': difficulty !== option }" class="text-xs group-hover:text-gray-200" v-text="formatNumber(party.experience[option]) + 'xp'"></span>
 
-						<span x-show="difficulty === option" :class="{ 'text-white': difficulty === option, 'text-emerald-600': difficulty !== option }" class="absolute inset-y-0 right-0 flex items-center pr-4">
+						<span v-show="difficulty === option" :class="{ 'text-white': difficulty === option, 'text-emerald-600': difficulty !== option }" class="absolute inset-y-0 right-0 flex items-center pr-4">
 												  <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 													<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
 												  </svg>
 											</span>
 					  </li>
-					</template>
+					</div>
 				  </ul>
 				</div>
 			  </div>
 
 			  <div class="w-full col-span-1 sm:col-span-5">
 				<label id="composition-label" class="sr-only"> Composition </label>
-				<div class="mt-1 relative" GONNABINDclick.outside="encounterTypeSelectOpen = false">
-				  <button GONNABINDclick="encounterTypeSelectOpen = true" type="button" class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="composition-label">
-					<span class="block truncate" x-text="encounterTypes[encounterType].label"></span>
+				<div class="mt-1 relative" @click.outside="encounterTypeSelectOpen = false">
+				  <button @click="encounterTypeSelectOpen = true" type="button" class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="composition-label">
+					<span class="block truncate" v-text="encounterTypes[encounterType].label"></span>
 					<span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
 										<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 										  <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -938,7 +948,7 @@ export default {
 									  </span>
 				  </button>
 
-				  <ul x-show="encounterTypeSelectOpen" class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabindex="-1" role="listbox" aria-labelledby="composition-label"
+				  <ul v-show="encounterTypeSelectOpen" class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabindex="-1" role="listbox" aria-labelledby="composition-label"
 					  x-transition:enter=""
 					  x-transition:enter-start=""
 					  x-transition:enter-end=""
@@ -946,24 +956,24 @@ export default {
 					  x-transition:leave-start="opacity-100"
 					  x-transition:leave-end="opacity-0"
 				  >
-					<template x-for="type of Object.values(encounterTypes)">
-					  <li GONNABINDclick="encounterType = type.key; encounterTypeSelectOpen = false;" :class="{ 'text-white bg-emerald-600': encounterType === type.key, 'text-gray-900 dark:text-gray-300': encounterType !== type.key }" class="text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
-						<span class="font-normal block truncate" x-text="type.label"> </span>
+					<div v-for="type of Object.values(encounterTypes)">
+					  <li @click="encounterType = type.key; encounterTypeSelectOpen = false;" :class="{ 'text-white bg-emerald-600': encounterType === type.key, 'text-gray-900 dark:text-gray-300': encounterType !== type.key }" class="text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
+						<span class="font-normal block truncate" v-text="type.label"> </span>
 
 						<span :class="{ 'text-white': encounterType === type.key, 'text-emerald-600': encounterType !== type.key }" class="absolute inset-y-0 right-0 flex items-center pr-4">
-											  <svg x-show="encounterType === type.key" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											  <svg v-show="encounterType === type.key" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 												<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
 											  </svg>
 											</span>
 					  </li>
-					</template>
+					</div>
 				  </ul>
 				</div>
 			  </div>
 			</div>
 
 			<div class="w-full md:w-auto shrink mt-3 md:mt-0" :class="{ 'hidden md:block': !encounter.groups.length }">
-			  <button GONNABINDclick="encounter.generateRandom()" class="button-primary-md w-full md:w-auto">
+			  <button @click="encounter.generateRandom()" class="button-primary-md w-full md:w-auto">
 								<span class="md:hidden w-full text-center">
 									Generate
 								</span>
@@ -975,49 +985,49 @@ export default {
 		  </div>
 		</div>
 
-		<div class="border-t border-gray-200 dark:border-gray-700 pt-4" x-show="encounter.groups.length">
-		  <template x-for="(group, index) in encounter.groups" :key="group.monster.slug">
+		<div class="border-t border-gray-200 dark:border-gray-700 pt-4" v-show="encounter.groups.length">
+		  <div v-for="(group, index) in encounter.groups" :key="group.monster.slug">
 			<div class="flex flex-row w-full mb-4 relative">
 			  <div class="grow pb-2 min-w-0">
 				<div class="grid grid-cols-[1fr_20px] mb-2">
-				  <span x-tooltip="group.monster.name" data-tippy-placement="top-start" data-tippy-delay="1000" class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate" x-text="group.monster.name"></span>
-				  <div x-tippy="Shuffle monster" GONNABINDclick="encounter.getNewMonster(group)" class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"><i class="fas fa-random"></i></div>
+				  <span x-tooltip="group.monster.name" data-tippy-placement="top-start" data-tippy-delay="1000" class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate" v-text="group.monster.name"></span>
+				  <div x-tippy="Shuffle monster" @click="encounter.getNewMonster(group)" class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"><i class="fas fa-random"></i></div>
 				</div>
 
 				<div>
-				  <span class="text-base" x-text="'CR: ' + group.monster.cr.string"></span>
-				  <span class="text-base ml-4" x-text="'XP: ' + formatNumber(group.monster.cr.exp)"></span>
+				  <span class="text-base" v-text="'CR: ' + group.monster.cr.string"></span>
+				  <span class="text-base ml-4" v-text="'XP: ' + formatNumber(group.monster.cr.exp)"></span>
 				  <div class='overflow-hidden whitespace-nowrap overflow-ellipsis pr-40'>
 					<ul class="list-none text-s italic max-w-full">
-					  <template x-for="source in group.monster.sources">
+					  <div v-for="source in group.monster.sources">
 						<li class="max-w-full truncate" x-tooltip="source.fullText" data-tippy-delay="1000" x-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
-					  </template>
+					  </div>
 					</ul>
 				  </div>
 				</div>
 			  </div>
 			  <div class="absolute bottom-3 right-0 flex shrink-0 items-center">
 				<div class="flex rounded-md shadow-sm">
-				  <button GONNABINDclick="encounter.addCount(index)" class="inline-flex items-center px-2 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 dark:text-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-500 sm:text-sm">
+				  <button @click="encounter.addCount(index)" class="inline-flex items-center px-2 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 dark:text-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-500 sm:text-sm">
 					<i class="fa fa-plus w-5"></i>
 				  </button>
 				  <label for="monster-number"></label>
-				  <input id="monster-number" type="number" min="1" class="flex-1 min-w-0 block w-16 px-3 py-2 rounded-none dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300" :value="group.count" GONNABINDchange="group.count = Math.max(0, $event.target.value)">
-				  <button GONNABINDclick="encounter.subtractCount(index)" :class="{ 'border-gray-300 dark:border-gray-600 dark:text-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-500': group.count > 1, 'border-red-200 dark:border-red-700 dark:text-red-300 bg-red-50 hover:bg-red-100 dark:bg-red-800 dark:hover:bg-red-700 text-red-500': group.count === 1 }" class="inline-flex items-center px-2 rounded-r-md border border-l-0 sm:text-sm">
+				  <input id="monster-number" type="number" min="1" class="flex-1 min-w-0 block w-16 px-3 py-2 rounded-none dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300" :value="group.count" @change="group.count = Math.max(0, $event.target.value)">
+				  <button @click="encounter.subtractCount(index)" :class="{ 'border-gray-300 dark:border-gray-600 dark:text-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-500': group.count > 1, 'border-red-200 dark:border-red-700 dark:text-red-300 bg-red-50 hover:bg-red-100 dark:bg-red-800 dark:hover:bg-red-700 text-red-500': group.count === 1 }" class="inline-flex items-center px-2 rounded-r-md border border-l-0 sm:text-sm">
 					<i :class="{ 'fa-minus': group.count > 1, 'fa-times': group.count === 1 }" class="fa w-5"></i>
 				  </button>
 				</div>
 			  </div>
 			</div>
-		  </template>
+		  </div>
 
-		  <div x-show="encounter.groups.length" class="-mt-2 text-center pb-4">
-			<a GONNABINDclick="encounter.clear()" class="select-none text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200" href="javascript:"><i class="fa fa-times"></i> Clear encounter</a>
+		  <div v-show="encounter.groups.length" class="-mt-2 text-center pb-4">
+			<a @click="encounter.clear()" class="select-none text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200" href="javascript:"><i class="fa fa-times"></i> Clear encounter</a>
 		  </div>
 		</div>
 
-		<div x-show="!encounter.groups.length" class="pb-4">
-		  <button GONNABINDclick="encounter.generateRandom()" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-6 md:p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+		<div v-show="!encounter.groups.length" class="pb-4">
+		  <button @click="encounter.generateRandom()" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-6 md:p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
 			<i class="fa-solid fa-wand-sparkles text-2xl h-12 w-12 mx-auto text-gray-400 dark:text-gray-300"></i>
 			<span class="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-200"> Generate an encounter </span>
 		  </button>
@@ -1030,326 +1040,60 @@ export default {
 				<span class="block">Difficulty</span>
 			  </dt>
 			  <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300 text-right">
-				<span class="block" x-text="encounter.actualDifficulty"></span>
-				<span class="block text-gray-500 dark:text-gray-400 text-sm" x-show="encounter.difficultyFeel && encounter.actualDifficulty.toLowerCase() !== encounter.difficultyFeel.toLowerCase()" x-text="'Feels '+encounter.difficultyFeel"></span>
+				<span class="block" v-text="encounter.actualDifficulty"></span>
+				<span class="block text-gray-500 dark:text-gray-400 text-sm" v-show="encounter.difficultyFeel && encounter.actualDifficulty.toLowerCase() !== encounter.difficultyFeel.toLowerCase()" v-text="'Feels '+encounter.difficultyFeel"></span>
 			  </dd>
 			</div>
 
 			<div class="flex items-center justify-between">
 			  <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">Total XP</dt>
-			  <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300" x-text="encounter.totalExp > 0 ? formatNumber(encounter.totalExp) + ' (' + formatNumber(Math.round(encounter.totalExp / party.totalPlayersToGainXP)) + '/player)' : 'N/A'"></dd>
+			  <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300" v-text="encounter.totalExp > 0 ? formatNumber(encounter.totalExp) + ' (' + formatNumber(Math.round(encounter.totalExp / party.totalPlayersToGainXP)) + '/player)' : 'N/A'"></dd>
 			</div>
 
 			<div class="flex items-center justify-between">
 			  <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">Adjusted XP</dt>
-			  <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300" x-text="encounter.adjustedExp > 0 ? formatNumber(encounter.adjustedExp) + ' (' + formatNumber(Math.round(encounter.adjustedExp / party.totalPlayersToGainXP)) + '/player)' : 'N/A'"></dd>
+			  <dd class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300" v-text="encounter.adjustedExp > 0 ? formatNumber(encounter.adjustedExp) + ' (' + formatNumber(Math.round(encounter.adjustedExp / party.totalPlayersToGainXP)) + '/player)' : 'N/A'"></dd>
 			</div>
 		  </dl>
 
 		  <div class="mt-4 flex space-x-2">
-			<button :disabled="!encounter.groups.length" class="grow text-center button-primary-md" GONNABINDclick="sendToImprovedInitiative">
+			<button :disabled="!encounter.groups.length" class="grow text-center button-primary-md" @click="sendToImprovedInitiative">
 							<span class="inline-flex justify-center w-full">
 								<img class="mr-2 fill-white" style="height:20px;" src="images/improved-initiative-logo.svg" alt="II"/> Send to Improved Initiative
 							</span>
 			</button>
 
-			<button  :disabled="!encounter.groups.length" class="button-primary-md shrink-0" GONNABINDclick="encounter.save()">
+			<button  :disabled="!encounter.groups.length" class="button-primary-md shrink-0" @click="encounter.save()">
 			  <i class="fa fa-save"></i>
 			</button>
 		  </div>
 		</div>
 	  </div>
 
-	  <div class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" x-show="showFilters" x-cloak>
+	  <div class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" v-show="showFilters" x-cloak>
 		<div class="absolute 2xl:static inset-0 overflow-hidden">
 		  <!-- Background overlay, show/hide based on slide-over state. -->
-		  <div GONNABINDclick="showFilters = false" class="absolute 2xl:hidden inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity 2xl:duration-0" aria-hidden="true"
+		  <div @click="showFilters = false" class="absolute 2xl:hidden inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity 2xl:duration-0" aria-hidden="true"
 			   x-transition:enter="ease-in-out duration-200"
 			   x-transition:enter-start="opacity-0 2xl:opacity-100"
 			   x-transition:enter-end="opacity-100"
 			   x-transition:leave="ease-in-out duration-200"
 			   x-transition:leave-start="opacity-100"
 			   x-transition:leave-end="opacity-0 2xl:opacity-100"
-			   x-show="showFilters"
+			   v-show="showFilters"
 		  ></div>
 
-		  <div class="pointer-events-none fixed 2xl:static inset-y-0 right-0 flex max-w-full pl-10">
-			<div class="pointer-events-auto w-screen max-w-md 2xl:!duration-[0ms] sm:duration-700"
-				 x-transition:enter="transform transition ease-in-out duration-200"
-				 x-transition:enter-start="translate-x-full"
-				 x-transition:enter-end="translate-x-0"
-				 x-transition:leave="transform transition ease-in-out duration-200"
-				 x-transition:leave-start="translate-x-0"
-				 x-transition:leave-end="translate-x-full"
-				 x-show="showFilters"
-			>
-			  <div class="relative 2xl:static flex max-h-screen h-full flex-col overflow-y-hidden bg-white dark:bg-gray-800 shadow-xl">
-				<div class="px-4 sm:px-6 border-b dark:border-gray-700 py-6 2xl:hidden">
-				  <div class="flex items-start justify-between">
-					<h2 class="text-lg font-medium text-gray-900 dark:text-gray-200" id="slide-over-title">Filter monsters</h2>
-					<div class="ml-3 flex h-7 items-center">
-					  <button GONNABINDclick="showFilters = false" type="button" class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-						<span class="sr-only">Close panel</span>
-						<!-- Heroicon name: outline/x -->
-						<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-						  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					  </button>
-					</div>
-				  </div>
-				</div>
-				<div class="flex h-full flex-col relative 2xl:absolute 2xl:inset-y-0 2xl:w-[24rem] 2xl:right-0 2xl:py-8 flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar">
-				  <div class="flex">
-					<button GONNABINDclick="showSourcesModal = true" class="button-primary-md w-full">
-					  <span class="w-full text-center">Manage sources</span>
-					</button>
-
-					<button :disabled="!nonDefaultFiltersCount" GONNABINDclick="$dispatch('reset-filters')" class="w-full button-primary-outline-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2">
-					  <span class="inline-block w-full"><i class="fa fa-undo pr-1"></i> Reset Filters</span>
-					</button>
-				  </div>
-
-				  <div x-data="{ minCr: 0, maxCr: 0 }">
-					<div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-					  Challenge Rating
-					</div>
-
-					<div class="relative px-6 pt-1 pb-2 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md" x-data="{
-											crValues: [
-														{ value: '0', label: '0' },
-														{ value: '1/8', label: '1/8' },
-														{ value: '1/4', label: '1/4' },
-														{ value: '1/2', label: '1/2' },
-														{ value: '1', label: '1' },
-														{ value: '2', label: '2' },
-														{ value: '3', label: '3' },
-														{ value: '4', label: '4' },
-														{ value: '5', label: '5' },
-														{ value: '6', label: '6' },
-														{ value: '7', label: '7' },
-														{ value: '8', label: '8' },
-														{ value: '9', label: '9' },
-														{ value: '10', label: '10' },
-														{ value: '11', label: '11' },
-														{ value: '12', label: '12' },
-														{ value: '13', label: '13' },
-														{ value: '14', label: '14' },
-														{ value: '15', label: '15' },
-														{ value: '16', label: '16' },
-														{ value: '17', label: '17' },
-														{ value: '18', label: '18' },
-														{ value: '19', label: '19' },
-														{ value: '20', label: '20' },
-														{ value: '21', label: '21' },
-														{ value: '22', label: '22' },
-														{ value: '23', label: '23' },
-														{ value: '24', label: '24' },
-														{ value: '25', label: '25' },
-														{ value: '26', label: '26' },
-														{ value: '27', label: '27' },
-														{ value: '28', label: '28' },
-														{ value: '29', label: '29' },
-														{ value: '30', label: '30' }
-													]
-										}">
-
-					  <div x-ref="cr_slider" class="my-4 mx-2" x-data="multiSlider($el, 'challenge_rating', crValues, (lower, upper) => {
-														minCr = lower;
-														maxCr = upper;
-													})"
-						   GONNABINDset-cr-slider.window="set($event)"
-						   GONNABINDreset-cr-slider.window="reset()"
-						   GONNABINDreset-filters.window="reset()"
-					  ></div>
-
-					  <div class="flex justify-between items-center">
-						<div class="grow">
-						  <select class="w-full border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full py-1.5 pl-2.5 pr-0 sm:text-sm disabled:text-gray-600 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
-								  x-ref="min_cr_select"
-								  name="min_cr"
-								  id="min_cr_select"
-								  GONNABINDfilters-changed.window="$el.value = minCr.value"
-								  GONNABINDchange="$dispatch('set-cr-slider', [{ value: $event.target.value, label: $event.target.value }, maxCr]);"
-						  >
-							<template x-for="option in crValues">
-							  <option :value="option.value" x-text="option.label" :disabled="parseInt(option.value) > parseInt(maxCr.value)"></option>
-							</template>
-						  </select>
-						</div>
-						<div class="grow text-center text-gray-500 dark:text-gray-400 user-select-none">&le; CR &le;</div>
-						<div class="grow">
-						  <select class="w-full border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full py-1.5 pl-2.5 pr-0 sm:text-sm disabled:text-gray-600 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
-								  x-ref="max_cr_select"
-								  name="max_cr"
-								  id="max_cr_select"
-								  GONNABINDfilters-changed.window="$el.value = maxCr.value"
-								  GONNABINDchange="$dispatch('set-cr-slider', [minCr, { value: $event.target.value, label: $event.target.value }]);"
-						  >
-							<template x-for="option in crValues">
-							  <option :value="option.value" x-text="option.label" :disabled="parseInt(option.value) < parseInt(minCr.value)"></option>
-							</template>
-						  </select>
-						</div>
-					  </div>
-
-					  <span GONNABINDclick="$dispatch('reset-cr-slider')" x-show="!(minCr.value == 0 && maxCr.value == 30)" class="absolute top-1 right-1 text-center cursor-pointer">
-												<i class="fa fa-undo text-sm h-6 w-6 text-gray-800 dark:text-gray-300"></i>
-											</span>
-					</div>
-				  </div>
-
-				  <div>
-					<div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Creature type</div>
-
-					<div GONNABINDmousedown.stop x-data="multiSelect($refs.creature_type, 'type', [])" GONNABINDreset-filters.window="reset()" GONNABINDset-creature-types.window="options = $event.detail; setUp();">
-					  <select x-ref="creature_type" multiple class="inline-block mb-2 mr-2 mt-1 w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"></select>
-					</div>
-				  </div>
-
-				  <div>
-					<div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Native environment</div>
-
-					<div GONNABINDmousedown.stop x-data="multiSelect($refs.environment, 'environment', [])" GONNABINDreset-filters.window="reset()" GONNABINDset-environments.window="options = $event.detail; setUp();">
-					  <select x-ref="environment" multiple class="inline-block mb-2 mr-2 mt-1 w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"></select>
-					</div>
-				  </div>
-
-				  <!-- Multi Select -->
-				  <div>
-					<div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Size category</div>
-
-					<div GONNABINDmousedown.stop x-data="multiSelect($refs.sizes, 'size', [
-												{value: 'any', label: 'Any Size' },
-												{value: 'tiny', label: 'Tiny' },
-												{value: 'small', label: 'Small' },
-												{value: 'medium', label: 'Medium' },
-												{value: 'large', label: 'Large' },
-												{value: 'huge', label: 'Huge' },
-												{value: 'gargantuan', label: 'Gargantuan' }
-											])" GONNABINDreset-filters.window="reset()">
-					  <select x-ref="sizes" :multiple="multiple" class="inline-block mb-2 mr-2 mt-1 w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"></select>
-					</div>
-				  </div>
-
-				  <div>
-					<div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">Legendary Status</div>
-
-					<div GONNABINDmousedown.stop x-data="multiSelect($refs.legendary, 'legendary', [
-												{ value: 'any', label: 'Any Legendary'},
-												{ value: 'ordinary', label: 'Ordinary'},
-												{ value: 'legendary', label: 'Legendary'},
-												{ value: 'legendary_lair', label: 'Legendary (in lair)'},
-											])" GONNABINDreset-filters.window="reset()">
-					  <select x-ref="legendary" multiple class="inline-block mb-2 mr-2 mt-1 w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"></select>
-					</div>
-				  </div>
-
-				  <div>
-					<div class="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-					  Alignment
-					</div>
-
-					<div class="grid grid-cols-[12px_12px_repeat(12,_minmax(0,_1fr))] divide divide-gray-200 dark:divide-gray-600 gap-2 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 overflow-hidden p-2" x-data="{
-												lawful_good: 1,
-												neutral_good: 2,
-												chaotic_good: 4,
-												lawful_neutral: 8,
-												neutral: 16,
-												chaotic_neutral: 32,
-												lawful_evil: 64,
-												neutral_evil: 128,
-												chaotic_evil: 256,
-												total: $persist(1023).as('alignment'),
-												randomIconIndex: 0,
-												icons: [
-														'fa-solid fa-dumpster-fire',
-														'fa-solid fa-poo-storm',
-														'fa-solid fa-meteor',
-														'fa-solid fa-arrows-split-up-and-left',
-														'fa-solid fa-arrows-turn-to-dots',
-														'fa-solid fa-candy-cane',
-														'fa-solid fa-stroopwafel',
-														'fa-solid fa-cake-candles',
-														'fa-solid fa-bowling-ball',
-														'fa-solid fa-bath',
-														'fa-solid fa-bomb',
-														'fa-solid fa-business-time',
-														'fa-solid fa-dragon',
-														'fa-solid fa-arrow-up-right-dots',
-														'fa-solid fa-fire',
-														'fa-solid fa-arrows-to-circle',
-														'fa-solid fa-cloud-meatball',
-														'fa-solid fa-arrows-down-to-people',
-														'fa-solid fa-person-walking-arrow-loop-left',
-														'fa-solid fa-person-walking-dashed-line-arrow-right',
-													],
-												init() {
-													this.$watch('total', (total) => {
-														let newIndex = Math.floor(Math.random() * this.icons.length);
-														this.randomIconIndex = (newIndex === this.randomIconIndex) ? (newIndex + 1) % this.icons.length : newIndex;
-														this.onFiltersChanged();
-													});
-													this.onFiltersChanged();
-												},
-												onFiltersChanged() {
-													window.dispatchEvent(new CustomEvent('filters-changed', { detail: { name: 'alignment', value: this.total }}));
-												},
-												get randomIcon() {
-													return this.icons[this.randomIconIndex];
-												},
-												toggle(value) {
-													this.total = ((this.total & value) > 0) ? ((this.total | value) ^ value) : (this.total | value);
-												},
-												classes(value) {
-													return {
-														'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-900 text-white': this.total & value,
-														'bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border text-gray-700 dark:text-white': !(this.total & value),
-														'cursor-pointer grid place-items-center text-center select-none text-white': true,
-													};
-												},
-												reset(){
-													this.total = 1023;
-												}
-											}" GONNABINDreset-filters.window="reset()">
-					  <div GONNABINDclick="toggle((lawful_good | neutral | chaotic_evil))" :class="classes(lawful_good | neutral | chaotic_evil)" class="col-span-2 rounded-tl-md dark:border-gray-600"></div>
-					  <div GONNABINDclick="toggle((lawful_good | lawful_neutral | lawful_evil))" :class="classes(lawful_good | lawful_neutral | lawful_evil)" class="col-span-4 h-8 rounded-t-md"><i class="fa fa-gavel"></i></div>
-					  <div GONNABINDclick="toggle((neutral_good | neutral | neutral_evil))" :class="classes(neutral_good | neutral | neutral_evil)" class="col-span-4 h-8 rounded-t-md"><i class="fa fa-scale-balanced"></i></div>
-					  <div GONNABINDclick="toggle((chaotic_good | chaotic_neutral | chaotic_evil))" :class="classes(chaotic_good | chaotic_neutral | chaotic_evil)" class="col-span-4 h-8 rounded-t-md"><i :class="{ [randomIcon]: true }"></i></div>
-
-					  <div GONNABINDclick="toggle((lawful_good | neutral_good | chaotic_good))" :class="classes(lawful_good | neutral_good | chaotic_good)" class="col-span-2 w-8 rounded-l-md"><i class="fa fa-dove"></i></div>
-					  <div GONNABINDclick="toggle(lawful_good)" :class="classes(lawful_good)" class="col-span-4 h-12" x-tippy="Lawful Good">LG</div>
-					  <div GONNABINDclick="toggle(neutral_good)" :class="classes(neutral_good)" class="col-span-4 h-12" x-tippy="Neutral Good">NG</div>
-					  <div GONNABINDclick="toggle(chaotic_good)" :class="classes(chaotic_good)" class="col-span-4 h-12" x-tippy="Chaotic Good">CG</div>
-
-					  <div GONNABINDclick="toggle((lawful_neutral | neutral | chaotic_neutral))" :class="classes(lawful_neutral | neutral | chaotic_neutral)" class="col-span-2 w-8 rounded-l-md"><i class="fa fa-face-meh"></i></div>
-					  <div GONNABINDclick="toggle(lawful_neutral)" :class="classes(lawful_neutral)" class="col-span-4 h-12" x-tippy="Lawful Neutral">LN</div>
-					  <div GONNABINDclick="toggle(neutral)" :class="classes(neutral)" class="col-span-4 h-12" x-tippy="Neutral">N</div>
-					  <div GONNABINDclick="toggle(chaotic_neutral)" :class="classes(chaotic_neutral)" class="col-span-4 h-12" x-tippy="Chaotic Neutral">CN</div>
-
-					  <div GONNABINDclick="toggle((lawful_evil | neutral_evil | chaotic_evil))" :class="classes(lawful_evil | neutral_evil | chaotic_evil)" class="col-span-2 w-8 rounded-l-md"><i class="fa fa-skull"></i></div>
-					  <div GONNABINDclick="toggle(lawful_evil)" :class="classes(lawful_evil)" class="col-span-4 h-12" x-tippy="Lawful Evil">LE</div>
-					  <div GONNABINDclick="toggle(neutral_evil)" :class="classes(neutral_evil)" class="col-span-4 h-12" x-tippy="Neutral Evil">NE</div>
-					  <div GONNABINDclick="toggle(chaotic_evil)" :class="classes(chaotic_evil)" class="col-span-4 h-12" x-tippy="Chaotic Evil">CE</div>
-
-					  <div GONNABINDclick="toggle((lawful_evil | neutral | chaotic_good))" :class="classes(lawful_evil | neutral | chaotic_good)" class="col-span-2 rounded-bl-md"></div>
-					  <div GONNABINDclick="total = (total === 1023) ? 0 : 1023" :class="{ 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 1023) === 1023, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 1023) !== 1023 }" class="select-none text-gray-900 col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Any</div>
-					  <div GONNABINDclick="total = total ^ 512" :class="{ 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-800 dark:hover:bg-emerald-900': (total & 512) === 512, 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border': (total & 512) !== 512 }" class="select-none text-gray-900 rounded-br-md col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white">Unaligned</div>
-					</div>
-				  </div>
-				</div>
-			  </div>
-			</div>
-		  </div>
+		  <FiltersSidebar />
 		</div>
 	  </div>
 	</div>
 
 
 	<!-- This example requires Tailwind CSS v2.0+ -->
-	<div x-show="showSourcesModal" class="fixed z-50 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+	<div v-show="showSourcesModal" class="fixed z-50 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
 	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 x-show="showSourcesModal"
+			 v-show="showSourcesModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0"
 			 x-transition:enter-end="opacity-100"
@@ -1361,8 +1105,8 @@ export default {
 		<!-- This element is to trick the browser into centering the modal contents. -->
 		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-		<div GONNABINDmousedown.outside="showSourcesModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl w-full"
-			 x-show="showSourcesModal"
+		<div @mousedown.outside="showSourcesModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl w-full"
+			 v-show="showSourcesModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -1381,22 +1125,22 @@ export default {
 				<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" id="modal-title">Select your sources</h3>
 				<div class="mt-2 max-h-96 overflow-y-auto px-1 scrollbar scrollbar-dark">
 
-				  <template x-for="type of sourcesByType">
+				  <div v-for="type of sourcesByType">
 					<div class="mb-4">
-					  <h4 class="text-gray-700 dark:text-gray-300 leading-6 mb-2" x-text="type.title"></h4>
+					  <h4 class="text-gray-700 dark:text-gray-300 leading-6 mb-2" v-text="type.title"></h4>
 
 					  <div class="grid gap-2 grid-cols-6 md:grid-cols-12 w-full">
-						<template x-for="source of type.sources">
+						<div v-for="source of type.sources">
 						  <div class="col-span-6 grid gap-2"
 							   :class="{
 														 	'grid-cols-[1fr_42px]': source.custom && !deleting,
 														 	'grid-cols-[42px_1fr_42px]': source.custom && deleting
 														 }"
 							   x-data="{ deleting: false }"
-							   GONNABINDclick.away="deleting = false"
+							   @click.away="deleting = false"
 						  >
 							<button class="text-left text-sm max-w-full truncate"
-									x-show="!deleting"
+									v-show="!deleting"
 									@click="source.enabled =! source.enabled; updateFilteredMonsters();"
 									:title="source.name"
 									:class="{
@@ -1407,30 +1151,30 @@ export default {
 																'fa-toggle-on': source.enabled,
 																'fa-toggle-off': !source.enabled
 															}"></i>
-							  <span class="truncate" x-text="source.name"></span>
+							  <span class="truncate" v-text="source.name"></span>
 							</button>
 
-							<button x-show="source.custom && !deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" GONNABINDclick="deleting = true">
+							<button v-show="source.custom && !deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" @click="deleting = true">
 							  <i class="fa fa-trash"></i>
 							</button>
 
-							<button x-show="deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" GONNABINDclick="deleteImportedSource(source.name)">
+							<button v-show="deleting" class="!px-0 w-[42px] justify-center button-danger-outline-md" @click="deleteImportedSource(source.name)">
 							  <i class="fa fa-check"></i>
 							</button>
 
-							<div x-show="deleting" class="border dark:border-gray-700 rounded-md inline-flex items-center px-4 py-2">
+							<div v-show="deleting" class="border dark:border-gray-700 rounded-md inline-flex items-center px-4 py-2">
 							  <i class="fa fa-exclamation-triangle pr-1 text-orange-500 dark:text-orange-700"></i>
 							  Are you sure?
 							</div>
 
-							<button x-show="deleting" class="!px-0 w-[42px] justify-center button-primary-outline-md" GONNABINDclick="deleting = false">
+							<button v-show="deleting" class="!px-0 w-[42px] justify-center button-primary-outline-md" @click="deleting = false">
 							  <i class="fa fa-times"></i>
 							</button>
 						  </div>
-						</template>
+						</div>
 					  </div>
 					</div>
-				  </template>
+				  </div>
 
 				</div>
 			  </div>
@@ -1438,7 +1182,7 @@ export default {
 		  </div>
 
 		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-			<button GONNABINDclick="showSourcesModal = false" type="button" class="button-primary-md">Done</button>
+			<button @click="showSourcesModal = false" type="button" class="button-primary-md">Done</button>
 			<!--						<button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>-->
 		  </div>
 		</div>
@@ -1446,10 +1190,10 @@ export default {
 	</div>
 
 	<!-- This example requires Tailwind CSS v2.0+ -->
-	<div x-show="showEncounterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+	<div v-show="showEncounterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
 	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 x-show="showEncounterModal"
+			 v-show="showEncounterModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0"
 			 x-transition:enter-end="opacity-100"
@@ -1461,8 +1205,8 @@ export default {
 		<!-- This element is to trick the browser into centering the modal contents. -->
 		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-		<div GONNABINDmousedown.outside="showEncounterModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
-			 x-show="showEncounterModal"
+		<div @mousedown.outside="showEncounterModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
+			 v-show="showEncounterModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -1487,11 +1231,11 @@ export default {
 				  <div class="border-b-2 border-gray-200 dark:border-gray-700">
 					<nav class="-mb-[2px] justify-center flex space-x-8" aria-label="Tabs">
 					  <!-- Current: "border-emerald-500 text-emerald-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
-					  <a GONNABINDclick="tab = 'history'" href="javascript:" :class="{ 'border-emerald-500 text-emerald-600': tab === 'history', 'border-transparent text-gray-500 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'history' }" class="inline-block whitespace-nowrap py-4 px-1 border-b-2 font-medium">
+					  <a @click="tab = 'history'" href="javascript:" :class="{ 'border-emerald-500 text-emerald-600': tab === 'history', 'border-transparent text-gray-500 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'history' }" class="inline-block whitespace-nowrap py-4 px-1 border-b-2 font-medium">
 						<i class="fa fa-history pr-2"></i> Encounter History
 					  </a>
 
-					  <a GONNABINDclick="tab = 'saved'" href="javascript:" :class="{ 'border-emerald-500 text-emerald-600': tab === 'saved', 'border-transparent text-gray-500 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'saved' }" class="inline-block whitespace-nowrap py-4 px-1 border-b-2 font-medium">
+					  <a @click="tab = 'saved'" href="javascript:" :class="{ 'border-emerald-500 text-emerald-600': tab === 'saved', 'border-transparent text-gray-500 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'saved' }" class="inline-block whitespace-nowrap py-4 px-1 border-b-2 font-medium">
 						<i class="fa fa-save pr-2"></i> Saved Encounters
 					  </a>
 					</nav>
@@ -1499,60 +1243,60 @@ export default {
 				</div>
 			  </div>
 
-			  <div x-show="tab === 'saved'" class="my-3 sm:mt-0 w-full">
+			  <div v-show="tab === 'saved'" class="my-3 sm:mt-0 w-full">
 				<div class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
-				  <template x-for="(_, index) of savedEncounters">
-					<div GONNABINDclick="(loadedEncounterIndex !== savedEncounters.length-index-1) && encounter.loadFromSaved(savedEncounters.length-index-1)" class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
+				  <div v-for="(_, index) of savedEncounters">
+					<div @click="(loadedEncounterIndex !== savedEncounters.length-index-1) && encounter.loadFromSaved(savedEncounters.length-index-1)" class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
 						 x-tooltip="savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 						 :key="index"
 						 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': loadedEncounterIndex !== savedEncounters.length-index-1 }"
 					>
 					  <div class="grow flex items-center mr-2 grow truncate overflow-ellipsis" :class="{ 'font-medium': loadedEncounterIndex === savedEncounters.length-index-1 }">
-                                                <span x-text="savedEncounters[savedEncounters.length-index-1] ? savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ') : ''"
+                                                <span v-text="savedEncounters[savedEncounters.length-index-1] ? savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ') : ''"
 												></span>
 					  </div>
 					  <div class="shrink-0 grid grid-cols-[30px_1fr] place-items-center h-full absolute inset-y-0 right-0" type="button">
 						<div class="w-full h-full bg-gradient-to-l from-white dark:from-gray-800 group-hover:from-gray-50 dark:group-hover:from-gray-700 to-transparent"></div>
 						<div class="flex px-3 bg-white group-hover:bg-gray-50 dark:bg-gray-800 dark:group-hover:bg-gray-700 min-w-4 h-full text-right inset-y-0 right-0 space-x-2 absolute">
-						  <div x-show="loadedEncounterIndex === savedEncounters.length-index-1" class="text-emerald-600 h-full flex items-center justify-center"><i class="fa fa-check-circle pr-1"></i> Loaded</div>
-						  <div x-show="loadedEncounterIndex !== savedEncounters.length-index-1" class="items-center h-full justify-center cursor-pointer select-none hidden group-hover:flex text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"><i class="pr-1 fas fa-upload"></i> Load</div>
-						  <div class="items-center justify-center h-full cursor-pointer select-none hidden group-hover:flex text-red-700 dark:text-red-400 hover:text-red-900 dark:hover:text-red-600" GONNABINDclick="encounter.deleteSaved(index)"><i class="pr-1 fas fa-times"></i> Delete</div>
+						  <div v-show="loadedEncounterIndex === savedEncounters.length-index-1" class="text-emerald-600 h-full flex items-center justify-center"><i class="fa fa-check-circle pr-1"></i> Loaded</div>
+						  <div v-show="loadedEncounterIndex !== savedEncounters.length-index-1" class="items-center h-full justify-center cursor-pointer select-none hidden group-hover:flex text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"><i class="pr-1 fas fa-upload"></i> Load</div>
+						  <div class="items-center justify-center h-full cursor-pointer select-none hidden group-hover:flex text-red-700 dark:text-red-400 hover:text-red-900 dark:hover:text-red-600" @click="encounter.deleteSaved(index)"><i class="pr-1 fas fa-times"></i> Delete</div>
 						</div>
 					  </div>
 					</div>
-				  </template>
+				  </div>
 				</div>
 
-				<div x-show="!savedEncounters.length" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-lg p-12 text-center">
+				<div v-show="!savedEncounters.length" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-lg p-12 text-center">
 				  <span class="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-200"> You have no encounters saved </span>
 				</div>
 			  </div>
 
-			  <div x-show="tab === 'history'" class="my-3 sm:mt-0 w-full">
+			  <div v-show="tab === 'history'" class="my-3 sm:mt-0 w-full">
 				<div class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
-				  <template x-for="(_, index) of encounterHistory">
+				  <div v-for="(_, index) of encounterHistory">
 					<div class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
 						 x-tooltip="encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 						 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': !(loadedEncounterIndex === null && index === 0 && encounter.groups.length) }"
-						 GONNABINDclick="!(loadedEncounterIndex === null && index === 0 && encounter.groups.length) && encounter.loadFromHistory(encounterHistory.length-index-1)"
+						 @click="!(loadedEncounterIndex === null && index === 0 && encounter.groups.length) && encounter.loadFromHistory(encounterHistory.length-index-1)"
 						 :key="index"
 					>
 					  <div class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis" :class="{ 'font-medium': loadedEncounterIndex === null && index === 0 && encounter.groups.length }">
-                                                <span x-text="encounterHistory[encounterHistory.length-index-1] ? encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ') : ''"
+                                                <span v-text="encounterHistory[encounterHistory.length-index-1] ? encounterHistory[encounterHistory.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ') : ''"
 												></span>
 					  </div>
 					  <div class="shrink-0 grid grid-cols-[30px_1fr] place-items-center h-full absolute inset-y-0 right-0" type="button">
 						<div class="w-full h-full bg-gradient-to-l from-white dark:from-gray-800 group-hover:from-gray-50 dark:group-hover:from-gray-700 to-transparent"></div>
 						<div class="px-3 bg-white group-hover:bg-gray-50 dark:bg-gray-800 dark:group-hover:bg-gray-700 min-w-4 h-full grid place-items-center">
 						  <div class="hidden group-hover:block text-gray-900 dark:text-gray-100">Load <i class="fa fa-arrow-right"></i></div>
-						  <div x-show="loadedEncounterIndex === null && index === 0 && encounter.groups.length" class="text-emerald-600"><i class="fa fa-check-circle"></i></div>
+						  <div v-show="loadedEncounterIndex === null && index === 0 && encounter.groups.length" class="text-emerald-600"><i class="fa fa-check-circle"></i></div>
 						</div>
 					  </div>
 					</div>
-				  </template>
+				  </div>
 				</div>
 
-				<button x-show="!encounterHistory.length" GONNABINDclick="encounter.generateRandom(); showEncounterModal = false;" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+				<button v-show="!encounterHistory.length" @click="encounter.generateRandom(); showEncounterModal = false;" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
 				  <i class="fa-solid fa-dice-d20 text-2xl h-12 w-12 mx-auto text-gray-400 dark:text-gray-300"></i>
 				  <span class="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-200"> Roll for history </span>
 				</button>
@@ -1561,17 +1305,17 @@ export default {
 		  </div>
 
 		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-			<button GONNABINDclick="showEncounterModal = false" type="button" class="button-primary-md">Close</button>
-			<button x-show="tab === 'history'" GONNABINDclick="encounterHistory = []" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-times mr-1"></i> Clear History </button>
+			<button @click="showEncounterModal = false" type="button" class="button-primary-md">Close</button>
+			<button v-show="tab === 'history'" @click="encounterHistory = []" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-times mr-1"></i> Clear History </button>
 		  </div>
 		</div>
 	  </div>
 	</div>
 
-	<div x-show="showPartyModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+	<div v-show="showPartyModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
 	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 x-show="showPartyModal"
+			 v-show="showPartyModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0"
 			 x-transition:enter-end="opacity-100"
@@ -1583,8 +1327,8 @@ export default {
 		<!-- This element is to trick the browser into centering the modal contents. -->
 		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-		<div GONNABINDmousedown.outside="showPartyModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
-			 x-show="showPartyModal"
+		<div @mousedown.outside="showPartyModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
+			 v-show="showPartyModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -1600,40 +1344,40 @@ export default {
 
 			  <div class="my-3 sm:mt-0 w-full">
 				<div class="my-2 max-h-96 overflow-y-auto scrollbar overflow-x-hidden text-gray-700 dark:text-gray-300">
-				  <div x-show="savedParties.length" class="bg-gray-50 dark:bg-gray-700 rounded shadow overflow-hidden border-b dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-800 ">
-					<template x-for="(party, partyIndex) of savedParties">
+				  <div v-show="savedParties.length" class="bg-gray-50 dark:bg-gray-700 rounded shadow overflow-hidden border-b dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-800 ">
+					<div v-for="(party, partyIndex) of savedParties">
 
 					  <div>
 						<div class="flex px-4 py-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600"
 							 :class="{ 'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': party.editing }"
 							 x-tooltip="party.name"
 							 :key="partyIndex"
-							 GONNABINDclick="party.editing =! party.editing"
+							 @click="party.editing =! party.editing"
 						>
 						  <div class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis">
-							<span x-text="party.name"></span>
+							<span v-text="party.name"></span>
 						  </div>
 						  <div class="shrink-0 grid grid-cols-[30px_1fr] place-items-center h-full absolute inset-y-0 right-0">
 							<div class="w-full h-full bg-gradient-to-l from-gray-50 dark:from-gray-700 group-hover:from-gray-100 dark:group-hover:from-gray-600 to-transparent"></div>
 							<div class="px-3 bg-gray-50 group-hover:bg-gray-100 dark:bg-gray-700 dark:group-hover:bg-gray-600 min-w-4 h-full grid place-items-center">
-							  <div GONNABINDclick.stop="activateParty(partyIndex)" x-show="!party.players.filter((player) => player.active).length" class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100">
+							  <div @click.stop="activateParty(partyIndex)" v-show="!party.players.filter((player) => player.active).length" class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100">
 								<div>Make all active <i class="fa fa-users"></i></div>
 							  </div>
-							  <div GONNABINDclick.stop="deactivateParty(partyIndex)" x-show="party.players.filter((player) => player.active).length" class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100">
+							  <div @click.stop="deactivateParty(partyIndex)" v-show="party.players.filter((player) => player.active).length" class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100">
 								<div>Deactivate all <i class="fa fa-users-slash"></i></div>
 							  </div>
 							</div>
 						  </div>
 						</div>
 
-						<div x-show="party.editing" class="border-x border-gray-50 dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-x-1 gap-y-2 px-6 py-3">
+						<div v-show="party.editing" class="border-x border-gray-50 dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-x-1 gap-y-2 px-6 py-3">
 						  <div class="flex items-center">
 							<input v-model="party.name"
 								   type="text"
 								   class="!mb-0 py-0.5 text-xl"
 							>
 							<div class="w-[30px] ml-2 flex justify-center">
-							  <i GONNABINDclick.stop="deleteParty(partyIndex)" x-tooltip="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
+							  <i @click.stop="deleteParty(partyIndex)" x-tooltip="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
 							</div>
 						  </div>
 
@@ -1646,7 +1390,7 @@ export default {
 							<div class="hidden md:block">HP</div>
 						  </div>
 
-						  <template x-for="(player, playerIndex) of party.players">
+						  <div v-for="(player, playerIndex) of party.players">
 							<div class="grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
 							  <div class='order-1 flex justify-center md:justify-start'>
 								<input type="checkbox" class="hidden" v-model="player.active">
@@ -1675,7 +1419,7 @@ export default {
 
 							  <div class="relative order-5 md:order-4 mb-2 md:mb-0">
 								<input type="number" :id="'initiativeMod_'+playerIndex" x-model.number="player.initiativeMod" class="pl-1 pr-8 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
-								<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" GONNABINDclick="player.initiativeAdvantage =! player.initiativeAdvantage" x-tippy="Advantage on Initiative">
+								<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" x-tippy="Advantage on Initiative">
 								  <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="28" viewbox="0 0 173.20508075688772 200" style="fill: currentColor;"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path></svg>
 								</div>
 								<div class="pointer-events-none text-lg text-center text-white dark:text-gray-700 font-bold w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center">
@@ -1685,7 +1429,7 @@ export default {
 
 							  <div class="order-6 md:order-5 justify-center md:justify-start flex -space-x-px mb-2 md:mb-0">
 								<div class="w-1/2 flex-1 min-w-0">
-								  <input min="0" GONNABINDchange="if(player.currentHp > player.maxHp) { player.maxHp = player.currentHp }" GONNABINDblur="if(player.currentHp > player.maxHp) { player.maxHp = player.currentHp }" type="number" x-model.number="player.currentHp" class="px-1 py-1 text-right border-r-0 relative block w-full rounded-none rounded-l-md sm:text-sm dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"/>
+								  <input min="0" @change="playerChange(player)" @blur="playerChange(player)" type="number" x-model.number="player.currentHp" class="px-1 py-1 text-right border-r-0 relative block w-full rounded-none rounded-l-md sm:text-sm dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"/>
 								</div>
 								<div class="grid place-items-center px-1 shrink rounded-none border border-y-1 bg-white dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"> / </div>
 								<div class="flex-1 min-w-0">
@@ -1693,21 +1437,21 @@ export default {
 								</div>
 							  </div>
 
-							  <div GONNABINDclick="deletePlayer(partyIndex, playerIndex)" class="order-4 md:order-6 group cursor-pointer grid place-items-center mb-2 md:mb-0">
+							  <div @click="deletePlayer(partyIndex, playerIndex)" class="order-4 md:order-6 group cursor-pointer grid place-items-center mb-2 md:mb-0">
 								<i class="fa fa-times text-red-500 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-700"></i>
 							  </div>
 							</div>
-						  </template>
+						  </div>
 
-						  <button GONNABINDclick="createPlayer(partyIndex)" type="button" class="button-primary-outline-md col-span-6 justify-center" :class="{ 'h-24': !party.players.length }"> Create player </button>
-						  <button x-show="!party.players.length" GONNABINDclick="deleteParty(partyIndex)" type="button" class="button-danger-outline-md col-span-6 justify-center"> Delete Party </button>
+						  <button @click="createPlayer(partyIndex)" type="button" class="button-primary-outline-md col-span-6 justify-center" :class="{ 'h-24': !party.players.length }"> Create player </button>
+						  <button v-show="!party.players.length" @click="deleteParty(partyIndex)" type="button" class="button-danger-outline-md col-span-6 justify-center"> Delete Party </button>
 						</div>
 					  </div>
-					</template>
+					</div>
 				  </div>
 				</div>
 
-				<button x-show="!savedParties.length" GONNABINDclick="createParty" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+				<button v-show="!savedParties.length" @click="createParty" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
 				  <i class="fa-solid fa-users text-2xl h-12 w-12 mx-auto text-gray-400 dark:text-gray-300"></i>
 				  <span class="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-200"> Create player party </span>
 				</button>
@@ -1716,17 +1460,17 @@ export default {
 		  </div>
 
 		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-			<button GONNABINDclick="showPartyModal = false" type="button" class="button-primary-md">Close</button>
-			<button GONNABINDclick="createParty" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-plus mr-1"></i> Create party </button>
+			<button @click="showPartyModal = false" type="button" class="button-primary-md">Close</button>
+			<button @click="createParty" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-plus mr-1"></i> Create party </button>
 		  </div>
 		</div>
 	  </div>
 	</div>
 
-	<div x-show="showKeyboardModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+	<div v-show="showKeyboardModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
 	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 x-show="showKeyboardModal"
+			 v-show="showKeyboardModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0"
 			 x-transition:enter-end="opacity-100"
@@ -1738,8 +1482,8 @@ export default {
 		<!-- This element is to trick the browser into centering the modal contents. -->
 		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-		<div GONNABINDmousedown.outside="showKeyboardModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
-			 x-show="showKeyboardModal"
+		<div @mousedown.outside="showKeyboardModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
+			 v-show="showKeyboardModal"
 			 x-transition:enter="ease-out duration-300"
 			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -1756,217 +1500,10 @@ export default {
 			  <div class="my-3 sm:mt-0 w-full">
 				<div class="my-2 max-h-96 overflow-y-auto overflow-x-hidden text-gray-700 dark:text-gray-300">
 				  <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-					<template x-for="shortcut in keyboardHelp">
+					<div v-for="shortcut in keyboardHelp">
 					  <div class="flex justify-between">
-						<kbd class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400" x-text="shortcut.key"></kbd>
-						<div x-text="shortcut.description"></div>
-					  </div>
-					</template>
-				  </div>
-				</div>
-			  </div>
-			</div>
-		  </div>
-
-		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-			<button GONNABINDclick="showKeyboardModal = false" type="button" class="button-primary-md">Close</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-
-	<div x-show="showImporterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" x-cloak aria-modal="true" x-data="{
-            importerResourceLocator: '',
-            importerSourceType: 'google-sheets',
-            importerHtml: '',
-            step: 1,
-            stagedMonsters: [],
-            stagedSources: [],
-            canImport: false,
-            importError: '',
-            init(){
-                this.loadImporter();
-                this.$watch('importerResourceLocator', async value => [this.canImport, this.importError] = await Importer.canImport(value, this.importerSourceType));
-            },
-            loadImporter(){
-                this.importerHtml = '';
-                this.importerHtml = Importer.loadersHtml[this.importerSourceType]();
-                this.importerResourceLocator = null;
-            },
-            async startImport() {
-                const importResults = await Importer.import({
-                    type: this.importerSourceType,
-                    resourceLocator: this.importerResourceLocator
-                });
-
-                this.stagedMonsters = importResults.monsters;
-                this.stagedSources = importResults.sources;
-
-                this.step = 2;
-            },
-            finishImport() {
-                importedSources = importedSources.concat(this.stagedSources)
-                formatSources(this.stagedSources);
-                this.stagedSources = [];
-
-                importedMonsters = importedMonsters.concat(this.stagedMonsters)
-                formatMonsters(this.stagedMonsters);
-                this.stagedMonsters = [];
-
-                dispatchEvent(new CustomEvent('notification', {detail: {title: 'Import complete!', body: 'Your new source(s) have been imported'}}));
-
-                this.step = 1;
-                showImporterModal = false;
-            },
-            abortImport() {
-                this.loadImporter();
-                this.stagedSources = [];
-                this.stagedMonsters = [];
-                this.step = 1;
-                this.canImport = false;
-                this.importError = '';
-            },
-            downloadExampleFile(){
-                const example = Importer.exampleFiles[this.importerSourceType];
-                if(!example) return;
-                example();
-            }
-        }">
-	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 x-show="showImporterModal"
-			 x-transition:enter="ease-out duration-300"
-			 x-transition:enter-start="opacity-0"
-			 x-transition:enter-end="opacity-100"
-			 x-transition:leave="ease-in duration-200"
-			 x-transition:leave-start="opacity-100"
-			 x-transition:leave-end="opacity-0"
-		></div>
-
-		<!-- This element is to trick the browser into centering the modal contents. -->
-		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-		<div GONNABINDmousedown.outside="showImporterModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-xl md:max-w-2xl lg:max-w-4xl w-full"
-			 x-show="showImporterModal"
-			 x-transition:enter="ease-out duration-300"
-			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-			 x-transition:leave="ease-in duration-200"
-			 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-			 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-		>
-		  <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
-			<div class="sm:flex flex-col sm:items-start w-full">
-			  <div class="w-full flex pb-3">
-				<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Import Custom Monsters</h3>
-			  </div>
-
-			  <div class="my-3 sm:mt-0 w-full" x-show="step === 1">
-				<label for="importer_source">Import from</label>
-				<select v-model="importerSourceType" GONNABINDchange="loadImporter" name="importer_source" id="importer_source" class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none rounded-md focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600">
-				  <optgroup label="More to come...">
-					<option value="google-sheets">Google Sheets</option>
-					<option value="json-raw">Raw JSON</option>
-					<option value="json-file">JSON File</option>
-					<option value="csv-file">CSV Files</option>
-				  </optgroup>
-				</select>
-
-				<div class="mb-4" x-html="importerHtml"></div>
-				<div class="text-red-400 dark:text-red-600" x-show="importError.length">
-				  <i class="fa fa-exclamation-triangle"></i>
-				  <span x-text="importError"></span>
-				</div>
-			  </div>
-
-			  <div class="my-3 sm:mt-0 w-full" x-show="step === 2">
-				<div class="text-lg">New Sources</div>
-
-				<div class="px-4 sm:px-6 lg:px-8">
-				  <div class="mt-2 flex flex-col">
-					<div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-					  <div class="inline-block min-w-full py-2 align-middle">
-						<div class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
-						  <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-							<thead class="bg-gray-50 dark:bg-gray-700">
-							<tr>
-							  <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none group whitespace-nowrap w-64">Name</th>
-							  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none sm:table-cell group whitespace-nowrap w-32">Type</th>
-							  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none lg:table-cell group whitespace-nowrap w-32">Short Name</th>
-							  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none lg:table-cell group whitespace-nowrap w-32">Link</th>
-							</tr>
-							</thead>
-							<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-							<template x-for="source in stagedSources">
-							  <tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600">
-								<td class="whitespace-nowrap py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-200" x-text="source.name"></td>
-								<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.type"></td>
-								<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.shortname"></td>
-								<td class="whitespace-nowrap py-2 px-3 text-sm text-gray-500 dark:text-gray-300" x-text="source.link"></td>
-							  </tr>
-							</template>
-							</tbody>
-						  </table>
-						</div>
-					  </div>
-					</div>
-				  </div>
-				</div>
-
-				<div class="text-lg mt-4">New Monsters (Preview)</div>
-
-				<div class="px-4 sm:px-6 lg:px-8">
-				  <div class="mt-2 flex flex-col">
-					<div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-					  <div class="inline-block min-w-full py-2 align-middle">
-						<div class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5">
-						  <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
-							<thead class="bg-gray-50 dark:bg-gray-700">
-							<tr>
-							  <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none group whitespace-nowrap w-64">Name</th>
-							  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none table-cell group whitespace-nowrap w-32">Size</th>
-							  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none sm:table-cell group whitespace-nowrap w-32">CR</th>
-							  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none lg:table-cell group whitespace-nowrap w-32">Type</th>
-							  <th scope="col" class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none lg:table-cell group whitespace-nowrap w-32">Alignment</th>
-							</tr>
-							</thead>
-							<tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
-							<template x-for="monster in stagedMonsters.slice(0, 6)">
-							  <tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600">
-								<td class="w-full max-w-0 py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-100 w-64 max-w-64 truncate">
-								  <span class="truncate" x-text="monster.name"></span>
-								  <dl class="font-normal">
-									<dt class="sr-only">Sources</dt>
-									<dd class="mt-1 truncate text-gray-500 dark:text-gray-400" x-text="monster.sources"></dd>
-									<dt class="sr-only sm:hidden">Type</dt>
-									<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" x-text="monster.type"></dd>
-								  </dl>
-								</td>
-								<td class="px-3 py-2 text-sm text-gray-500 dark:text-gray-300 table-cell w-32 max-w-32 truncate">
-								  <span class="truncate" x-text="monster.size"></span>
-								  <dl class="font-normal">
-									<dt class="sr-only sm:hidden">CR</dt>
-									<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 sm:hidden">CR <span x-text="monster.cr"></span></dd>
-									<dt class="sr-only sm:hidden">Alignment</dt>
-									<dd class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden" x-text="monster.alignment"></dd>
-								  </dl>
-								</td>
-								<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 sm:table-cell w-32">
-								  <span x-text="monster.cr"></span>
-								</td>
-								<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" x-text="monster.type"></td>
-								<td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" x-text="monster.alignment"></td>
-							  </tr>
-							</template>
-
-							<tr x-show="stagedMonsters.length > 6" class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600">
-							  <td colspan="5" class="px-3 py-2 text-sm text-gray-500 dark:text-gray-300 table-cell text-center">
-								And <span x-text="stagedMonsters.length - 6"></span> more.
-							  </td>
-							</tr>
-							</tbody>
-						  </table>
-						</div>
+						<kbd class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400" v-text="shortcut.key"></kbd>
+						<div v-text="shortcut.description"></div>
 					  </div>
 					</div>
 				  </div>
@@ -1976,92 +1513,13 @@ export default {
 		  </div>
 
 		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-			<!--			Step 1 button			-->
-			<button :disabled="!canImport" x-show="step === 1" class="button-primary-md" GONNABINDclick="startImport">Preview Import</button>
-
-			<div class="flex justify-end">
-			  <!--			Step 2 button			-->
-			  <button x-show="step === 2" class="button-danger-outline-md mr-2" GONNABINDclick="abortImport">Nope, go back!</button>
-			  <button x-show="step === 2" class="button-primary-md" GONNABINDclick="finishImport">Looks Good, Import Them!</button>
-			</div>
-
-			<!--			Always shown			-->
-			<button GONNABINDclick="showImporterModal = false; abortImport();" type="button" class="button-secondary-md">Cancel</button>
+			<button @click="showKeyboardModal = false" type="button" class="button-primary-md">Close</button>
 		  </div>
 		</div>
 	  </div>
 	</div>
 
+	<ImporterModal />
 
-	<div aria-live="assertive" class="fixed inset-0 flex items-end z-50 px-4 py-6 pointer-events-none sm:p-6 sm:items-end" x-data="{ notifications: [], notification: function($event){ this.notifications.push($event.detail) } }" GONNABINDnotification.window="notification">
-	  <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
-		<template x-for="(notification, index) in notifications">
-		  <div class="max-w-sm w-full relative bg-white dark:bg-gray-700 dark:shadow-xl shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
-			   x-data="{
-                            info: notification,
-                            show:false,
-                            init: function() {
-                                setTimeout(() => this.show = true, 100);
-                                if(!this.info.sticky) {
-                                    setTimeout(() => { this.remove() }, 3000);
-                                    setTimeout(() => delete notifications[index], 4000);
-                                }
-                            },
-                            remove: function() {
-                                this.show = false;
-                                if(this.info.callback){
-                                    this.info.callback();
-                                }
-                            }
-                         }"
-			   x-show="show"
-			   x-transition:enter="transform ease-out duration-300 transition"
-			   x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-			   x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-			   x-transition:leave="transition ease-in duration-100"
-			   x-transition:leave-start="opacity-100"
-			   x-transition:leave-end="opacity-0">
-			<div class="p-4" :class="{ 'mb-2' : !info.sticky }">
-			  <div class="flex items-start">
-				<div class="flex-shrink-0">
-				  <i class="fa" :class="{
-                                'fa-check-circle': !info.icon,
-                                'text-emerald-400': !info.icon_color,
-                                [info.icon]: info.icon,
-                                [info.icon_color]: info.icon_color,
-                            }"></i>
-				</div>
-				<div class="ml-3 w-0 flex-1 pt-0.5">
-				  <p class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="info.title"></p>
-				  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" x-show="info.body" x-html="info.body"></p>
-				</div>
-				<div class="ml-4 flex-shrink-0 flex">
-				  <button class="bg-white dark:bg-gray-500 dark:text-gray-800 rounded-md inline-flex text-gray-400 dark:text-gray-800 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500" GONNABINDclick="remove">
-					<span class="sr-only">Close</span>
-					<!-- Heroicon name: solid/x -->
-					<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-					</svg>
-				  </button>
-				</div>
-			  </div>
-			</div>
-
-			<div class="absolute inset-x-0 bottom-0 bg-gray-50 dark:bg-gray-700 h-2" x-show="!info.sticky">
-			  <div class="absolute inset-x-0 left-0 h-full"
-				   :class="{
-                            'bg-emerald-500': !info.icon_color,
-                            [info.icon_color?.replace('text-', 'bg-')]: info.icon_color
-                         }"
-				   x-show="!show"
-				   x-transition:leave="transition-all ease-linear duration-[2900ms]"
-				   x-transition:leave-start="w-full"
-				   x-transition:leave-end="w-0"
-			  ></div>
-			</div>
-		  </div>
-		</template>
-	  </div>
-	</div>
   </div>
 </template>
