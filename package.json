@@ -1,44 +1,23 @@
 {
-  "name": "5e-monsters",
-  "version": "1.0.0",
-  "description": "Kobold+ Fight Club",
-  "main": "src/index.html",
+  "name": "kobold-fight-club",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5050",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
   "dependencies": {
-    "@alpinejs/persist": "^3.9.6",
-    "@fortawesome/fontawesome-free": "^6.1.1",
-    "@tailwindcss/forms": "^0.4.1",
-    "alpinejs": "^3.9.6",
-    "browser-sync": "^2.27.7",
-    "choices.js": "^10.1.0",
-    "flowbite": "^1.4.5",
-    "hotkeys-js": "^3.8.9",
-    "intro.js": "^4.3.0",
-    "nouislider": "^15.5.1",
-    "postcss": "^8.4.5",
-    "tippy.js": "^6.3.7"
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14"
   },
   "devDependencies": {
-    "browser-sync-webpack-plugin": "^2.3.0",
-    "concurrently": "^7.0.0",
-    "laravel-mix": "^6.0.43",
-    "tailwindcss": "^3.0.15"
-  },
-  "scripts": {
-    "development": "mix",
-    "watch": "mix watch",
-    "watch-poll": "mix watch -- --watch-options-poll=1000",
-    "hot": "mix watch --hot",
-    "production": "mix --production",
-    "dev-install-watch": "npm install && npm run watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fantasycalendar/scaled-encounters.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fantasycalendar/scaled-encounters/issues"
-  },
-  "homepage": "https://github.com/fantasycalendar/scaled-encounters#readme"
+    "@rushstack/eslint-patch": "^1.1.0",
+    "@vitejs/plugin-vue": "^2.3.1",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-vue": "^8.2.0",
+    "prettier": "^2.5.1",
+    "vite": "^2.9.5"
+  }
 }
