@@ -51,7 +51,7 @@
           >
           <a
             title="Toggle light mode (ctrl+shift+\)"
-            @click="toggleTheme()"
+            @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
             href="javascript:"
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full"
           >
@@ -128,7 +128,7 @@
         </a>
         <a
           title="Toggle light mode (ctrl+shift+\)"
-          @click="toggleTheme"
+          @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
           href="javascript:"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
         >
@@ -143,9 +143,15 @@
 <script>
 export default {
   name: "HeaderNav",
+  props: {
+    theme: {
+      type: String,
+      default: 'dark'
+    }
+  },
+
   data() {
     return {
-      theme: "dark",
       menu: false,
     };
   },
@@ -153,11 +159,7 @@ export default {
   methods: {
     toggleMenu() {
       this.menu = !this.menu;
-    },
-    toggleTheme() {
-      this.theme = this.theme === "light" ? "dark" : "light";
-      document.documentElement.classList.toggle('dark', this.theme === 'dark');
-    },
+    }
   },
 };
 </script>

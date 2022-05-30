@@ -27,7 +27,16 @@ export default {
     }
   },
 
+  mounted() {
+    this.$watch('theme', (value) => document.documentElement.classList.toggle('dark', value === 'dark'))
+  },
+
   methods: {
+    toggleTheme() {
+      this.theme = this.theme === "light" ? "dark" : "light";
+      document.documentElement.classList.toggle('dark', this.theme === 'dark');
+    },
+
     showModal(modalData) {
       console.log(modalData);
 
@@ -102,6 +111,7 @@ export default {
   >
     <HeaderNav
         @modal="showModal"
+        v-model:theme="theme"
     />
 
     <RouterView

@@ -31,7 +31,6 @@ export default {
 
   created: function () {
     window.addEventListener("notification", (event) =>{
-      console.log(event);
       this.notification(event.detail);
     });
   },

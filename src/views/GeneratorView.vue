@@ -1033,7 +1033,7 @@ export default {
 		  <div class="mt-4 flex space-x-2">
 			<button :disabled="!encounter.groups.length" class="grow text-center button-primary-md" @click="sendToImprovedInitiative">
 							<span class="inline-flex justify-center w-full">
-								<img class="mr-2 fill-white" style="height:20px;" src="images/improved-initiative-logo.svg" alt="II"/> Send to Improved Initiative
+								<img class="mr-2 fill-white" style="height:20px;" src="/src/assets/images/improved-initiative-logo.svg" alt="II"/> Send to Improved Initiative
 							</span>
 			</button>
 
