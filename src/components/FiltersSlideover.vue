@@ -84,6 +84,17 @@
                 class="flex h-full flex-col relative 2xl:absolute 2xl:inset-y-0 2xl:w-[24rem] 2xl:right-0 2xl:py-8 flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar"
               >
                 Panel sidebar thingy
+
+                <Multiselect
+                  mode="tags"
+                  v-model="testing"
+                  :class="{
+                    container: 'relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-gray-300 rounded bg-white text-base leading-snug outline-none dark:bg-gray-700 dark:border-gray-600'
+                  }"
+                  :options="['Option1', 'Option2', 'Option3', 'Option4', 'Option5']"
+                ></Multiselect>
+
+                <span v-text="testing"></span>
               </div>
               <!--              <div-->
               <!--                class="flex h-full flex-col relative 2xl:absolute 2xl:inset-y-0 2xl:w-[24rem] 2xl:right-0 2xl:py-8 flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar"-->
@@ -610,12 +621,17 @@
 </template>
 
 <script setup>
+import Multiselect from "@vueform/multiselect";
+import { ref } from "vue";
+
+const testing = ref(["Option1", "Option2"]);
+
 defineProps({
   showFilters: {
     type: Boolean,
     default: false,
   }
-})
+});
 </script>
 
-<style scoped></style>
+<style src="@vueform/multiselect/themes/default.css"></style>

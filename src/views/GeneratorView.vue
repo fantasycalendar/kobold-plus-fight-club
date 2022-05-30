@@ -23,7 +23,7 @@ export default {
       sourcesVersion: "2.1.0",
       storedSourcesVersion: "2.0.0",
 
-      showFilters: false,
+      showFilters: true,
       showSourcesModal: false,
       showEncounterModal: false,
       showPartyModal: false,

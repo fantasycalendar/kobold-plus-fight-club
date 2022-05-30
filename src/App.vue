@@ -129,5 +129,5 @@ export default {
 </template>
 
 <style>
-	/* Nada*/
+@import '../node_modules/@vueform/multiselect/themes/tailwind.scss';
 </style>
