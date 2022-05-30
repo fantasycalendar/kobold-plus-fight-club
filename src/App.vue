@@ -6,6 +6,7 @@ import ImporterModal from './components/ImporterModal.vue';
 import KeyboardModal from "./components/KeyboardModal.vue";
 import SourcesModal from "./components/SourcesModal.vue";
 import PartyModal from "./components/PartyModal.vue";
+import EncounterModal from "./components/EncounterModal.vue";
 
 import NotificationArea from "./components/NotificationArea.vue";
 </script>
@@ -14,7 +15,6 @@ import NotificationArea from "./components/NotificationArea.vue";
 import hotkeys from "hotkeys-js";
 
 export default {
-  components: { RouterView, HeaderNav, ImporterModal, KeyboardModal, NotificationArea },
   data() {
     return {
       theme: window.theme,
@@ -22,6 +22,7 @@ export default {
       showKeyboardModal: false,
       showSourcesModal: false,
       showPartyModal: false,
+      showEncounterModal: false,
       sources: [],
     }
   },
@@ -111,6 +112,7 @@ export default {
     <KeyboardModal v-model:show="showKeyboardModal" />
     <SourcesModal v-model:show="showSourcesModal" />
     <PartyModal v-model:show="showPartyModal" />
+    <EncounterModal v-model:show="showEncounterModal" />
 
     <NotificationArea />
   </div>
