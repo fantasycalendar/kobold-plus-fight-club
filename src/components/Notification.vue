@@ -1,11 +1,11 @@
 <template xmlns:x-transition="http://www.w3.org/1999/xhtml">
   <transition
-      enter="transform ease-out duration-300 transition"
-      enter-from="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-      enter-to="translate-y-0 opacity-100 sm:translate-x-0"
-      leave="transition ease-in duration-100"
-      leave-from="opacity-100"
-      leave-to="opacity-0"
+      enter-active-class="transform ease-out duration-300 transition"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+      leave-active-class="transition ease-in duration-100"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
       v-show="notification.show"
   >
     <div
@@ -65,17 +65,16 @@
           v-show="!notification.sticky"
       >
         <transition
-            v-show="!notification.show"
-            leave="transition-all ease-linear duration-[2900ms]"
-            leave-from="w-full"
-            leave-to="w-0"
+            v-show="notification.timer"
+            leave-active-class="transition-all ease-linear duration-[2900ms]"
+            leave-from-class="w-full"
+            leave-to-class="w-0"
         >
-          <div
-              class="absolute inset-x-0 left-0 h-full"
-              :class="{
+          <div :class="{
                 'bg-emerald-500': !notification.icon_color,
-                [notification.icon_color?.replace('text-', 'bg-')]: notification.icon_color,
-              }"></div>
+                [notification.icon_color]: notification.icon_color,
+              }"
+              class="absolute inset-x-0 left-0 h-full"></div>
         </transition>
       </div>
     </div>
@@ -83,31 +82,22 @@
 </template>
 
 <script setup>
-  import { onMounted, defineEmits } from "vue";
+  import { defineEmits } from "vue";
 
   const props = defineProps({
     notification: {
-      type: Object,
-      default: {
-        sticky: false,
-        icon: false,
-        icon_color: false,
-        title: "A notification",
-        body: "Another notification",
-      }
+      type: Object
     }
   });
 
   const emit = defineEmits(['dismiss']);
 
-  onMounted(() => {
-    setTimeout(() => (props.notification.show = true), 100);
+  if(!props.notification.show) {
+    setTimeout(() => props.notification.show = true, 100);
+  }
 
-    if (!props.notification.sticky) {
-      setTimeout(() => {
-        props.notification.show = false;
-        emit('dismiss');
-      }, 3000);
-    }
-  })
+  if(!props.notification.sticky) {
+    props.notification.timer = true;
+    setTimeout(() => props.notification.timer = false, 100);
+  }
 </script>

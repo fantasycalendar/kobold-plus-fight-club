@@ -1,3 +1,19 @@
+<script setup>
+import { ref } from "vue";
+import {useNotifications} from "../stores/notifications.js";
+
+const notifications = useNotifications();
+
+const props = defineProps({
+  theme: {
+    type: String,
+    default: 'dark',
+  }
+});
+
+const menu = ref(false);
+</script>
+
 <template>
   <nav
     class="bg-emerald-700 border-b border-gray-200 dark:border-gray-900 shrink-0"
@@ -21,6 +37,17 @@
         <div
           class="hidden lg:flex text-white lg:-my-px lg:ml-6 lg:space-x-8 items-center"
         >
+          <a
+              @click="notifications.notify({
+                title:'A test notification',
+                body: 'With a body',
+                sticky: true
+              })"
+              href="javascript:"
+              class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
+          >
+            Test Notification
+          </a>
           <a
             @click="$emit('modal', { name: 'Keyboard' })"
             href="javascript:"
@@ -67,7 +94,7 @@
         <div class="-mr-2 flex items-center lg:hidden">
           <button
             class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
-            @click="toggleMenu"
+            @click="menu = !menu"
           >
             <span class="sr-only">Open main menu</span>
             <svg
@@ -139,29 +166,3 @@
     </div>
   </nav>
 </template>
-
-<script>
-export default {
-  name: "HeaderNav",
-  props: {
-    theme: {
-      type: String,
-      default: 'dark'
-    }
-  },
-
-  data() {
-    return {
-      menu: false,
-    };
-  },
-
-  methods: {
-    toggleMenu() {
-      this.menu = !this.menu;
-    }
-  },
-};
-</script>
-
-<style scoped></style>
