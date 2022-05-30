@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import dismiss from "flowbite/src/components/dismiss";
 
 export const useNotifications = defineStore('notifications', {
     state: () => {
@@ -10,13 +11,25 @@ export const useNotifications = defineStore('notifications', {
                 title: "A notification",
                 body: "Another notification",
                 show: true,
-            }]
+                id: 0
+            }],
+            idIncrement: 1,
+            timeouts: [],
         }
     },
     actions: {
-        dismiss(index) {
-            if(typeof this.entries[index].callback === 'function') {
+        getId() {
+            return this.idIncrement++;
+        },
+        dismiss(dismissId) {
+            const index = this.entries.findIndex(notification => notification.id === dismissId);
+
+            if('callback' in this.entries[index] && typeof this.entries[index].callback === 'function') {
                 this.entries[index].callback();
+            }
+
+            if(typeof this.timeouts[dismissId] !== 'undefined') {
+                clearTimeout(this.timeouts[dismissId]);
             }
 
             this.entries.splice(index, 1);
@@ -34,10 +47,12 @@ export const useNotifications = defineStore('notifications', {
                 }
             }
 
-            const newIndex = this.entries.push(notification) - 1;
+            notification.id = this.getId();
+
+            this.entries.push(notification);
 
             if(!notification.sticky) {
-                setTimeout(() => this.dismiss(newIndex), 3000);
+                this.timeouts[notification.id] = (setTimeout(() => this.dismiss(notification.id), 3000));
             }
         }
     }

@@ -40,8 +40,7 @@ const menu = ref(false);
           <a
               @click="notifications.notify({
                 title:'A test notification',
-                body: 'With a body',
-                sticky: true
+                body: 'With a body'
               })"
               href="javascript:"
               class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
