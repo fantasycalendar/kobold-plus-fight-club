@@ -82,9 +82,10 @@
   </transition>
 </template>
 
-<script>
-export default {
-  props: {
+<script setup>
+  import { onMounted, defineEmits } from "vue";
+
+  const props = defineProps({
     notification: {
       type: Object,
       default: {
@@ -95,19 +96,18 @@ export default {
         body: "Another notification",
       }
     }
-  },
-  mounted() {
-    setTimeout(() => (this.notification.show = true), 100);
+  });
 
-    if (!this.notification.sticky) {
+  const emit = defineEmits(['dismiss']);
+
+  onMounted(() => {
+    setTimeout(() => (props.notification.show = true), 100);
+
+    if (!props.notification.sticky) {
       setTimeout(() => {
-        this.notification.show = false;
-        this.$emit('dismiss');
-        console.log('dismissing');
+        props.notification.show = false;
+        emit('dismiss');
       }, 3000);
     }
-  },
-};
+  })
 </script>
-
-<style scoped></style>

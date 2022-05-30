@@ -16,6 +16,7 @@ const internationalNumberFormat = new Intl.NumberFormat('en-US')
 
 export default {
   components: { FiltersSlideover },
+  emits: ['modal'],
 
   data() {
 	return {
@@ -674,8 +675,7 @@ export default {
 			  </tr>
 			  </thead>
 			  <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
-			  <div v-for="monster in monsters">
-				<tr class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
+				<tr v-for="monster in monsters" class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
 				  <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none"
 											  @click="encounter.addMonster(monster)"
@@ -689,7 +689,7 @@ export default {
 					  <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
 						<div v-for="(source, index) of monster.sources">
                                                     <span :title="source.fullText"
-														  x-html="
+														  v-html="
                                                         `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>`
                                                         + (index < monster.sources.length-1 ? ', ' : '')
                                                     "></span>
@@ -729,16 +729,15 @@ export default {
 				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" v-text="monster.type"></td>
 				  <td class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32" v-text="monster.alignment.string"></td>
 				</tr>
-			  </div>
 			  </tbody>
 			</table>
 		  </div>
 
 		  <div v-show="enabledSources.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" @click="showSourcesModal = true">enable some now</span></div>
-		  <div v-show="enabledSources.length > 0 && filteredMonsters.length === 0" class="w-full text-center text-lg my-4" x-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$dispatch('reset-filters')">reset filters</span></div>
+		  <div v-show="enabledSources.length > 0 && filteredMonsters.length === 0" class="w-full text-center text-lg my-4" v-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$dispatch('reset-filters')">reset filters</span></div>
 
 		  <!-- This example requires Tailwind CSS v2.0+ -->
-		  <nav v-show="totalPages > 1" x-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
+		  <nav v-show="totalPages > 1" v-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
 			<div class="-mt-px w-0 flex-1 flex">
 			  <a @click="setPageNumber(currentPage-1)" :disabled="currentPage === 1" href="#" class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400">
 				<!-- Heroicon name: solid/arrow-narrow-left -->
@@ -779,7 +778,7 @@ export default {
 				Party
 			  </div>
 
-			  <a class="primary-link text-sm" @click="showPartyModal = true" href="javascript:">
+			  <a class="primary-link text-sm" @click="$emit('modal', { name: 'Party' })" href="javascript:">
 				Manage
 			  </a>
 			</div>
@@ -901,9 +900,8 @@ export default {
 					  x-transition:leave-start="opacity-100"
 					  x-transition:leave-end="opacity-0"
 				  >
-					<div v-for="option of ['easy', 'medium', 'hard', 'deadly']">
-					  <li @click="difficulty = option; difficultySelectOpen = false;" :class="{ 'text-white bg-emerald-600': difficulty === option, 'text-gray-900 dark:text-gray-300': difficulty !== option }" class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
-						<span class="group-hover:text-white font-normal block truncate" x-html="(option.slice(0,1).toUpperCase() + option.slice(1))"> </span>
+					  <li v-for="option of ['easy', 'medium', 'hard', 'deadly']" @click="difficulty = option; difficultySelectOpen = false;" :class="{ 'text-white bg-emerald-600': difficulty === option, 'text-gray-900 dark:text-gray-300': difficulty !== option }" class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
+						<span class="group-hover:text-white font-normal block truncate" v-html="(option.slice(0,1).toUpperCase() + option.slice(1))"> </span>
 						<span :class="{ 'text-gray-200': difficulty === option, 'text-gray-600 dark:text-gray-400': difficulty !== option }" class="text-xs group-hover:text-gray-200" v-text="formatNumber(party.experience[option]) + 'xp'"></span>
 
 						<span v-show="difficulty === option" :class="{ 'text-white': difficulty === option, 'text-emerald-600': difficulty !== option }" class="absolute inset-y-0 right-0 flex items-center pr-4">
@@ -912,7 +910,6 @@ export default {
 												  </svg>
 											</span>
 					  </li>
-					</div>
 				  </ul>
 				</div>
 			  </div>
@@ -937,8 +934,7 @@ export default {
 					  x-transition:leave-start="opacity-100"
 					  x-transition:leave-end="opacity-0"
 				  >
-					<div v-for="type of Object.values(encounterTypes)">
-					  <li @click="encounterType = type.key; encounterTypeSelectOpen = false;" :class="{ 'text-white bg-emerald-600': encounterType === type.key, 'text-gray-900 dark:text-gray-300': encounterType !== type.key }" class="text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
+					  <li v-for="type of Object.values(encounterTypes)" @click="encounterType = type.key; encounterTypeSelectOpen = false;" :class="{ 'text-white bg-emerald-600': encounterType === type.key, 'text-gray-900 dark:text-gray-300': encounterType !== type.key }" class="text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9" role="option">
 						<span class="font-normal block truncate" v-text="type.label"> </span>
 
 						<span :class="{ 'text-white': encounterType === type.key, 'text-emerald-600': encounterType !== type.key }" class="absolute inset-y-0 right-0 flex items-center pr-4">
@@ -947,7 +943,6 @@ export default {
 											  </svg>
 											</span>
 					  </li>
-					</div>
 				  </ul>
 				</div>
 			  </div>
@@ -980,9 +975,7 @@ export default {
 				  <span class="text-base ml-4" v-text="'XP: ' + formatNumber(group.monster.cr.exp)"></span>
 				  <div class='overflow-hidden whitespace-nowrap overflow-ellipsis pr-40'>
 					<ul class="list-none text-s italic max-w-full">
-					  <div v-for="source in group.monster.sources">
-						<li class="max-w-full truncate" :title="source.fullText" data-tippy-delay="1000" x-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
-					  </div>
+						<li v-for="source in group.monster.sources" class="max-w-full truncate" :title="source.fullText" data-tippy-delay="1000" v-html="source.reference.link ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>` : source.fullText"></li>
 					</ul>
 				  </div>
 				</div>
@@ -1051,7 +1044,7 @@ export default {
 		</div>
 	  </div>
 
-	  <div class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" v-show="showFilters" x-cloak>
+	  <div class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" v-show="showFilters" v-cloak>
 		<div class="absolute 2xl:static inset-0 overflow-hidden">
 		  <!-- Background overlay, show/hide based on slide-over state. -->
 		  <div @click="showFilters = false" class="absolute 2xl:hidden inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity 2xl:duration-0" aria-hidden="true"
@@ -1070,7 +1063,7 @@ export default {
 	</div>
 
 	<!-- This example requires Tailwind CSS v2.0+ -->
-	<div v-show="showEncounterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+	<div v-show="showEncounterModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" v-cloak>
 	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
 			 v-show="showEncounterModal"
@@ -1125,8 +1118,7 @@ export default {
 
 			  <div v-show="tab === 'saved'" class="my-3 sm:mt-0 w-full">
 				<div class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300">
-				  <div v-for="(_, index) of savedEncounters">
-					<div @click="(loadedEncounterIndex !== savedEncounters.length-index-1) && encounter.loadFromSaved(savedEncounters.length-index-1)" class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
+					<div v-for="(_, index) of savedEncounters" @click="(loadedEncounterIndex !== savedEncounters.length-index-1) && encounter.loadFromSaved(savedEncounters.length-index-1)" class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
 						 :title="savedEncounters[savedEncounters.length-index-1].map(group => `${group.monster.name} x${group.count}`).join(', ')"
 						 :key="index"
 						 :class="{ 'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': loadedEncounterIndex !== savedEncounters.length-index-1 }"
@@ -1143,7 +1135,6 @@ export default {
 						  <div class="items-center justify-center h-full cursor-pointer select-none hidden group-hover:flex text-red-700 dark:text-red-400 hover:text-red-900 dark:hover:text-red-600" @click="encounter.deleteSaved(index)"><i class="pr-1 fas fa-times"></i> Delete</div>
 						</div>
 					  </div>
-					</div>
 				  </div>
 				</div>
 
@@ -1187,161 +1178,6 @@ export default {
 		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
 			<button @click="showEncounterModal = false" type="button" class="button-primary-md">Close</button>
 			<button v-show="tab === 'history'" @click="encounterHistory = []" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-times mr-1"></i> Clear History </button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-
-	<div v-show="showPartyModal" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
-	  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-		<div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
-			 v-show="showPartyModal"
-			 x-transition:enter="ease-out duration-300"
-			 x-transition:enter-start="opacity-0"
-			 x-transition:enter-end="opacity-100"
-			 x-transition:leave="ease-in duration-200"
-			 x-transition:leave-start="opacity-100"
-			 x-transition:leave-end="opacity-0"
-		></div>
-
-		<!-- This element is to trick the browser into centering the modal contents. -->
-		<span class="hidden sm:inline-block align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-		<div @mousedown.outside="showPartyModal = false" class="relative inline-block bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle sm:max-w-2xl w-full"
-			 v-show="showPartyModal"
-			 x-transition:enter="ease-out duration-300"
-			 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-			 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-			 x-transition:leave="ease-in duration-200"
-			 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-			 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-		>
-		  <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:p-6">
-			<div class="sm:flex flex-col sm:items-start w-full">
-			  <div class="w-full flex pb-3">
-				<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Manage your parties and players</h3>
-			  </div>
-
-			  <div class="my-3 sm:mt-0 w-full">
-				<div class="my-2 max-h-96 overflow-y-auto scrollbar overflow-x-hidden text-gray-700 dark:text-gray-300">
-				  <div v-show="savedParties.length" class="bg-gray-50 dark:bg-gray-700 rounded shadow overflow-hidden border-b dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-800 ">
-					<div v-for="(party, partyIndex) of savedParties">
-
-					  <div>
-						<div class="flex px-4 py-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600"
-							 :class="{ 'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': party.editing }"
-							 :title="party.name"
-							 :key="partyIndex"
-							 @click="party.editing =! party.editing"
-						>
-						  <div class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis">
-							<span v-text="party.name"></span>
-						  </div>
-						  <div class="shrink-0 grid grid-cols-[30px_1fr] place-items-center h-full absolute inset-y-0 right-0">
-							<div class="w-full h-full bg-gradient-to-l from-gray-50 dark:from-gray-700 group-hover:from-gray-100 dark:group-hover:from-gray-600 to-transparent"></div>
-							<div class="px-3 bg-gray-50 group-hover:bg-gray-100 dark:bg-gray-700 dark:group-hover:bg-gray-600 min-w-4 h-full grid place-items-center">
-							  <div @click.stop="activateParty(partyIndex)" v-show="!party.players.filter((player) => player.active).length" class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100">
-								<div>Make all active <i class="fa fa-users"></i></div>
-							  </div>
-							  <div @click.stop="deactivateParty(partyIndex)" v-show="party.players.filter((player) => player.active).length" class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100">
-								<div>Deactivate all <i class="fa fa-users-slash"></i></div>
-							  </div>
-							</div>
-						  </div>
-						</div>
-
-						<div v-show="party.editing" class="border-x border-gray-50 dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-x-1 gap-y-2 px-6 py-3">
-						  <div class="flex items-center">
-							<input v-model="party.name"
-								   type="text"
-								   class="!mb-0 py-0.5 text-xl"
-							>
-							<div class="w-[30px] ml-2 flex justify-center">
-							  <i @click.stop="deleteParty(partyIndex)" :title="'Delete ' + party.name" class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"></i>
-							</div>
-						  </div>
-
-						  <div class="text-gray-600 dark:text-gray-300 grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
-							<div>Active</div>
-							<div>Name<span class="md:hidden">/Init.</span></div>
-							<div>Level<span class="md:hidden">/HP</span></div>
-							<div class="hidden md:block md:order-6"></div>
-							<div class="hidden md:block">Initiative</div>
-							<div class="hidden md:block">HP</div>
-						  </div>
-
-						  <div v-for="(player, playerIndex) of party.players">
-							<div class="grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]">
-							  <div class='order-1 flex justify-center md:justify-start'>
-								<input type="checkbox" class="hidden" v-model="player.active">
-
-								<button
-									@click="player.active = !player.active"
-									type="button"
-									:class="{'bg-gray-200 dark:bg-gray-700': !player.active, 'bg-emerald-600': player.active}"
-									class="bg-gray-200 dark:bg-gray-700 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-									role="switch"
-									aria-checked="false"
-									aria-labelledby="availability-label"
-									aria-describedby="availability-description"
-								>
-								  <span aria-hidden="true" :class="{'translate-x-0': !player.active, 'translate-x-5': player.active}" class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
-								</button>
-							  </div>
-
-
-							  <div class="order-2">
-								<input type="text" :id="'name_'+playerIndex" v-model="player.name" class="px-1 py-1 !mb-0 block w-full sm:text-sm rounded-md dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
-							  </div>
-							  <div class="order-3">
-								<input type="number" :id="'level_'+playerIndex" x-model.number="player.level" class="px-1 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
-							  </div>
-
-							  <div class="relative order-5 md:order-4 mb-2 md:mb-0">
-								<input type="number" :id="'initiativeMod_'+playerIndex" x-model.number="player.initiativeMod" class="pl-1 pr-8 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300">
-								<div :class="{ 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-600 dark:hover:text-emerald-700': player.initiativeAdvantage, 'text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400': !player.initiativeAdvantage }" class="text-2xl text-center w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center" @click="player.initiativeAdvantage =! player.initiativeAdvantage" title="Advantage on Initiative">
-								  <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="28" viewbox="0 0 173.20508075688772 200" style="fill: currentColor;"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z"></path></svg>
-								</div>
-								<div class="pointer-events-none text-lg text-center text-white dark:text-gray-700 font-bold w-6 cursor-pointer select-none absolute inset-y-0 right-1 flex justify-center items-center">
-								  A
-								</div>
-							  </div>
-
-							  <div class="order-6 md:order-5 justify-center md:justify-start flex -space-x-px mb-2 md:mb-0">
-								<div class="w-1/2 flex-1 min-w-0">
-								  <input min="0" @change="playerChange(player)" @blur="playerChange(player)" type="number" x-model.number="player.currentHp" class="px-1 py-1 text-right border-r-0 relative block w-full rounded-none rounded-l-md sm:text-sm dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"/>
-								</div>
-								<div class="grid place-items-center px-1 shrink rounded-none border border-y-1 bg-white dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"> / </div>
-								<div class="flex-1 min-w-0">
-								  <input min="1" type="number" x-model.number="player.maxHp" class="px-1 py-1 relative border-l-0 block w-full rounded-none rounded-r-md sm:text-sm dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"/>
-								</div>
-							  </div>
-
-							  <div @click="deletePlayer(partyIndex, playerIndex)" class="order-4 md:order-6 group cursor-pointer grid place-items-center mb-2 md:mb-0">
-								<i class="fa fa-times text-red-500 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-700"></i>
-							  </div>
-							</div>
-						  </div>
-
-						  <button @click="createPlayer(partyIndex)" type="button" class="button-primary-outline-md col-span-6 justify-center" :class="{ 'h-24': !party.players.length }"> Create player </button>
-						  <button v-show="!party.players.length" @click="deleteParty(partyIndex)" type="button" class="button-danger-outline-md col-span-6 justify-center"> Delete Party </button>
-						</div>
-					  </div>
-					</div>
-				  </div>
-				</div>
-
-				<button v-show="!savedParties.length" @click="createParty" type="button" class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
-				  <i class="fa-solid fa-users text-2xl h-12 w-12 mx-auto text-gray-400 dark:text-gray-300"></i>
-				  <span class="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-200"> Create player party </span>
-				</button>
-			  </div>
-			</div>
-		  </div>
-
-		  <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse sm:justify-between">
-			<button @click="showPartyModal = false" type="button" class="button-primary-md">Close</button>
-			<button @click="createParty" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"> <i class="fa fa-plus mr-1"></i> Create party </button>
 		  </div>
 		</div>
 	  </div>

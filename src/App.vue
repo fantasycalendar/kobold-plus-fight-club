@@ -5,6 +5,7 @@ import HeaderNav from './components/HeaderNav.vue';
 import ImporterModal from './components/ImporterModal.vue';
 import KeyboardModal from "./components/KeyboardModal.vue";
 import SourcesModal from "./components/SourcesModal.vue";
+import PartyModal from "./components/PartyModal.vue";
 
 import NotificationArea from "./components/NotificationArea.vue";
 </script>
@@ -19,13 +20,16 @@ export default {
       theme: window.theme,
       showImporterModal: false,
       showKeyboardModal: false,
-      showSourcesModal: true,
+      showSourcesModal: false,
+      showPartyModal: false,
       sources: [],
     }
   },
 
   methods: {
     showModal(modalData) {
+      console.log(modalData);
+
       this['show'+ modalData.name +'Modal'] = true;
     },
 
@@ -99,11 +103,14 @@ export default {
         @modal="showModal"
     />
 
-    <RouterView />
+    <RouterView
+        @modal="showModal"
+    />
 
     <ImporterModal v-model:show="showImporterModal" />
     <KeyboardModal v-model:show="showKeyboardModal" />
     <SourcesModal v-model:show="showSourcesModal" />
+    <PartyModal v-model:show="showPartyModal" />
 
     <NotificationArea />
   </div>
