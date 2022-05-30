@@ -241,8 +241,6 @@
                 <!--                  </div>-->
                 <!--                </div>-->
 
-                <AlignmentGrid></AlignmentGrid>
-
                 <!-- Multi Select -->
                 <div>
                   <div
@@ -324,7 +322,9 @@
                       { value: 'legendary_lair', label: 'Legendary (in lair)' },
                     ]"
                   ></Multiselect>
+
                 </div>
+                <AlignmentGrid></AlignmentGrid>
               </div>
             </div>
           </div>
