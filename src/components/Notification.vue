@@ -78,11 +78,6 @@ const props = defineProps({
   },
 });
 
-
-if (!props.notification.show) {
-  setTimeout(() => (props.notification.show = true), 100);
-}
-
 if (!props.notification.sticky) {
   props.notification.timer = true;
   setTimeout(() => (props.notification.timer = false), 100);

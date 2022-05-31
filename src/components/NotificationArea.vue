@@ -22,7 +22,7 @@ const notifications = useNotifications();
       >
         <Notification
           :notification="notification"
-          @dismiss="notifications.dismiss(index)"
+          @dismiss="notifications.dismiss(notification.id)"
         />
       </div>
     </TransitionGroup>

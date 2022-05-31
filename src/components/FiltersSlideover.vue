@@ -252,14 +252,8 @@
                   <Multiselect
                     mode="tags"
                     placeholder="Any size"
-                    :options="[
-                      { value: 'tiny', label: 'Tiny' },
-                      { value: 'small', label: 'Small' },
-                      { value: 'medium', label: 'Medium' },
-                      { value: 'large', label: 'Large' },
-                      { value: 'huge', label: 'Huge' },
-                      { value: 'gargantuan', label: 'Gargantuan' },
-                    ]"
+                    v-model="filters.size"
+                    :options="filters.sizeOptions"
                   ></Multiselect>
                 </div>
 
@@ -273,22 +267,8 @@
                   <Multiselect
                     mode="tags"
                     placeholder="Any type"
-                    :options="[
-                      { value: 'aberration', label: 'Aberration' },
-                      { value: 'beast', label: 'Beast' },
-                      { value: 'celestial', label: 'Celestial' },
-                      { value: 'construct', label: 'Construct' },
-                      { value: 'dragon', label: 'Dragon' },
-                      { value: 'elemental', label: 'Elemental' },
-                      { value: 'fey', label: 'Fey' },
-                      { value: 'fiend', label: 'Fiend' },
-                      { value: 'giant', label: 'Giant' },
-                      { value: 'humanoid', label: 'Humanoid' },
-                      { value: 'monstrosity', label: 'Monstrosity' },
-                      { value: 'ooze', label: 'Ooze' },
-                      { value: 'plant', label: 'Plant' },
-                      { value: 'undead', label: 'Undead' },
-                    ]"
+                    v-model="filters.type"
+                    :options="filters.typeOptions"
                   ></Multiselect>
                 </div>
 
@@ -302,7 +282,8 @@
                   <Multiselect
                     mode="tags"
                     placeholder="Any Environment"
-                    :options="[]"
+                    v-model="filters.environment"
+                    :options="filters.environmentOptions"
                   ></Multiselect>
                 </div>
 
@@ -316,11 +297,8 @@
                   <Multiselect
                     mode="tags"
                     placeholder="Any Legendary"
-                    :options="[
-                      { value: 'ordinary', label: 'Ordinary' },
-                      { value: 'legendary', label: 'Legendary' },
-                      { value: 'legendary_lair', label: 'Legendary (in lair)' },
-                    ]"
+                    v-model="filters.legendary"
+                    :options="filters.legendaryOptions"
                   ></Multiselect>
 
                 </div>
@@ -337,6 +315,9 @@
 <script setup>
 import Multiselect from "@vueform/multiselect";
 import AlignmentGrid from "./AlignmentGrid.vue";
+import {useFilters} from "../stores/filters.js";
+
+const filters = useFilters();
 
 defineProps({
   showFilters: {
