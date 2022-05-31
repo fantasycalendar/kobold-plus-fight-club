@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useFilters } from "./filters";
 import CONST from "../js/constants";
 import { useLocalStorage } from "@vueuse/core/index";
+import Monster from "../js/monster";
 
 const regexCache = {};
 
@@ -9,27 +10,64 @@ export const useMonsters = defineStore("monsters", {
   state: () => {
     return {
       lastRegex: "",
-      all: useLocalStorage("monsters", []),
+      builtIn: useLocalStorage("monsters", []),
+      imported: useLocalStorage("imported_monsters", []),
+      lookup: useLocalStorage("monster_lookup", {}),
     };
   },
 
   hydrate(storeState, initialState) {
-    storeState.all = useLocalStorage("monsters", []);
+    storeState.builtIn = useLocalStorage("monsters", []);
+    storeState.imported = useLocalStorage("imported_monsters", []);
+    storeState.lookup = useLocalStorage("monster_lookup", {});
   },
 
   actions: {
     async fetch() {
+      let fetched = [];
+
       try {
-        this.all = await fetch("/src/assets/json/se_monsters.json").then(
-          (res) => res.json()
-        );
+        await fetch("/src/assets/json/se_monsters.json")
+          .then((res) => res.json())
+          .then((data) => {
+            fetched = fetched.concat(data);
+          });
+
+        await fetch("/src/assets/json/se_third_party_monsters.json")
+          .then((res) => res.json())
+          .then((data) => {
+            fetched = fetched.concat(data);
+          });
+
+        await fetch("/src/assets/json/se_community_monsters.json")
+          .then((res) => res.json())
+          .then((data) => {
+            fetched = fetched.concat(data);
+          });
       } catch (error) {
         alert(error);
 
         return error;
       }
 
-      return this.all;
+      this.builtIn = fetched;
+
+      console.log(this.builtIn);
+
+      return this.builtIn;
+    },
+
+    includeMonster(monster) {
+      monster = new Monster(monster);
+      if (this.lookup[monster.slug]) {
+        return false;
+      }
+      this.lookup[monster.slug] = monster;
+      return monster;
+    },
+
+    addToImported(monsters) {
+      this.imported = this.imported.concat(this.includeMonster());
     },
 
     filterBy(filters) {
@@ -73,6 +111,19 @@ export const useMonsters = defineStore("monsters", {
   },
 
   getters: {
+    all() {
+      return this.instanced.concat(this.instancedImports);
+    },
+    instanced() {
+      return this.builtIn
+        .map((monster) => new Monster(monster))
+        .filter(Boolean);
+    },
+    instancedImports() {
+      return this.imported
+          .map((monster) => new Monster(monster))
+          .filter(Boolean);
+    },
     filtered() {
       const filters = useFilters();
 

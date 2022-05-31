@@ -56,15 +56,16 @@ export const useFilters = defineStore("filters", {
 
       let results = new Set(
         monsters.all
-          .map((monster) =>
-            monster.environment
-              .split(",")
-              .map(
-                (item) =>
-                  item.trim().toUpperCase().slice(0, 1) +
-                  item.trim().substring(1)
-              )
-          )
+            .filter(Boolean)
+          .map((monster) => {
+            return monster.environment
+                .split(",")
+                .map(
+                    (item) =>
+                        item.trim().toUpperCase().slice(0, 1) +
+                        item.trim().substring(1)
+                )
+          })
           .flat()
           .filter(Boolean)
       );

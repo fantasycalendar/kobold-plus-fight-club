@@ -662,7 +662,7 @@ export default {
     this.setupHotkeys();
     this.encounter.app = this;
     this.party.app = this;
-    this.fetchData();
+    // this.fetchData();
 
     if (
       Math.max(
