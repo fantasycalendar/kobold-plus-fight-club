@@ -3,17 +3,7 @@ import { defineStore } from "pinia";
 export const useNotifications = defineStore("notifications", {
   state: () => {
     return {
-      entries: [
-        {
-          sticky: true,
-          icon: false,
-          icon_color: false,
-          title: "A notification",
-          body: "Another notification",
-          show: true,
-          id: 0,
-        },
-      ],
+      entries: [],
       idIncrement: 1,
       timeouts: [],
     };

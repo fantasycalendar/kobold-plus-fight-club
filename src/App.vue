@@ -9,10 +9,15 @@ import PartyModal from "./components/PartyModal.vue";
 import EncounterModal from "./components/EncounterModal.vue";
 
 import NotificationArea from "./components/NotificationArea.vue";
+
+const monsters = useMonsters();
+
+monsters.fetch();
 </script>
 
 <script>
 import hotkeys from "hotkeys-js";
+import {useMonsters} from "./stores/monsters";
 
 export default {
   data() {
