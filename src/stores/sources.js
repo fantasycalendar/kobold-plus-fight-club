@@ -5,8 +5,8 @@ import { versionCompare } from "../js/helpers";
 export const useSources = defineStore("sources", {
   state: () => {
     return {
-      version: "",
-      storedVersion: "",
+      version: "2.1.0",
+      storedVersion: useLocalStorage("stored_sources_version", ""),
 
       loaded: [],
       all: useLocalStorage("sources", []),
@@ -15,6 +15,7 @@ export const useSources = defineStore("sources", {
 
   hydrate(storeState, initialState) {
     storeState.all = useLocalStorage("sources", []);
+    storeState.storedVersion = useLocalStorage("stored_sources_version", "");
   },
 
   actions: {
