@@ -10,7 +10,7 @@ export default class Monster {
     this.name = attributes.name;
     this.type = attributes.type;
     this.size = attributes.size;
-    this.environment = attributes.environment;
+    this.environment = attributes.environment.toLowerCase();
     this.isUnique = !!attributes["unique?"] || !!attributes["unique"];
 
     if(!this.cr) {
