@@ -11,8 +11,7 @@ export default class Monster {
     this.type = attributes.type;
     this.size = attributes.size;
     this.environment = attributes.environment;
-    this.isUnique = !!attributes["unique?"];
-
+    this.isUnique = !!attributes["unique?"] || !!attributes["unique"];
 
     if(!this.cr) {
       console.log(attributes);
