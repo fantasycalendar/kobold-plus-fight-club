@@ -99,7 +99,7 @@ export const useMonsters = defineStore("monsters", {
         if (
           filters.environment.length &&
           !filters.environment.find(
-            (environment) => monster.environments.indexOf(environment) > -1
+            (environment) => monster.environment.toLowerCase().includes(environment.toLowerCase())
           )
         ) {
           return false;
