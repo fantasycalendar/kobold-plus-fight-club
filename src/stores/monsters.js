@@ -84,7 +84,7 @@ export const useMonsters = defineStore("monsters", {
           let legendaryMonsterKey = CONST.LEGENDARY_MAP[legendary];
 
           if (legendaryMonsterKey) {
-            if (!monster.data.legendary[legendaryMonsterKey]) return false;
+            if (!monster.legendary[legendaryMonsterKey]) return false;
           } else {
             if (monster.legendary || monster.lair) return false;
           }
@@ -111,6 +111,9 @@ export const useMonsters = defineStore("monsters", {
   },
 
   getters: {
+    paginated() {
+      return this.filtered.slice(0, 10);
+    },
     all() {
       return this.instanced.concat(this.instancedImports);
     },

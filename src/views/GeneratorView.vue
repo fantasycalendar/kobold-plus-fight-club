@@ -735,7 +735,7 @@ export default {
       :class="{ 'hidden md:block': !mobileEncounterTab }"
       class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar"
     >
-     <span v-text="monsterStore.filtered.map((entry) => entry.name)"></span>
+<!--     <span v-text="monsterStore.filtered.map((entry) => entry.name)"></span>-->
 
 <!--      <label-->
 <!--        for="search"-->
@@ -847,7 +847,7 @@ export default {
 <!--      </div>-->
 
 <!--      &lt;!&ndash; This example requires Tailwind CSS v2.0+ &ndash;&gt;-->
-<!--      <MonsterTable @modal="$emit('modal', $event)"></MonsterTable>-->
+      <MonsterTable @modal="$emit('modal', $event)"></MonsterTable>
     </div>
 
     <div

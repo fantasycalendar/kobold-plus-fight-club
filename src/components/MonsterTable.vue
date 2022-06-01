@@ -1,18 +1,22 @@
 <script setup>
 import { ref, defineEmits } from "vue";
+import { useMonsters } from "../stores/monsters";
+import { useSources } from "../stores/sources";
 
 const emit = defineEmits(['modal']);
 
 const sortBy = ref('name');
 const sortByDesc = ref(false);
-const monsters = ref([]);
+const monsters = useMonsters();
+const sources = useSources();
 
 const encounter = ref({
   getDifficultyFromExperience(value) {
-    console.log('getDifficultyFromExperience', value);
+    // console.log('getDifficultyFromExperience', value);
+    return 'Easy';
   }
 });
-const enabledSources = ref([]);
+
 const currentPage = ref(1);
 const filteredMonsters = ref([]);
 
@@ -92,7 +96,7 @@ const pagination = ref([])
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900">
-        <tr v-for="monster in monsters" class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
+        <tr v-for="monster in monsters.paginated" class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800">
           <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 dark:text-gray-300 text-center w-8 max-w-8">
 										<span class="primary-link cursor-pointer select-none"
                           @click="encounter.addMonster(monster)"
@@ -150,8 +154,8 @@ const pagination = ref([])
       </table>
     </div>
 
-    <div v-show="enabledSources.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" @click="$emit('modal', {name: 'Sources'})">enable some now</span></div>
-    <div v-show="enabledSources.length > 0 && filteredMonsters.length === 0" class="w-full text-center text-lg my-4" v-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$emit('reset-filters')">reset filters</span></div>
+    <div v-show="sources.loaded.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" @click="$emit('modal', {name: 'Sources'})">enable some now</span></div>
+    <div v-show="sources.loaded.length > 0 && monsters.filtered.length === 0" class="w-full text-center text-lg my-4" v-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$emit('reset-filters')">reset filters</span></div>
 
     <!-- This example requires Tailwind CSS v2.0+ -->
     <nav v-show="totalPages > 1" v-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
