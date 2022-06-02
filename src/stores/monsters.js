@@ -16,6 +16,7 @@ export const useMonsters = defineStore("monsters", {
       lookup: [], // useLocalStorage("monster_lookup", {}),
       instanced: [],
       instancedImports: [],
+      loading: true,
     };
   },
 
@@ -29,7 +30,7 @@ export const useMonsters = defineStore("monsters", {
     async fetch() {
       let fetched = [];
 
-      if (!this.builtIn) {
+      if (!this.builtIn.length) {
         try {
           await fetch("/src/assets/json/se_monsters.json")
             .then((res) => res.json())
@@ -68,6 +69,8 @@ export const useMonsters = defineStore("monsters", {
       }
 
       this.all = this.instanced.concat(this.instancedImports);
+
+      this.loading = false;
 
       return this.all;
     },

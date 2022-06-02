@@ -2,6 +2,7 @@
 import { ref, defineEmits } from "vue";
 import { useMonsters } from "../stores/monsters";
 import { useSources } from "../stores/sources";
+import LoadingSpinner from "./LoadingSpinner.vue";
 
 const emit = defineEmits(['modal']);
 
@@ -41,7 +42,7 @@ const pagination = ref([])
 <template>
   <div class="px-4 sm:px-6 lg:px-8">
 
-    <div class="-mx-4 mt-8 overflow-x-auto shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
+    <div v-show="!monsters.loading" class="-mx-4 mt-8 overflow-x-auto shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
       <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
         <thead class="bg-gray-50 dark:bg-gray-700">
         <tr>
@@ -153,12 +154,15 @@ const pagination = ref([])
         </tbody>
       </table>
     </div>
+    <div v-show="monsters.loading" class="min-h-32 w-full grid place-items-center py-20">
+      <LoadingSpinner :message="true" />
+    </div>
 
-    <div v-show="sources.loaded.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" @click="$emit('modal', {name: 'Sources'})">enable some now</span></div>
-    <div v-show="sources.loaded.length > 0 && monsters.filtered.length === 0" class="w-full text-center text-lg my-4" v-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$emit('reset-filters')">reset filters</span></div>
+    <div v-show="!monsters.loading && sources.loaded.length === 0" class="w-full text-center text-lg my-4">No sources are enabled - <span class="primary-link select-none cursor-pointer" @click="$emit('modal', {name: 'Sources'})">enable some now</span></div>
+    <div v-show="!monsters.loading && sources.loaded.length > 0 && monsters.filtered.length === 0" class="w-full text-center text-lg my-4" v-cloak>No monsters found with the current filter - <span class="primary-link select-none cursor-pointer" @click="$emit('reset-filters')">reset filters</span></div>
 
     <!-- This example requires Tailwind CSS v2.0+ -->
-    <nav v-show="totalPages > 1" v-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
+    <nav v-show="!monsters.loading && totalPages > 1" v-cloak class="border-t border-gray-300 mt-4 dark:border-gray-700 px-4 flex items-center justify-between sm:px-0">
       <div class="-mt-px w-0 flex-1 flex">
         <a @click="setPageNumber(currentPage-1)" :disabled="currentPage === 1" href="#" class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400">
           <!-- Heroicon name: solid/arrow-narrow-left -->
