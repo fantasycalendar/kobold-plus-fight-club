@@ -3,7 +3,7 @@ import { useLocalStorage } from "@vueuse/core/index";
 import { useMonsters } from "./monsters";
 
 export const useFilters = defineStore("filters", {
-  hydrate(storeState, initialState) {
+  hydrate(storeState) {
     storeState.size = useLocalStorage("size", []);
     storeState.legendary = useLocalStorage("legendary", []);
     storeState.type = useLocalStorage("type", []);
@@ -151,45 +151,47 @@ export const useFilters = defineStore("filters", {
     isRegex() {
       return false;
 
-      if (!this.search) {
-        // Wait ... How'd you get here??
-        this.regexedSearch = "";
-        this.regex = null;
-        this.isValidRegex = false;
-        return false;
-      }
+      /* Here be dragons ... We'll address this later. */
 
-      // We already know the answer for this one
-      if (this.search === this.regexedSearch) {
-        return this.isValidRegex;
-      }
-
-      console.log('Updating regexed search');
-
-      this.regexedSearch = this.search;
-
-      // Want to determine whether something is a valid regex?
-      // Try to make a regex out of it and listen for yelling.
-      let checkRegex = this.search.match(/^\/(.*?)\/?$/);
-      if (checkRegex) {
-        try {
-          this.regex = new RegExp(checkRegex[1]);
-          this.isValidRegex = true;
-
-          console.log("Is regex: ", this.regex);
-
-          return true;
-        } catch (e) {
-          this.regex = null;
-          this.isValidRegex = false;
-          return false;
-        }
-      }
-
-      // If we got this far ... it wasn't regex.
-      this.regex = null;
-      this.isValidRegex = false;
-      return false;
+      // if (!this.search) {
+      //   // Wait ... How'd you get here??
+      //   this.regexedSearch = "";
+      //   this.regex = null;
+      //   this.isValidRegex = false;
+      //   return false;
+      // }
+      //
+      // // We already know the answer for this one
+      // if (this.search === this.regexedSearch) {
+      //   return this.isValidRegex;
+      // }
+      //
+      // console.log('Updating regexed search');
+      //
+      // this.regexedSearch = this.search;
+      //
+      // // Want to determine whether something is a valid regex?
+      // // Try to make a regex out of it and listen for yelling.
+      // let checkRegex = this.search.match(/^\/(.*?)\/?$/);
+      // if (checkRegex) {
+      //   try {
+      //     this.regex = new RegExp(checkRegex[1]);
+      //     this.isValidRegex = true;
+      //
+      //     console.log("Is regex: ", this.regex);
+      //
+      //     return true;
+      //   } catch (e) {
+      //     this.regex = null;
+      //     this.isValidRegex = false;
+      //     return false;
+      //   }
+      // }
+      //
+      // // If we got this far ... it wasn't regex.
+      // this.regex = null;
+      // this.isValidRegex = false;
+      // return false;
     },
     minCr() {
       return parseInt(this.crValues[this.cr.min].value);
@@ -211,11 +213,9 @@ export const useFilters = defineStore("filters", {
       ).length;
     },
     environmentOptions() {
-      const monsters = useMonsters();
-
       let results = new Set(
-        monsters.all
-          .filter(Boolean)
+        useMonsters()
+          .all.filter(Boolean)
           .map((monster) => {
             return monster.environment
               .split(",")
