@@ -141,8 +141,17 @@ export const useMonsters = defineStore("monsters", {
   },
 
   getters: {
-    paginated() {
-      return this.filtered.slice(0, useFilters().perPage);
+    paginated: (state) => {
+      return (page, sortFunction = null) => {
+        const filters = useFilters();
+        if(!sortFunction) {
+          sortFunction = (a, b) => a.name.localeCompare(b.name);
+        }
+
+        return state.filtered
+          .sort(sortFunction)
+          .slice((page - 1) * filters.perPage, page * filters.perPage);
+      };
     },
     filtered() {
       const filters = useFilters();

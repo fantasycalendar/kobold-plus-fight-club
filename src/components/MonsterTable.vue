@@ -1,5 +1,5 @@
 <script setup>
-import {ref, defineEmits, onMounted} from "vue";
+import { ref, computed, defineEmits, onMounted } from "vue";
 import { useMonsters } from "../stores/monsters";
 import { useSources } from "../stores/sources";
 import { useFilters } from "../stores/filters";
@@ -10,7 +10,6 @@ const emit = defineEmits(["modal"]);
 const sortBy = ref("name");
 const sortByDesc = ref(false);
 const totalPages = ref(0);
-const pagination = ref([]);
 
 const monsters = useMonsters();
 const sources = useSources();
@@ -30,7 +29,7 @@ function setPageNumber(pageNumber) {
 }
 
 function setPage(pageNumber) {
-  console.log("Would set page number to" + pageNumber);
+  currentPage.value = pageNumber;
 }
 
 function setSortBy(sortColumn) {
@@ -42,9 +41,9 @@ function setSortBy(sortColumn) {
   sortBy.value = sortColumn;
 }
 
-function updatePagination() {
+const pagination = computed(() => {
   totalPages.value = Math.ceil(
-    (monsters.filtered.length - 1) / filters.perPage.value
+    (monsters.filtered.length - 1) / filters.perPage
   );
   currentPage.value = Math.max(
     1,
@@ -52,7 +51,7 @@ function updatePagination() {
   );
 
   if (totalPages.value <= 5) {
-    pagination.value = Array(totalPages.value)
+    return Array(totalPages.value)
       .fill({})
       .map((page, index) => {
         return {
@@ -61,7 +60,7 @@ function updatePagination() {
         };
       });
   } else if (currentPage.value < 5) {
-    pagination.value = [
+    return [
       { number: 1, active: currentPage.value === 1 },
       { number: 2, active: currentPage.value === 2 },
       { number: 3, active: currentPage.value === 3 },
@@ -71,7 +70,7 @@ function updatePagination() {
       { number: totalPages.value },
     ];
   } else if (currentPage.value > totalPages.value - 5) {
-    pagination.value = [
+    return [
       { number: 1 },
       { divider: true },
       {
@@ -96,7 +95,7 @@ function updatePagination() {
       },
     ];
   } else {
-    pagination.value = [
+    return [
       { number: 1 },
       { divider: true },
       { number: currentPage.value - 1 },
@@ -106,11 +105,11 @@ function updatePagination() {
       { number: totalPages.value },
     ];
   }
-}
-
-onMounted(() => {
-  updatePagination();
 });
+
+// onMounted(() => {
+//   updatePagination();
+// });
 </script>
 
 <template>
@@ -229,7 +228,12 @@ onMounted(() => {
           class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900"
         >
           <tr
-            v-for="monster in monsters.paginated"
+            v-for="monster in monsters.paginated(currentPage, (a, b) => {
+              let direction = sortByDesc ? -1 : 1;
+
+              return a[sortBy].localeCompare(b[sortBy]) * direction;
+            })"
+            :key="monster.slug"
             class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-800"
           >
             <td
@@ -397,7 +401,7 @@ onMounted(() => {
     >
       <div class="-mt-px w-0 flex-1 flex">
         <a
-          @click="setPageNumber(currentPage - 1)"
+          @click="currentPage--"
           :disabled="currentPage === 1"
           href="#"
           class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400"
@@ -420,26 +424,25 @@ onMounted(() => {
         </a>
       </div>
       <div class="hidden md:-mt-px md:flex">
-        <div v-for="page of pagination">
-          <span
-            :class="{
-              'cursor-pointer select-none border-emerald-600 text-emerald-600 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium':
-                page.active && !page.divider,
-              'cursor-pointer select-none border-transparent text-gray-500 hover:text-gray-400 hover:border-gray-400 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium hidden lg:inline-block first-of-type:inline-block last-of-type:inline-block':
-                !page.active && !page.divider,
-              'select-none border-transparent text-gray-500 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium':
-                page.divider,
-            }"
-            v-text="page.divider ? '...' : page.number"
-            @click="setPage(page)"
-            :key="page.number"
-          ></span>
-        </div>
+        <span
+          v-for="page of pagination"
+          :class="{
+            'cursor-pointer select-none border-emerald-600 text-emerald-600 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium':
+              page.active && !page.divider,
+            'cursor-pointer select-none border-transparent text-gray-500 hover:text-gray-400 hover:border-gray-400 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium hidden lg:inline-block first-of-type:inline-block last-of-type:inline-block':
+              !page.active && !page.divider,
+            'select-none border-transparent text-gray-500 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium':
+              page.divider,
+          }"
+          v-text="page.divider ? '...' : page.number"
+          @click="currentPage = page.number"
+          :key="page.number"
+        ></span>
       </div>
       <div class="-mt-px w-0 flex-1 flex justify-end">
         <a
           href="#"
-          @click="setPageNumber(currentPage + 1)"
+          @click="currentPage++"
           class="border-t-2 border-transparent pt-4 px-2 lg:pr-1 lg:pl-0 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-400 hover:border-gray-400"
         >
           <span class="hidden lg:inline">Next</span>
