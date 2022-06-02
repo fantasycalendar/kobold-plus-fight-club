@@ -2,6 +2,9 @@ import { defineStore } from "pinia";
 import { useParty } from "./party";
 import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
+import CONST from "../js/constants";
+import { useMonsters } from "./monsters";
+import {useFilters} from "./filters";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
@@ -21,6 +24,9 @@ export const useEncounter = defineStore("encounter", {
       loadedIndex: null,
       loadedLast: false,
       difficulty: "medium",
+      type: "random",
+      history: [],
+      saved: [],
     };
   },
   actions: {
@@ -90,11 +96,290 @@ export const useEncounter = defineStore("encounter", {
 
       this.saveToHistory(true);
     },
+    getBestMonster(targetExp, encounter, numMonsters) {
+      const monsters = useMonsters();
+
+      let monsterCRIndex;
+      for (let i = 0; i < CONST.CR.LIST.length; i++) {
+        const lowerBound = CONST.CR[CONST.CR.LIST[i]];
+        const upperBound = CONST.CR[CONST.CR.LIST[i + 1]];
+        if (upperBound.exp > targetExp) {
+          monsterCRIndex = (targetExp - lowerBound.exp) < (upperBound.exp - targetExp) ? i : i + 1;
+          break;
+        }
+      }
+
+      let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
+      let monsterList = monsters.filterBy(useFilters(), monsterTargetCR.string, (monster) => {
+        return !encounter.some(group => group.monster === monster) && !(numMonsters > 1 && monster.isUnique);
+      });
+
+      let monsterCRNewIndex = monsterCRIndex;
+      let down = true;
+      while (!monsterList.length) {
+
+        if (down) {
+          monsterCRNewIndex--;
+          if (monsterCRNewIndex < 0) {
+            monsterCRNewIndex = monsterCRIndex;
+            down = false;
+          }
+        } else {
+          monsterCRNewIndex++;
+          if (monsterCRNewIndex === CONST.CR.LIST.length - 1) {
+            return false;
+          }
+        }
+
+        let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRNewIndex]];
+        monsterList = monsters.filterBy(useFilters(), monsterTargetCR.string, (monster) => {
+          return !encounter.some(group => group.monster === monster);
+        });
+
+      }
+
+      return helpers.randomArrayElement(monsterList);
+
+    },
+    getEncounterTemplate() {
+      let template = helpers.clone(CONST.ENCOUNTER_TYPES[this.type]);
+
+      if (template.samples) {
+        template = helpers.randomArrayElement(template.samples);
+        if (this.type === "random") {
+          template = {
+            subtractive: true,
+            groups: template.map((num) => {
+              return { count: num };
+            }),
+          };
+        }
+      }
+
+      const players = Number(useParty().totalPlayers);
+      template.groups = template.groups.map((group) => {
+        if (typeof group.count === "string") {
+          const parts = group.count.split("-").map((part) => {
+            part = part.replaceAll("players", players);
+            return eval(part);
+          });
+          group.count =
+            parts.length > 1 ? helpers.randomIntBetween(...parts) : parts[0];
+        }
+        return group;
+      });
+
+      template.total = template.groups.reduce(
+        (acc, group) => acc + group.count,
+        0
+      );
+
+      if (this.type === "random") {
+        template.overallRatio = template.groups.reduce(
+          (acc, group) => acc + (group.ratio || 1),
+          0
+        );
+        template.groups.forEach((group) => {
+          group.ratio = (group.ratio || 1) / template.overallRatio;
+        });
+      }
+
+      return template;
+    },
+    getMultiplier(numMonsters) {
+      let multiplierCategory;
+      const multipliers = [0.5, 1, 1.5, 2, 2.5, 3, 4, 5];
+      const party = useParty();
+
+      if (numMonsters <= 3) {
+        multiplierCategory = Math.max(1, numMonsters);
+      } else if (numMonsters < 7) {
+        multiplierCategory = 3;
+      } else if (numMonsters < 11) {
+        multiplierCategory = 4;
+      } else if (numMonsters < 15) {
+        multiplierCategory = 5;
+      } else {
+        multiplierCategory = 6;
+      }
+
+      if (party.totalPlayers < 3) {
+        multiplierCategory++;
+      } else if (party.totalPlayers > 5) {
+        multiplierCategory--;
+      }
+
+      return multipliers[multiplierCategory];
+    },
+    getNewMonster(group) {
+      const monsterList = useMonsters().filter(
+        group.monster.cr.string,
+        (monster) => {
+          return !this.groups.some((group) => group.monster === monster);
+        }
+      );
+
+      if (!monsterList.length) return;
+      group.monster = helpers.randomArrayElement(monsterList);
+      this.saveToHistory();
+    },
+    addMonster(monster) {
+      if (!useParty().totalPlayers) {
+        useParty().addPlayerGroup();
+      }
+
+      let group;
+      let index = this.groups.findIndex((group) => group.monster === monster);
+      if (index === -1) {
+        this.groups.push({
+          monster,
+          count: 1,
+        });
+      } else {
+        group = this.groups[index];
+        group.count++;
+      }
+
+      this.saveToHistory();
+    },
+
+    addCount(index) {
+      this.groups[index].count++;
+      this.saveToHistory();
+    },
+
+    subtractCount(index) {
+      this.groups[index].count--;
+      if (this.groups[index].count <= 0) {
+        this.groups.splice(index, 1);
+      }
+      this.saveToHistory();
+    },
+
+    saveToHistory(newEntry = false) {
+      const encounter = this.groups
+        .map((group) => {
+          return {
+            monster: {
+              name: group.monster.name,
+              slug: group.monster.slug,
+            },
+            count: group.count,
+          };
+        })
+        .filter((group) => group.count > 0);
+
+      const lastEntry = this.history[this.history.length - 1];
+      if (!encounter.length) {
+        if (lastEntry) {
+          this.loadedLast = false;
+          this.history.pop();
+        }
+        return;
+      }
+
+      if (newEntry || !lastEntry) {
+        this.history.push(encounter);
+      }
+
+      this.history[this.history.length - 1] = encounter;
+    },
+
+    save() {
+      if (!this.groups.length) return;
+      const encounter = this.groups.map((group) => {
+        return {
+          monster: {
+            name: group.monster.name,
+            slug: group.monster.slug,
+          },
+          count: group.count,
+        };
+      });
+      if (this.loaded) {
+        this.saved[this.loaded] = encounter;
+      } else {
+        this.loadedIndex = this.saved.length;
+        this.saved = [...this.saved, encounter];
+      }
+      dispatchEvent(
+        new CustomEvent("notification", {
+          detail: { title: "Encounter saved" },
+        })
+      );
+    },
+
+    loadFromHistory(index) {
+      this.loadedIndex = null;
+      this.loadedLast = true;
+      const encounter = this.history.splice(index, 1)[0];
+      this.history.push(encounter);
+      this.load(encounter);
+      dispatchEvent(
+        new CustomEvent("notification", {
+          detail: {
+            title: "Encounter loaded",
+            body: this.groups
+              .map((group) => `${group.monster.name} x${group.count}`)
+              .join(", "),
+          },
+        })
+      );
+    },
+
+    load(encounter) {
+      const groups = helpers
+        .clone(encounter)
+        .map((group) => {
+          group.monster = useMonsters().lookup[group.monster.slug];
+          if (!group.monster) return false;
+          return group;
+        })
+        .filter(Boolean);
+      if (!groups.length) return;
+      this.groups = groups;
+    },
+
+    loadFromSaved(index) {
+      this.loadedLast = false;
+      this.loadedIndex = index;
+      this.load(this.saved[index]);
+      dispatchEvent(
+        new CustomEvent("notification", {
+          detail: {
+            title: "Encounter loaded",
+            body: this.groups
+              .map((group) => `${group.monster.name} x${group.count}`)
+              .join(", "),
+          },
+        })
+      );
+    },
+
+    deleteSaved(index) {
+      if (this.loadedIndex === index) {
+        this.loadedIndex = null;
+        this.clear();
+      }
+      this.saved.splice(index, 1);
+      dispatchEvent(
+        new CustomEvent("notification", {
+          detail: { title: "Encounter deleted" },
+        })
+      );
+    },
+
+    clear() {
+      this.groups = [];
+      this.loadedLast = false;
+      this.loadedIndex = null;
+    },
   },
   getters: {
     totalExp() {
       return this.groups.reduce(
-        (acc, group) => acc + group.monster.cr.exp * group.count
+        (acc, group) => acc + group.monster.cr.exp * group.count,
+        0
       );
     },
     totalMonsters() {
@@ -110,7 +395,7 @@ export const useEncounter = defineStore("encounter", {
     difficultyFeel() {
       if (this.adjustedExp === 0) return "";
 
-      const levels = Object.entries(party.experience);
+      const levels = Object.entries(useParty().experience);
       for (let i = 1; i < levels.length; i++) {
         const [lowerKey, lowerValue] = levels[i - 1];
         const [upperKey, upperValue] = levels[i];

@@ -13,7 +13,8 @@ import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
 import SearchBox from "../components/SearchBox.vue";
 
-import { useMonsters } from "../stores/monsters";
+import {useEncounter} from "../stores/encounter";
+import {useParty} from "../stores/party";
 
 const internationalNumberFormat = new Intl.NumberFormat("en-US");
 
@@ -22,10 +23,12 @@ export default {
   emits: ["modal"],
 
   setup() {
-    const monsterStore = useMonsters();
+    const encounter = useEncounter();
+    const party = useParty();
 
     return {
-      monsterStore
+      encounter,
+      party,
     }
   },
 
@@ -38,131 +41,19 @@ export default {
 
       mobileEncounterTab: false,
 
-      nonDefaultFiltersCount: 0,
-
-      loadedEncounterIndex: null,
-      loadedLastEncounter: false,
-      sourcesByType: [],
-
-      savedParties: [],
-
-      sources: {},
-      enabledSources: [],
-
-      allMonsters: [],
-      filteredMonsters: [],
-      monsterLookupTable: {},
-
-      environments: {},
-
-      totalPages: 1,
-      currentPage: 1,
-      pagination: [],
-      monstersPerPage: 10,
-
-      encounterType: "random",
       encounterTypeSelectOpen: false,
       encounterTypes: Object.fromEntries(
         Object.entries(CONST.ENCOUNTER_TYPES).map((entry) => {
           return [entry[0], { key: entry[0], label: entry[1].name }];
         })
       ),
+      encounterType: "random",
 
       difficultySelectOpen: false,
       difficulty: "medium",
-      search: "",
-
-      encounter: encounter,
-
-      sortBy: "name",
-      sortByDesc: true,
 
       timer: null,
-
-      party: {
-        groups: [{ players: 4, level: 1, getsXP: true }],
-
-        addPlayerGroup() {
-          const lastGroup = this.groups[this.groups.length - 1] ?? {
-            players: 4,
-            level: 1,
-            getsXP: true,
-          };
-
-          this.groups.push({ ...lastGroup });
-        },
-
-        removePlayerGroup(index) {
-          this.groups.splice(index, 1);
-        },
-
-        get experience() {
-          const experience = this.groups.reduce(this.getGroupExperience, {});
-          return this.app.activePlayers.reduce(
-            this.getGroupExperience,
-            experience
-          );
-        },
-
-        getGroupExperience(acc, group) {
-          const groupExp = CONST.EXP[group.level];
-          return {
-            easy: (acc?.easy ?? 0) + groupExp.easy * (group?.players ?? 1),
-            medium:
-              (acc?.medium ?? 0) + groupExp.medium * (group?.players ?? 1),
-            hard: (acc?.hard ?? 0) + groupExp.hard * (group?.players ?? 1),
-            deadly:
-              (acc?.deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
-            daily: (acc?.daily ?? 0) + groupExp.daily * (group?.players ?? 1),
-          };
-        },
-      },
     };
-  },
-
-  computed: {
-    totalPlayers() {
-      return (
-        this.groups.reduce((acc, group) => {
-          return acc + parseInt(group.players);
-        }, 0) + this.app.activePlayers.length
-      );
-    },
-
-    totalPlayersToGainXP() {
-      return (
-        this.groups.reduce((acc, group) => {
-          return acc + (group.getsXP ? parseInt(group.players) : 0);
-        }, 0) + this.app.activePlayers.length
-      );
-    },
-
-    totalExperiencePerPlayer() {
-      return Math.round(
-        this.app.encounter.totalExp / this.totalPlayersToGainXP
-      );
-    },
-
-    totalAdjustedExperiencePerPlayer() {
-      return Math.round(
-        this.app.encounter.adjustedExp / this.totalPlayersToGainXP
-      );
-    },
-
-    activePlayers() {
-      return this.savedParties.reduce((acc, party) => {
-        return acc.concat(party.players.filter((player) => player.active));
-      }, []);
-    },
-
-    monsters() {
-      const currentPage = this.currentPage - 1;
-      const start = !currentPage ? 0 : currentPage * this.monstersPerPage + 1;
-      const end = !currentPage
-        ? this.monstersPerPage
-        : (currentPage + 1) * this.monstersPerPage + 1;
-      return this.filteredMonsters.slice(start, end);
-    },
   },
 
   methods: {
@@ -181,64 +72,56 @@ export default {
       console.log(this.difficultySelectOpen);
     },
 
-    toggleTheme() {
-      let theme = localStorage.theme === "dark" ? "light" : "dark";
-      this.theme = theme;
-      window.theme = theme;
-      localStorage.theme = theme;
-      document.documentElement.classList.toggle("dark", theme === "dark");
-    },
-
     enablePartyModal() {
       this.showPartyModal = true;
 
-      if (this.savedParties.length === 1) {
-        this.savedParties[0].editing = true;
+      if (this.party.saved.length === 1) {
+        this.party.saved[0].editing = true;
       }
     },
 
     createParty() {
-      this.savedParties.forEach((party) => (party.editing = false));
-      this.savedParties.push({
-        name: "Party " + (this.savedParties.length + 1),
+      this.party.saved.forEach((party) => (party.editing = false));
+      this.party.saved.push({
+        name: "Party " + (this.party.saved.length + 1),
         editing: true,
         players: [],
       });
-      this.createPlayer(this.savedParties.length - 1);
+      this.createPlayer(this.party.saved.length - 1);
     },
 
     activateParty(partyIndex) {
-      this.savedParties[partyIndex].players.forEach(
+      this.party.saved[partyIndex].players.forEach(
         (player) => (player.active = true)
       );
     },
 
     deactivateParty(partyIndex) {
-      this.savedParties[partyIndex].players.forEach(
+      this.party.saved[partyIndex].players.forEach(
         (player) => (player.active = false)
       );
     },
 
     deleteParty(partyIndex) {
-      this.savedParties.splice(partyIndex, 1);
+      this.party.saved.splice(partyIndex, 1);
     },
 
     createPlayer(partyIndex) {
-      this.savedParties[partyIndex].players.push({
-        name: "Player " + (this.savedParties[partyIndex].players.length + 1),
+      this.party.saved[partyIndex].players.push({
+        name: "Player " + (this.party.saved[partyIndex].players.length + 1),
         initiativeMod: 0,
         initiativeAdvantage: false,
         level:
-          this.savedParties[partyIndex].players[
-            this.savedParties[partyIndex].players.length - 1
+          this.party.saved[partyIndex].players[
+            this.party.saved[partyIndex].players.length - 1
           ]?.level ?? 1,
         maxHp:
-          this.savedParties[partyIndex].players[
-            this.savedParties[partyIndex].players.length - 1
+          this.party.saved[partyIndex].players[
+            this.party.saved[partyIndex].players.length - 1
           ]?.maxHp ?? 10,
         currentHp:
-          this.savedParties[partyIndex].players[
-            this.savedParties[partyIndex].players.length - 1
+          this.party.saved[partyIndex].players[
+            this.party.saved[partyIndex].players.length - 1
           ]?.currentHp ?? 10,
         active: false,
         partyIndex: 0,
@@ -246,88 +129,7 @@ export default {
     },
 
     deletePlayer(partyIndex, playerIndex) {
-      this.savedParties[partyIndex].players.splice(playerIndex, 1);
-    },
-
-    setPage(page) {
-      if (page.divider) return;
-      this.setPageNumber(page.number);
-    },
-
-    setPageNumber(num) {
-      this.currentPage = num;
-      this.updatePagination();
-    },
-
-    setMonstersPerPage(num) {
-      this.monstersPerPage = num;
-      this.updatePagination();
-    },
-
-    updatePagination() {
-      this.totalPages = Math.ceil(
-        (this.filteredMonsters.length - 1) / this.monstersPerPage
-      );
-      this.currentPage = Math.max(
-        1,
-        Math.min(this.totalPages, this.currentPage)
-      );
-
-      if (this.totalPages <= 5) {
-        this.pagination = Array(this.totalPages)
-          .fill({})
-          .map((page, index) => {
-            return {
-              number: index + 1,
-              active: this.currentPage === index + 1,
-            };
-          });
-      } else if (this.currentPage < 5) {
-        this.pagination = [
-          { number: 1, active: this.currentPage === 1 },
-          { number: 2, active: this.currentPage === 2 },
-          { number: 3, active: this.currentPage === 3 },
-          { number: 4, active: this.currentPage === 4 },
-          { number: 5, active: this.currentPage === 5 },
-          { divider: true },
-          { number: this.totalPages },
-        ];
-      } else if (this.currentPage > this.totalPages - 5) {
-        this.pagination = [
-          { number: 1 },
-          { divider: true },
-          {
-            number: this.totalPages - 4,
-            active: this.totalPages - 4 === this.currentPage,
-          },
-          {
-            number: this.totalPages - 3,
-            active: this.totalPages - 3 === this.currentPage,
-          },
-          {
-            number: this.totalPages - 2,
-            active: this.totalPages - 2 === this.currentPage,
-          },
-          {
-            number: this.totalPages - 1,
-            active: this.totalPages - 1 === this.currentPage,
-          },
-          {
-            number: this.totalPages,
-            active: this.totalPages === this.currentPage,
-          },
-        ];
-      } else {
-        this.pagination = [
-          { number: 1 },
-          { divider: true },
-          { number: this.currentPage - 1 },
-          { number: this.currentPage, active: true },
-          { number: this.currentPage + 1 },
-          { divider: true },
-          { number: this.totalPages },
-        ];
-      }
+      this.party.saved[partyIndex].players.splice(playerIndex, 1);
     },
 
     formatNumber(num) {
@@ -411,7 +213,7 @@ export default {
         }
       });
 
-      this.savedParties.forEach((party, partyIndex) => {
+      this.party.saved.forEach((party, partyIndex) => {
         party.players
           .filter((player) => player.active)
           .forEach((player, playerIndex) => {
@@ -451,8 +253,8 @@ export default {
 
   created() {
     this.setupHotkeys();
-    this.encounter.app = this;
-    this.party.app = this;
+    // this.encounter.app = this;
+    // this.party.app = this;
     // this.fetchData();
 
     if (
@@ -551,13 +353,14 @@ export default {
 
           <div
             class="grid grid-cols-[1fr_34px] gap-y-2 align-center mb-2"
-            v-show="activePlayers.length"
+            v-show="party.activePlayers.length"
           >
-            <div v-for="party in savedParties">
+            <div v-for="party in party.saved" :key="party.name">
               <div
                 v-for="player in party.players.filter(
                   (player) => player.active
                 )"
+                :key="player.name"
               >
                 <div class="contents">
                   <div v-text="player.name"></div>
@@ -653,7 +456,7 @@ export default {
 
           <div
             class="w-full"
-            v-show="!(activePlayers.length || party.groups.length)"
+            v-show="!(party.activePlayers.length || party.groups.length)"
           >
             <button
               @click="enablePartyModal"

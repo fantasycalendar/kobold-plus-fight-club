@@ -12,6 +12,7 @@ export const useParty = defineStore("party", {
           getsXP: true,
         },
       ]),
+      saved: [],
     };
   },
   hydrate(storeState) {
@@ -22,6 +23,7 @@ export const useParty = defineStore("party", {
         getsXP: true,
       },
     ]);
+    storeState.saved = useLocalStorage("saved_parties", []);
   },
   actions: {
     addGroup() {
@@ -72,6 +74,18 @@ export const useParty = defineStore("party", {
       return 1300;
       // We'll enable this once the encounter store is actually a thing
       // return Math.round(useEncounter().adjustedXP / this.totalPlayersToGainXP);
+    },
+    totalPlayers() {
+      return (
+        this.groups.reduce((acc, group) => {
+          return acc + parseInt(group.players);
+        }, 0) + this.activePlayers.length
+      );
+    },
+    activePlayers() {
+      return this.saved.reduce((acc, party) => {
+        return acc.concat(party.players.filter((player) => player.active));
+      }, []);
     },
   },
 });

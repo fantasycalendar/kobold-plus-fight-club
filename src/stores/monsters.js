@@ -88,9 +88,13 @@ export const useMonsters = defineStore("monsters", {
       this.imported = this.imported.concat(this.includeMonster());
     },
 
-    filterBy(filters) {
+    filterBy(filters, crString, filterCallback = null) {
+      if(filterCallback) {
+        return this.all.filter(filterCallback);
+      }
+
       return this.all.filter((monster) => {
-        if (filters.search && !filters.searchFor(monster.searchable)) {
+        if (filters.search && filters.searchFor && !filters.searchFor(monster.searchable)) {
           return false;
         }
 
@@ -156,7 +160,7 @@ export const useMonsters = defineStore("monsters", {
     filtered() {
       const filters = useFilters();
 
-      return this.filterBy(filters);
+      return this.filterBy(filters, "", null);
     },
   },
 });
