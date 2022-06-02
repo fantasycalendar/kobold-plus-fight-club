@@ -4,7 +4,7 @@ import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
 import CONST from "../js/constants";
 import { useMonsters } from "./monsters";
-import {useFilters} from "./filters";
+import { useFilters } from "./filters";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
@@ -104,20 +104,27 @@ export const useEncounter = defineStore("encounter", {
         const lowerBound = CONST.CR[CONST.CR.LIST[i]];
         const upperBound = CONST.CR[CONST.CR.LIST[i + 1]];
         if (upperBound.exp > targetExp) {
-          monsterCRIndex = (targetExp - lowerBound.exp) < (upperBound.exp - targetExp) ? i : i + 1;
+          monsterCRIndex =
+            targetExp - lowerBound.exp < upperBound.exp - targetExp ? i : i + 1;
           break;
         }
       }
 
       let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
-      let monsterList = monsters.filterBy(useFilters(), monsterTargetCR.string, (monster) => {
-        return !encounter.some(group => group.monster === monster) && !(numMonsters > 1 && monster.isUnique);
-      });
+      let monsterList = monsters.filterBy(
+        useFilters(),
+        monsterTargetCR.string,
+        (monster) => {
+          return (
+            !encounter.some((group) => group.monster === monster) &&
+            !(numMonsters > 1 && monster.isUnique)
+          );
+        }
+      );
 
       let monsterCRNewIndex = monsterCRIndex;
       let down = true;
       while (!monsterList.length) {
-
         if (down) {
           monsterCRNewIndex--;
           if (monsterCRNewIndex < 0) {
@@ -132,14 +139,16 @@ export const useEncounter = defineStore("encounter", {
         }
 
         let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRNewIndex]];
-        monsterList = monsters.filterBy(useFilters(), monsterTargetCR.string, (monster) => {
-          return !encounter.some(group => group.monster === monster);
-        });
-
+        monsterList = monsters.filterBy(
+          useFilters(),
+          monsterTargetCR.string,
+          (monster) => {
+            return !encounter.some((group) => group.monster === monster);
+          }
+        );
       }
 
       return helpers.randomArrayElement(monsterList);
-
     },
     getEncounterTemplate() {
       let template = helpers.clone(CONST.ENCOUNTER_TYPES[this.type]);
