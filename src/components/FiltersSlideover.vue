@@ -105,142 +105,7 @@
                 <!--                  </button>-->
                 <!--                </div>-->
 
-                <!--                <div x-data="{ minCr: 0, maxCr: 0 }">-->
-                <!--                  <div-->
-                <!--                    class="block font-medium text-gray-700 dark:text-gray-300 mb-1"-->
-                <!--                  >-->
-                <!--                    Challenge Rating-->
-                <!--                  </div>-->
-
-                <!--                  <div-->
-                <!--                    class="relative px-6 pt-1 pb-2 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md"-->
-                <!--                    x-data="{-->
-                <!--											crValues: [-->
-                <!--														{ value: '0', label: '0' },-->
-                <!--														{ value: '1/8', label: '1/8' },-->
-                <!--														{ value: '1/4', label: '1/4' },-->
-                <!--														{ value: '1/2', label: '1/2' },-->
-                <!--														{ value: '1', label: '1' },-->
-                <!--														{ value: '2', label: '2' },-->
-                <!--														{ value: '3', label: '3' },-->
-                <!--														{ value: '4', label: '4' },-->
-                <!--														{ value: '5', label: '5' },-->
-                <!--														{ value: '6', label: '6' },-->
-                <!--														{ value: '7', label: '7' },-->
-                <!--														{ value: '8', label: '8' },-->
-                <!--														{ value: '9', label: '9' },-->
-                <!--														{ value: '10', label: '10' },-->
-                <!--														{ value: '11', label: '11' },-->
-                <!--														{ value: '12', label: '12' },-->
-                <!--														{ value: '13', label: '13' },-->
-                <!--														{ value: '14', label: '14' },-->
-                <!--														{ value: '15', label: '15' },-->
-                <!--														{ value: '16', label: '16' },-->
-                <!--														{ value: '17', label: '17' },-->
-                <!--														{ value: '18', label: '18' },-->
-                <!--														{ value: '19', label: '19' },-->
-                <!--														{ value: '20', label: '20' },-->
-                <!--														{ value: '21', label: '21' },-->
-                <!--														{ value: '22', label: '22' },-->
-                <!--														{ value: '23', label: '23' },-->
-                <!--														{ value: '24', label: '24' },-->
-                <!--														{ value: '25', label: '25' },-->
-                <!--														{ value: '26', label: '26' },-->
-                <!--														{ value: '27', label: '27' },-->
-                <!--														{ value: '28', label: '28' },-->
-                <!--														{ value: '29', label: '29' },-->
-                <!--														{ value: '30', label: '30' }-->
-                <!--													]-->
-                <!--										}"-->
-                <!--                  >-->
-                <!--                    <div-->
-                <!--                      x-ref="cr_slider"-->
-                <!--                      class="my-4 mx-2"-->
-                <!--                      x-data="multiSlider($el, 'challenge_rating', crValues, (lower, upper) => {-->
-                <!--														minCr = lower;-->
-                <!--														maxCr = upper;-->
-                <!--													})"-->
-                <!--                      @set-cr-slider.window="set($event)"-->
-                <!--                      @reset-cr-slider.window="reset()"-->
-                <!--                      @reset-filters.window="reset()"-->
-                <!--                    ></div>-->
-
-                <!--                    <div class="flex justify-between items-center">-->
-                <!--                      <div class="grow">-->
-                <!--                        <select-->
-                <!--                          class="w-full border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full py-1.5 pl-2.5 pr-0 sm:text-sm disabled:text-gray-600 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"-->
-                <!--                          x-ref="min_cr_select"-->
-                <!--                          name="min_cr"-->
-                <!--                          id="min_cr_select"-->
-                <!--                          @filters-changed.window="$el.value = minCr.value"-->
-                <!--                          @change="-->
-                <!--                            $dispatch('set-cr-slider', [-->
-                <!--                              {-->
-                <!--                                value: $event.target.value,-->
-                <!--                                label: $event.target.value,-->
-                <!--                              },-->
-                <!--                              maxCr,-->
-                <!--                            ])-->
-                <!--                          "-->
-                <!--                        >-->
-                <!--                          <div v-for="option in crValues">-->
-                <!--                            <option-->
-                <!--                              :value="option.value"-->
-                <!--                              v-text="option.label"-->
-                <!--                              :disabled="-->
-                <!--                                parseInt(option.value) > parseInt(maxCr.value)-->
-                <!--                              "-->
-                <!--                            ></option>-->
-                <!--                          </div>-->
-                <!--                        </select>-->
-                <!--                      </div>-->
-                <!--                      <div-->
-                <!--                        class="grow text-center text-gray-500 dark:text-gray-400 user-select-none"-->
-                <!--                      >-->
-                <!--                        &le; CR &le;-->
-                <!--                      </div>-->
-                <!--                      <div class="grow">-->
-                <!--                        <select-->
-                <!--                          class="w-full border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full py-1.5 pl-2.5 pr-0 sm:text-sm disabled:text-gray-600 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"-->
-                <!--                          x-ref="max_cr_select"-->
-                <!--                          name="max_cr"-->
-                <!--                          id="max_cr_select"-->
-                <!--                          @filters-changed.window="$el.value = maxCr.value"-->
-                <!--                          @change="-->
-                <!--                            $dispatch('set-cr-slider', [-->
-                <!--                              minCr,-->
-                <!--                              {-->
-                <!--                                value: $event.target.value,-->
-                <!--                                label: $event.target.value,-->
-                <!--                              },-->
-                <!--                            ])-->
-                <!--                          "-->
-                <!--                        >-->
-                <!--                          <div v-for="option in crValues">-->
-                <!--                            <option-->
-                <!--                              :value="option.value"-->
-                <!--                              v-text="option.label"-->
-                <!--                              :disabled="-->
-                <!--                                parseInt(option.value) < parseInt(minCr.value)-->
-                <!--                              "-->
-                <!--                            ></option>-->
-                <!--                          </div>-->
-                <!--                        </select>-->
-                <!--                      </div>-->
-                <!--                    </div>-->
-
-                <!--                    <span-->
-                <!--                      @click="$dispatch('reset-cr-slider')"-->
-                <!--                      v-show="!(minCr.value == 0 && maxCr.value == 30)"-->
-                <!--                      class="absolute top-1 right-1 text-center cursor-pointer"-->
-                <!--                    >-->
-                <!--                      <i-->
-                <!--                        class="fa fa-undo text-sm h-6 w-6 text-gray-800 dark:text-gray-300"-->
-                <!--                      ></i>-->
-                <!--                    </span>-->
-                <!--                  </div>-->
-                <!--                </div>-->
-
+                <ChallengeRatingSlider />
                 <!-- Multi Select -->
                 <div>
                   <div
@@ -316,6 +181,7 @@
 import Multiselect from "@vueform/multiselect";
 import AlignmentGrid from "./AlignmentGrid.vue";
 import {useFilters} from "../stores/filters.js";
+import ChallengeRatingSlider from "./ChallengeRatingSlider.vue";
 
 const filters = useFilters();
 
