@@ -120,6 +120,16 @@ export const useMonsters = defineStore("monsters", {
           return false;
         }
 
+        if (!crString && (filters.minCr > 0 || filters.maxCr < 30)) {
+          if (filters.minCr > 0 && monster.cr.numeric < filters.minCr) {
+            return false;
+          }
+
+          if (filters.maxCr < 30 && monster.cr.numeric > filters.maxCr) {
+            return false;
+          }
+        }
+
         return true;
       });
     },

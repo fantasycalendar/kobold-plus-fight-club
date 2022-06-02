@@ -120,8 +120,19 @@ export const useFilters = defineStore("filters", {
           (this[field] = JSON.parse(JSON.stringify(this.defaults[field])))
       );
     },
+    isDefault(field) {
+      return (
+        JSON.stringify(this[field]) === JSON.stringify(this.defaults[field])
+      );
+    },
   },
   getters: {
+    minCr() {
+      return parseInt(this.crValues[this.cr.min].value);
+    },
+    maxCr() {
+      return parseInt(this.crValues[this.cr.max].value);
+    },
     nonDefault() {
       return [
         "alignment",
