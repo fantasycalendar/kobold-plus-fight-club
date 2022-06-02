@@ -141,57 +141,18 @@ const encounter = useEncounter();
           XP Goals
         </div>
         <div
+          v-for="difficulty in ['Easy', 'Medium', 'Hard', 'Deadly']"
+          :key="difficulty"
+          class="contents"
           :class="{
-            'font-semibold': encounter.actualDifficulty === 'Easy',
+            'font-semibold': encounter.actualDifficulty === difficulty,
           }"
         >
-          Easy
+          <span>{{ difficulty }}</span>
+          <span>{{
+            formatNumber(party.experience[difficulty.toLowerCase()])
+          }}</span>
         </div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Easy',
-          }"
-          v-text="formatNumber(party.experience['easy'])"
-        ></div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Medium',
-          }"
-        >
-          Medium
-        </div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Medium',
-          }"
-          v-text="formatNumber(party.experience['medium'])"
-        ></div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Hard',
-          }"
-        >
-          Hard
-        </div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Hard',
-          }"
-          v-text="formatNumber(party.experience['hard'])"
-        ></div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Deadly',
-          }"
-        >
-          Deadly
-        </div>
-        <div
-          :class="{
-            'font-semibold': encounter.actualDifficulty === 'Deadly',
-          }"
-          v-text="formatNumber(party.experience['deadly'])"
-        ></div>
 
         <div class="mt-4">Daily budget</div>
         <div class="mt-4" v-text="formatNumber(party.experience.daily)"></div>
