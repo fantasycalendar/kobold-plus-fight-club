@@ -18,22 +18,7 @@ const sources = useSources();
 const filters = useFilters();
 const encounter = useEncounter();
 
-// const encounter = ref({
-//   getDifficultyFromExperience(value) {
-//     // console.log('getDifficultyFromExperience', value);
-//     return "Easy";
-//   },
-// });
-
 const currentPage = ref(1);
-
-function setPageNumber(pageNumber) {
-  currentPage.value = pageNumber;
-}
-
-function setPage(pageNumber) {
-  currentPage.value = pageNumber;
-}
 
 function setSortBy(sortColumn) {
   if (sortColumn === sortBy.value) {
