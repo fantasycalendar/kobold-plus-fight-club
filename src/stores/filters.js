@@ -5,9 +5,29 @@ import { useMonsters } from "./monsters";
 export const useFilters = defineStore("filters", {
   hydrate(storeState, initialState) {
     storeState.size = useLocalStorage("size", []);
+    storeState.legendary = useLocalStorage("legendary", []);
+    storeState.type = useLocalStorage("type", []);
+    storeState.environment = useLocalStorage("environment", []);
+    storeState.cr = useLocalStorage("cr", {
+      min: 0,
+      max: 33,
+    });
   },
   state: () => {
     return {
+      defaults: {
+        alignment: {
+          bits: 1023
+        },
+        size: [],
+        legendary: [],
+        type: [],
+        environment: [],
+        cr: {
+          min: 0,
+          max: 33,
+        }
+      },
       alignment: {
         bits: 1023,
       },
@@ -20,13 +40,13 @@ export const useFilters = defineStore("filters", {
         { value: "huge", label: "Huge" },
         { value: "gargantuan", label: "Gargantuan" },
       ],
-      legendary: [],
+      legendary: useLocalStorage("legendary", []),
       legendaryOptions: [
         { value: "ordinary", label: "Ordinary" },
         { value: "legendary", label: "Legendary" },
         { value: "legendary_lair", label: "Legendary (in lair)" },
       ],
-      type: [],
+      type: useLocalStorage("type", []),
       typeOptions: [
         { value: "aberration", label: "Aberration" },
         { value: "beast", label: "Beast" },
@@ -43,11 +63,11 @@ export const useFilters = defineStore("filters", {
         { value: "plant", label: "Plant" },
         { value: "undead", label: "Undead" },
       ],
-      environment: [],
-      cr: {
+      environment: useLocalStorage("environment", []),
+      cr: useLocalStorage("cr", {
         min: 0,
-        max: 30,
-      },
+        max: 33,
+      }),
       crValues: [
         { value: "0", label: "0" },
         { value: "1/8", label: "1/8" },
@@ -86,7 +106,24 @@ export const useFilters = defineStore("filters", {
       ],
     };
   },
+  actions: {
+    reset() {
+      ["alignment", "size", "type", "environment", "legendary", "cr"].forEach(
+        (field) => (this[field] = this.defaults[field])
+      );
+    },
+  },
   getters: {
+    nonDefault() {
+      return [
+        "alignment",
+        "size",
+        "type",
+        "environment",
+        "legendary",
+        "cr",
+      ].filter((field) => this[field] !== this.defaults[field]).length;
+    },
     environmentOptions() {
       const monsters = useMonsters();
 

@@ -83,27 +83,24 @@
               <div
                 class="flex h-full flex-col relative 2xl:absolute 2xl:inset-y-0 2xl:w-[24rem] 2xl:right-0 2xl:py-8 flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar"
               >
-                <!--              <div-->
-                <!--                class="flex h-full flex-col relative 2xl:absolute 2xl:inset-y-0 2xl:w-[24rem] 2xl:right-0 2xl:py-8 flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar"-->
-                <!--              >-->
-                <!--                <div class="flex">-->
-                <!--                  <button-->
-                <!--                    @click="showSourcesModal = true"-->
-                <!--                    class="button-primary-md w-full"-->
-                <!--                  >-->
-                <!--                    <span class="w-full text-center">Manage sources</span>-->
-                <!--                  </button>-->
+                <div class="flex">
+                  <button
+                    @click="$emit('modal', 'Sources')"
+                    class="button-primary-md w-full"
+                  >
+                    <span class="w-full text-center">Manage sources</span>
+                  </button>
 
-                <!--                  <button-->
-                <!--                    :disabled="!nonDefaultFiltersCount"-->
-                <!--                    @click="$dispatch('reset-filters')"-->
-                <!--                    class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2"-->
-                <!--                  >-->
-                <!--                    <span class="inline-block w-full"-->
-                <!--                      ><i class="fa fa-undo pr-1"></i> Reset Filters</span-->
-                <!--                    >-->
-                <!--                  </button>-->
-                <!--                </div>-->
+                  <button
+                    :disabled="!filters.nonDefault"
+                    @click="filters.reset()"
+                    class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2"
+                  >
+                    <span class="inline-block w-full"
+                      ><i class="fa fa-undo pr-1"></i> Reset Filters</span
+                    >
+                  </button>
+                </div>
 
                 <ChallengeRatingSlider />
                 <!-- Multi Select -->
@@ -165,7 +162,6 @@
                     v-model="filters.legendary"
                     :options="filters.legendaryOptions"
                   ></Multiselect>
-
                 </div>
                 <AlignmentGrid></AlignmentGrid>
               </div>
@@ -180,7 +176,7 @@
 <script setup>
 import Multiselect from "@vueform/multiselect";
 import AlignmentGrid from "./AlignmentGrid.vue";
-import {useFilters} from "../stores/filters.js";
+import { useFilters } from "../stores/filters.js";
 import ChallengeRatingSlider from "./ChallengeRatingSlider.vue";
 
 const filters = useFilters();

@@ -4,11 +4,16 @@ import Slider from "@vueform/slider";
 import { useFilters } from "../stores/filters.js";
 
 const filters = useFilters();
-const minCr = ref(0);
-const maxCr = ref(0);
+const minCr = ref(filters.crValues[Math.round(filters.cr.min)].label);
+const maxCr = ref(filters.crValues[Math.round(filters.cr.max)].label);
 
 const defaultValue = ref([0, 33]);
-const sliderValue = ref([0, 33]);
+const sliderValue = ref([
+    filters.cr.min,
+    filters.cr.max
+]);
+
+console.log(sliderValue.value);
 
 // This formatter function is given to NoUISlider's options, to do one thing:
 // Transform numeric indexes into visual label numbers. A simple example:
