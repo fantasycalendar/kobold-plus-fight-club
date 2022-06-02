@@ -12,6 +12,8 @@ export const useFilters = defineStore("filters", {
       min: 0,
       max: 33,
     });
+    storeState.search = useLocalStorage("search", "");
+    storeState.perPage = useLocalStorage("per_page", 10);
   },
   state: () => {
     return {
@@ -104,9 +106,21 @@ export const useFilters = defineStore("filters", {
         { value: "29", label: "29" },
         { value: "30", label: "30" },
       ],
+
+      search: useLocalStorage("search", ""),
+      regexedSearch: "",
+      regex: null,
+      isValidRegex: false,
+
+      perPage: useLocalStorage("per_page", 10),
     };
   },
   actions: {
+    searchFor(searchable) {
+      return this.isRegex
+        ? searchable.match(this.regex)
+        : searchable.includes(this.search.toLowerCase());
+    },
     reset() {
       return [
         "alignment",
@@ -127,6 +141,56 @@ export const useFilters = defineStore("filters", {
     },
   },
   getters: {
+    searchPlaceholder() {
+      let monsters = useMonsters();
+
+      return monsters.all.length
+        ? monsters.all[Math.floor(Math.random() * monsters.all.length)].name
+        : "Search for a monster";
+    },
+    isRegex() {
+      return false;
+
+      if (!this.search) {
+        // Wait ... How'd you get here??
+        this.regexedSearch = "";
+        this.regex = null;
+        this.isValidRegex = false;
+        return false;
+      }
+
+      // We already know the answer for this one
+      if (this.search === this.regexedSearch) {
+        return this.isValidRegex;
+      }
+
+      console.log('Updating regexed search');
+
+      this.regexedSearch = this.search;
+
+      // Want to determine whether something is a valid regex?
+      // Try to make a regex out of it and listen for yelling.
+      let checkRegex = this.search.match(/^\/(.*?)\/?$/);
+      if (checkRegex) {
+        try {
+          this.regex = new RegExp(checkRegex[1]);
+          this.isValidRegex = true;
+
+          console.log("Is regex: ", this.regex);
+
+          return true;
+        } catch (e) {
+          this.regex = null;
+          this.isValidRegex = false;
+          return false;
+        }
+      }
+
+      // If we got this far ... it wasn't regex.
+      this.regex = null;
+      this.isValidRegex = false;
+      return false;
+    },
     minCr() {
       return parseInt(this.crValues[this.cr.min].value);
     },

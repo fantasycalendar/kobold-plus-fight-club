@@ -11,13 +11,14 @@ import Monster from "../js/monster.js";
 import tippy from "tippy.js";
 import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
+import SearchBox from "../components/SearchBox.vue";
 
 import { useMonsters } from "../stores/monsters";
 
 const internationalNumberFormat = new Intl.NumberFormat("en-US");
 
 export default {
-  components: { FiltersSlideover, MonsterTable },
+  components: {SearchBox, FiltersSlideover, MonsterTable },
   emits: ["modal"],
 
   setup() {
@@ -136,9 +137,6 @@ export default {
   },
 
   computed: {
-    keyboardText() {
-      return navigator.platform.toLowerCase().includes("mac") ? "⌘K" : "Ctrl K";
-    },
     totalPlayers() {
       return (
         this.groups.reduce((acc, group) => {
@@ -735,118 +733,7 @@ export default {
       :class="{ 'hidden md:block': !mobileEncounterTab }"
       class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar"
     >
-<!--     <span v-text="monsterStore.filtered.map((entry) => entry.name)"></span>-->
-
-<!--      <label-->
-<!--        for="search"-->
-<!--        class="max-w-full block text-sm font-medium text-gray-700 sr-only"-->
-<!--        >Search monsters</label-->
-<!--      >-->
-
-<!--      <div class="px-4 sm:px-6 lg:px-8">-->
-<!--        <div-->
-<!--          class="max-w-full mt-1 flex flex-col lg:flex-row rounded-md shadow-sm"-->
-<!--        >-->
-<!--          <div class="relative items-stretch grow focus-within:z-10">-->
-<!--            <div-->
-<!--              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"-->
-<!--            >-->
-<!--              <svg-->
-<!--                xmlns="http://www.w3.org/2000/svg"-->
-<!--                class="h-5 w-5 text-gray-400"-->
-<!--                fill="none"-->
-<!--                viewBox="0 0 24 24"-->
-<!--                stroke="currentColor"-->
-<!--                stroke-width="2"-->
-<!--              >-->
-<!--                <path-->
-<!--                  stroke-linecap="round"-->
-<!--                  stroke-linejoin="round"-->
-<!--                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"-->
-<!--                />-->
-<!--              </svg>-->
-<!--            </div>-->
-
-<!--            <input-->
-<!--              type="search"-->
-<!--              name="search"-->
-<!--              id="search"-->
-<!--              v-model="search"-->
-<!--              @input.debounce="updateFilteredMonsters"-->
-<!--              class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none pl-10 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"-->
-<!--              :placeholder="searchPlaceholder"-->
-<!--            />-->
-
-<!--            <div-->
-<!--              class="absolute inset-y-0 right-0 flex py-1.5 pr-2 hidden md:block"-->
-<!--            >-->
-<!--              <kbd-->
-<!--                class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400"-->
-<!--                v-text="keyboardText"-->
-<!--              ></kbd>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="flex w-full lg:w-auto mt-2 lg:mt-0">-->
-<!--            <div class="w-full lg:w-auto">-->
-<!--              <select-->
-<!--                id="monstersPerPage"-->
-<!--                @change="setMonstersPerPage(Number($event.target.value))"-->
-<!--                name="location"-->
-<!--                class="block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-l-md lg:rounded-none 2xl:rounded-r-md border-gray-300 border-l-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"-->
-<!--              >-->
-<!--                <option value="10" :selected="monstersPerPage === 10">-->
-<!--                  10 per page-->
-<!--                </option>-->
-<!--                <option value="25" :selected="monstersPerPage === 25">-->
-<!--                  25 per page-->
-<!--                </option>-->
-<!--                <option value="50" :selected="monstersPerPage === 50">-->
-<!--                  50 per page-->
-<!--                </option>-->
-<!--                <option value="100" :selected="monstersPerPage === 100">-->
-<!--                  100 per page-->
-<!--                </option>-->
-<!--              </select>-->
-<!--            </div>-->
-
-<!--            <div-->
-<!--              class="relative inline-block text-left 2xl:hidden"-->
-<!--              x-data="{ filtersMenu: true }"-->
-<!--              title="Filter monsters (Ctrl+L)"-->
-<!--            >-->
-<!--              <button-->
-<!--                @click="showFilters = !showFilters"-->
-<!--                type="button"-->
-<!--                class="-ml-px h-full relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md bg-white disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 dark:text-gray-400 text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"-->
-<!--              >-->
-<!--                <svg-->
-<!--                  xmlns="http://www.w3.org/2000/svg"-->
-<!--                  class="h-5 w-5 text-gray-400"-->
-<!--                  fill="none"-->
-<!--                  viewBox="0 0 24 24"-->
-<!--                  stroke="currentColor"-->
-<!--                  stroke-width="2"-->
-<!--                >-->
-<!--                  <path-->
-<!--                    stroke-linecap="round"-->
-<!--                    stroke-linejoin="round"-->
-<!--                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"-->
-<!--                  />-->
-<!--                </svg>-->
-<!--                <span>Filter</span>-->
-<!--                <span-->
-<!--                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-300 text-gray-800"-->
-<!--                  v-show="nonDefaultFiltersCount > 0"-->
-<!--                  v-text="nonDefaultFiltersCount"-->
-<!--                ></span>-->
-<!--              </button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--      &lt;!&ndash; This example requires Tailwind CSS v2.0+ &ndash;&gt;-->
+      <SearchBox @toggle-filters="showFilters = !showFilters" />
       <MonsterTable @modal="$emit('modal', $event)"></MonsterTable>
     </div>
 

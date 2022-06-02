@@ -87,6 +87,10 @@ export const useMonsters = defineStore("monsters", {
 
     filterBy(filters) {
       return this.all.filter((monster) => {
+        if (filters.search && !filters.searchFor(monster.searchable)) {
+          return false;
+        }
+
         const crString = false;
 
         if (
@@ -95,14 +99,12 @@ export const useMonsters = defineStore("monsters", {
         )
           return false;
 
-        for (let legendary of filters.legendary) {
-          let legendaryMonsterKey = CONST.LEGENDARY_MAP[legendary];
+        if (filters.legendary.indexOf("legendary") > -1 && !monster.legendary) {
+          return false;
+        }
 
-          if (legendaryMonsterKey) {
-            if (!monster.legendary[legendaryMonsterKey]) return false;
-          } else {
-            if (monster.legendary || monster.lair) return false;
-          }
+        if (filters.legendary.indexOf("legendary_lair") > -1 && !monster.lair) {
+          return false;
         }
 
         if (
