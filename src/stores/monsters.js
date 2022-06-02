@@ -9,52 +9,67 @@ const regexCache = {};
 export const useMonsters = defineStore("monsters", {
   state: () => {
     return {
+      all: [],
       lastRegex: "",
       builtIn: useLocalStorage("monsters", []),
       imported: useLocalStorage("imported_monsters", []),
-      lookup: useLocalStorage("monster_lookup", {}),
+      lookup: [], // useLocalStorage("monster_lookup", {}),
+      instanced: [],
+      instancedImports: [],
     };
   },
 
   hydrate(storeState, initialState) {
     storeState.builtIn = useLocalStorage("monsters", []);
     storeState.imported = useLocalStorage("imported_monsters", []);
-    storeState.lookup = useLocalStorage("monster_lookup", {});
+    storeState.lookup = []; //useLocalStorage("monster_lookup", {});
   },
 
   actions: {
     async fetch() {
       let fetched = [];
 
-      try {
-        await fetch("/src/assets/json/se_monsters.json")
-          .then((res) => res.json())
-          .then((data) => {
-            fetched = fetched.concat(data);
-          });
+      if (!this.builtIn) {
+        try {
+          await fetch("/src/assets/json/se_monsters.json")
+            .then((res) => res.json())
+            .then((data) => {
+              fetched = fetched.concat(data);
+            });
 
-        await fetch("/src/assets/json/se_third_party_monsters.json")
-          .then((res) => res.json())
-          .then((data) => {
-            fetched = fetched.concat(data);
-          });
+          await fetch("/src/assets/json/se_third_party_monsters.json")
+            .then((res) => res.json())
+            .then((data) => {
+              fetched = fetched.concat(data);
+            });
 
-        await fetch("/src/assets/json/se_community_monsters.json")
-          .then((res) => res.json())
-          .then((data) => {
-            fetched = fetched.concat(data);
-          });
-      } catch (error) {
-        alert(error);
+          await fetch("/src/assets/json/se_community_monsters.json")
+            .then((res) => res.json())
+            .then((data) => {
+              fetched = fetched.concat(data);
+            });
+        } catch (error) {
+          alert(error);
 
-        return error;
+          return error;
+        }
+
+        this.builtIn = fetched;
       }
 
-      this.builtIn = fetched;
+      this.instanced = this.builtIn
+        .map((monster) => this.includeMonster(monster))
+        .filter(Boolean);
 
-      console.log(this.builtIn);
+      if (this.imported.length) {
+        this.instancedImports = this.imported
+          .map((monster) => this.includeMonster(monster))
+          .filter(Boolean);
+      }
 
-      return this.builtIn;
+      this.all = this.instanced.concat(this.instancedImports);
+
+      return this.all;
     },
 
     includeMonster(monster) {
@@ -98,8 +113,8 @@ export const useMonsters = defineStore("monsters", {
 
         if (
           filters.environment.length &&
-          !filters.environment.find(
-            (environment) => monster.environment.includes(environment.toLowerCase())
+          !filters.environment.find((environment) =>
+            monster.environment.includes(environment.toLowerCase())
           )
         ) {
           return false;
@@ -113,19 +128,6 @@ export const useMonsters = defineStore("monsters", {
   getters: {
     paginated() {
       return this.filtered.slice(0, 10);
-    },
-    all() {
-      return this.instanced.concat(this.instancedImports);
-    },
-    instanced() {
-      return this.builtIn
-        .map((monster) => new Monster(monster))
-        .filter(Boolean);
-    },
-    instancedImports() {
-      return this.imported
-          .map((monster) => new Monster(monster))
-          .filter(Boolean);
     },
     filtered() {
       const filters = useFilters();
