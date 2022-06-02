@@ -17,7 +17,7 @@ export const useFilters = defineStore("filters", {
     return {
       defaults: {
         alignment: {
-          bits: 1023
+          bits: 1023,
         },
         size: [],
         legendary: [],
@@ -26,7 +26,7 @@ export const useFilters = defineStore("filters", {
         cr: {
           min: 0,
           max: 33,
-        }
+        },
       },
       alignment: {
         bits: 1023,
@@ -108,8 +108,16 @@ export const useFilters = defineStore("filters", {
   },
   actions: {
     reset() {
-      ["alignment", "size", "type", "environment", "legendary", "cr"].forEach(
-        (field) => (this[field] = this.defaults[field])
+      return [
+        "alignment",
+        "size",
+        "type",
+        "environment",
+        "legendary",
+        "cr",
+      ].forEach(
+        (field) =>
+          (this[field] = JSON.parse(JSON.stringify(this.defaults[field])))
       );
     },
   },
@@ -122,22 +130,25 @@ export const useFilters = defineStore("filters", {
         "environment",
         "legendary",
         "cr",
-      ].filter((field) => this[field] !== this.defaults[field]).length;
+      ].filter(
+        (field) =>
+          JSON.stringify(this[field]) !== JSON.stringify(this.defaults[field])
+      ).length;
     },
     environmentOptions() {
       const monsters = useMonsters();
 
       let results = new Set(
         monsters.all
-            .filter(Boolean)
+          .filter(Boolean)
           .map((monster) => {
             return monster.environment
-                .split(",")
-                .map(
-                    (item) =>
-                        item.trim().toUpperCase().slice(0, 1) +
-                        item.trim().substring(1)
-                )
+              .split(",")
+              .map(
+                (item) =>
+                  item.trim().toUpperCase().slice(0, 1) +
+                  item.trim().substring(1)
+              );
           })
           .flat()
           .filter(Boolean)

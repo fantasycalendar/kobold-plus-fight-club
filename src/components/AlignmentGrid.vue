@@ -136,24 +136,24 @@
         class="col-span-2 rounded-bl-md"
       ></div>
       <div
-        @click="total = total === 1023 ? 0 : 1023"
+        @click="filters.alignment.bits = filters.alignment.bits === 1023 ? 0 : 1023"
         :class="{
           'bg-emerald-700 text-white hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900':
-            (total & 1023) === 1023,
+            (filters.alignment.bits & 1023) === 1023,
           'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border':
-            (total & 1023) !== 1023,
+            (filters.alignment.bits & 1023) !== 1023,
         }"
         class="select-none text-gray-900 col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white"
       >
         Any
       </div>
       <div
-        @click="total = total ^ 512"
+        @click="filters.alignment.bits = filters.alignment.bits ^ 512"
         :class="{
           'bg-emerald-700 text-white hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900':
-            (total & 512) === 512,
+            (filters.alignment.bits & 512) === 512,
           'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border':
-            (total & 512) !== 512,
+            (filters.alignment.bits & 512) !== 512,
         }"
         class="select-none text-gray-900 rounded-br-md col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white"
       >
@@ -165,6 +165,9 @@
 
 <script setup>
 import { ref, watch, computed } from "vue";
+import { useFilters } from "../stores/filters";
+
+const filters = useFilters();
 
 const lawful_good = ref(1);
 const neutral_good = ref(2);
@@ -201,7 +204,7 @@ const icons = ref([
 ]);
 const randomIcon = computed(() => icons.value[randomIconIndex.value]);
 
-watch(total, (total) => {
+filters.$subscribe((mutation, state) => {
   let newIndex = Math.floor(Math.random() * icons.value.length);
   randomIconIndex.value =
     newIndex === randomIconIndex.value
@@ -210,22 +213,22 @@ watch(total, (total) => {
 });
 
 function toggle(value) {
-  this.total =
-    (this.total & value) > 0
-      ? (this.total | value) ^ value
-      : this.total | value;
+  filters.alignment.bits =
+    (filters.alignment.bits & value) > 0
+      ? (filters.alignment.bits | value) ^ value
+      : filters.alignment.bits | value;
 }
 
 function classes(value) {
   return {
     "bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-900 text-white":
-      this.total & value,
+      filters.alignment.bits & value,
     "bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border text-gray-700 dark:text-white":
-      !(this.total & value),
+      !(filters.alignment.bits & value),
     "cursor-pointer grid place-items-center text-center select-none text-white": true,
   };
 }
 function reset() {
-  this.total = 1023;
+  filters.alignment.bits = 1023;
 }
 </script>
