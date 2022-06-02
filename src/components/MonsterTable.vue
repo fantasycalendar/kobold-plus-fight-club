@@ -5,6 +5,7 @@ import { useSources } from "../stores/sources";
 import { useFilters } from "../stores/filters";
 import LoadingSpinner from "./LoadingSpinner.vue";
 import MonsterTableHeading from "./MonsterTableHeading.vue";
+import { useEncounter } from "../stores/encounter";
 
 const emit = defineEmits(["modal"]);
 
@@ -15,13 +16,14 @@ const totalPages = ref(0);
 const monsters = useMonsters();
 const sources = useSources();
 const filters = useFilters();
+const encounter = useEncounter();
 
-const encounter = ref({
-  getDifficultyFromExperience(value) {
-    // console.log('getDifficultyFromExperience', value);
-    return "Easy";
-  },
-});
+// const encounter = ref({
+//   getDifficultyFromExperience(value) {
+//     // console.log('getDifficultyFromExperience', value);
+//     return "Easy";
+//   },
+// });
 
 const currentPage = ref(1);
 

@@ -1,25 +1,35 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
-import { EXP } from "../js/constants";
+import CONST from "../js/constants.js";
 
 export const useParty = defineStore("party", {
   state: () => {
     return {
-      defaultGroup: {
+      groups: useLocalStorage("groups", [
+        {
+          players: 4,
+          level: 1,
+          getsXP: true,
+        },
+      ]),
+    };
+  },
+  hydrate(storeState) {
+    storeState.groups = useLocalStorage("groups", [
+      {
         players: 4,
         level: 1,
         getsXP: true,
       },
-      groups: useLocalStorage("groups", [...this.defaultGroup]),
-    };
-  },
-  hydrate(storeState) {
-    storeState.groups = useLocalStorage("groups", [...this.defaultGroup]);
+    ]);
   },
   actions: {
     addGroup() {
-      const lastGroup =
-        this.groups[this.groups.length - 1] ?? this.defaultGroup;
+      const lastGroup = this.groups[this.groups.length - 1] ?? {
+        players: 4,
+        level: 1,
+        getsXP: true,
+      };
 
       this.groups.push({ ...lastGroup });
     },
@@ -27,7 +37,7 @@ export const useParty = defineStore("party", {
       this.groups.splice(index, 1);
     },
     getGroupExperience(acc, group) {
-      const groupExp = EXP[group.level];
+      const groupExp = CONST.EXP[group.level];
       return {
         easy: (acc?.easy ?? 0) + groupExp.easy * (group?.players ?? 1),
         medium: (acc?.medium ?? 0) + groupExp.medium * (group?.players ?? 1),
