@@ -12,14 +12,13 @@ import tippy from "tippy.js";
 import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
 import SearchBox from "../components/SearchBox.vue";
+import PartyPanel from "../components/PartyPanel.vue";
 
 import {useEncounter} from "../stores/encounter";
 import {useParty} from "../stores/party";
 
-const internationalNumberFormat = new Intl.NumberFormat("en-US");
-
 export default {
-  components: {SearchBox, FiltersSlideover, MonsterTable },
+  components: { SearchBox, FiltersSlideover, MonsterTable, PartyPanel },
   emits: ["modal"],
 
   setup() {
@@ -132,11 +131,6 @@ export default {
       this.party.saved[partyIndex].players.splice(playerIndex, 1);
     },
 
-    formatNumber(num) {
-      if (!num) return 0;
-      return internationalNumberFormat.format(num);
-    },
-
     setupHotkeys() {
       hotkeys(
         "ctrl+/,ctrl+k,ctrl+shift+\\,ctrl+f,ctrl+[,ctrl+],ctrl+g,ctrl+s,esc",
@@ -193,6 +187,10 @@ export default {
           return true;
         }
       );
+    },
+
+    formatNumber(number) {
+      return helpers.formatNumber(number);
     },
 
     sendToImprovedInitiative() {
@@ -337,236 +335,7 @@ export default {
       :class="{ 'hidden md:flex': mobileEncounterTab }"
       class="hidden md:absolute md:inset-y-0 md:py-8 md:left-4 md:pr-4 md:pl-4 pb-8 md:flex w-full px-8 2xl:pr-4 flex-col flex-shrink-0 md:w-[28rem] overflow-y-auto scrollbar"
     >
-      <div class="grid grid-cols-3 md:pr-2 md:grid-cols-5 pb-4 flex-col w-full">
-        <div class="col-span-3 space-y-2">
-          <div class="flex justify-between items-end">
-            <div class="mb-1 text-gray-600 dark:text-gray-400">Party</div>
-
-            <a
-              class="primary-link text-sm"
-              @click="$emit('modal', { name: 'Party' })"
-              href="javascript:"
-            >
-              Manage
-            </a>
-          </div>
-
-          <div
-            class="grid grid-cols-[1fr_34px] gap-y-2 align-center mb-2"
-            v-show="party.activePlayers.length"
-          >
-            <div v-for="party in party.saved" :key="party.name">
-              <div
-                v-for="player in party.players.filter(
-                  (player) => player.active
-                )"
-                :key="player.name"
-              >
-                <div class="contents">
-                  <div v-text="player.name"></div>
-
-                  <button
-                    @click="player.active = false"
-                    type="button"
-                    class="button-danger-outline-md inline-flex justify-center !py-0"
-                  >
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            v-show="party.groups.length"
-            class="w-full grid grid-rows-[18px_1fr] grid-cols-[1fr_40px_1fr_50px_36px] gap-y-2 align-center mb-2"
-          >
-            <label class="col-span-2 text-sm text-gray-700 dark:text-gray-300"
-              >Players</label
-            >
-            <label class="text-sm text-gray-700 dark:text-gray-300"
-              >Level</label
-            >
-            <label
-              class="text-center text-sm text-gray-700 dark:text-gray-300"
-              title="Determines whether these characters get a share of XP from the encounter."
-              >XP</label
-            >
-            <div>&nbsp;</div>
-
-            <div v-for="(group, index) in party.groups">
-              <div class="contents">
-                <input
-                  type="number"
-                  min="1"
-                  :value="group.players"
-                  @change="group.players = Math.max(1, $event.target.value)"
-                  class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
-                  value="4"
-                />
-
-                <div
-                  class="text-center grid place-items-center text-gray-600 dark:text-gray-400 scale-150 md:transform-none"
-                >
-                  <i class="fa fa-times"></i>
-                </div>
-
-                <input
-                  type="number"
-                  min="1"
-                  max="20"
-                  :value="group.level"
-                  @change="
-                    group.level = Math.max(1, Math.min(20, $event.target.value))
-                  "
-                  class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
-                  value="4"
-                />
-
-                <div
-                  class="flex items-center justify-center scale-150 md:transform-none"
-                >
-                  <input
-                    type="checkbox"
-                    v-model="group.getsXP"
-                    class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded"
-                  />
-                </div>
-
-                <button
-                  @click="party.removePlayerGroup(index)"
-                  type="button"
-                  class="button-danger-outline-md justify-center"
-                >
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="w-full">
-            <button
-              @click="party.addPlayerGroup()"
-              type="button"
-              class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center"
-            >
-              <span> <i class="fas fa-plus mr-2"></i> Add Generic Group </span>
-            </button>
-          </div>
-
-          <div
-            class="w-full"
-            v-show="!(party.activePlayers.length || party.groups.length)"
-          >
-            <button
-              @click="enablePartyModal"
-              type="button"
-              class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center"
-            >
-              <span> <i class="fas fa-plus mr-2"></i> Use Detailed Party </span>
-            </button>
-          </div>
-        </div>
-
-        <div class="hidden md:block col-span-2">
-          <div class="grid text-sm text-right">
-            <div
-              class="hidden md:block mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400"
-            >
-              XP Goals
-            </div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Easy',
-              }"
-            >
-              Easy
-            </div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Easy',
-              }"
-              v-text="formatNumber(party.experience['easy'])"
-            ></div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Medium',
-              }"
-            >
-              Medium
-            </div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Medium',
-              }"
-              v-text="formatNumber(party.experience['medium'])"
-            ></div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Hard',
-              }"
-            >
-              Hard
-            </div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Hard',
-              }"
-              v-text="formatNumber(party.experience['hard'])"
-            ></div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Deadly',
-              }"
-            >
-              Deadly
-            </div>
-            <div
-              :class="{
-                'font-semibold': encounter.actualDifficulty === 'Deadly',
-              }"
-              v-text="formatNumber(party.experience['deadly'])"
-            ></div>
-
-            <div class="mt-4">Daily budget</div>
-            <div
-              class="mt-4"
-              v-text="formatNumber(party.experience.daily)"
-            ></div>
-          </div>
-        </div>
-
-        <div class="md:hidden col-span-3 pt-4" v-show="party.experience.daily">
-          <div
-            class="mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400"
-          >
-            XP Goal
-          </div>
-          <div class="flex justify-between">
-            <div>
-              Daily budget
-              <span v-text="formatNumber(party.experience.daily)"></span>
-            </div>
-            <div>
-              <span
-                class="font-semibold"
-                v-show="
-                  ['Easy', 'Medium', 'Hard', 'Deadly'].includes(
-                    encounter.actualDifficulty
-                  )
-                "
-                v-text="
-                  encounter.actualDifficulty +
-                  ' ' +
-                  formatNumber(
-                    party.experience[encounter.actualDifficulty.toLowerCase()]
-                  )
-                "
-              ></span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PartyPanel></PartyPanel>
 
       <div class="border-t border-gray-200 dark:border-gray-700">
         <div class="flex pt-4 justify-between items-center mb-1">
