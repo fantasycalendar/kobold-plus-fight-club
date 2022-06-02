@@ -4,6 +4,7 @@ import { useMonsters } from "../stores/monsters";
 import { useSources } from "../stores/sources";
 import { useFilters } from "../stores/filters";
 import LoadingSpinner from "./LoadingSpinner.vue";
+import MonsterTableHeading from "./MonsterTableHeading.vue";
 
 const emit = defineEmits(["modal"]);
 
@@ -127,101 +128,45 @@ const pagination = computed(() => {
             >
               <span class="sr-only">Add to encounter</span>
             </th>
-            <th
-              scope="col"
-              class="py-3.5 px-3 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer group whitespace-nowrap w-64"
-              @click="setSortBy('name')"
-            >
-              Name
-              <span
-                class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                :class="{ invisible: sortBy !== 'name' }"
-              >
-                <i
-                  class="fa-solid"
-                  :class="{
-                    'fa-chevron-down': sortByDesc || sortBy !== 'name',
-                    'fa-chevron-up': !sortByDesc && sortBy === 'name',
-                  }"
-                ></i>
-              </span>
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer table-cell group whitespace-nowrap w-32"
-              @click="setSortBy('size')"
-            >
-              Size
-              <span
-                class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                :class="{ invisible: sortBy !== 'size' }"
-              >
-                <i
-                  class="fa-solid"
-                  :class="{
-                    'fa-chevron-down': sortByDesc || sortBy !== 'size',
-                    'fa-chevron-up': !sortByDesc && sortBy === 'size',
-                  }"
-                ></i>
-              </span>
-            </th>
-            <th
-              scope="col"
-              class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer sm:table-cell group whitespace-nowrap w-32"
-              @click="setSortBy('cr')"
-            >
-              CR
-              <span
-                class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                :class="{ invisible: sortBy !== 'cr' }"
-              >
-                <i
-                  class="fa-solid"
-                  :class="{
-                    'fa-chevron-down': sortByDesc || sortBy !== 'cr',
-                    'fa-chevron-up': !sortByDesc && sortBy === 'cr',
-                  }"
-                ></i>
-              </span>
-            </th>
-            <th
-              scope="col"
-              class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer lg:table-cell group whitespace-nowrap w-32"
-              @click="setSortBy('type')"
-            >
-              Type
-              <span
-                class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                :class="{ invisible: sortBy !== 'type' }"
-              >
-                <i
-                  class="fa-solid"
-                  :class="{
-                    'fa-chevron-down': sortByDesc || sortBy !== 'type',
-                    'fa-chevron-up': !sortByDesc && sortBy === 'type',
-                  }"
-                ></i>
-              </span>
-            </th>
-            <th
-              scope="col"
-              class="hidden px-3 py-3.5 text-left text-sm font-semibold uppercase text-gray-500 dark:text-gray-300 select-none cursor-pointer lg:table-cell group whitespace-nowrap w-32"
-              @click="setSortBy('alignment')"
-            >
-              Alignment
-              <span
-                class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-                :class="{ invisible: sortBy !== 'alignment' }"
-              >
-                <i
-                  class="fa-solid"
-                  :class="{
-                    'fa-chevron-down': sortByDesc || sortBy !== 'alignment',
-                    'fa-chevron-up': !sortByDesc && sortBy === 'alignment',
-                  }"
-                ></i>
-              </span>
-            </th>
+            <MonsterTableHeading
+              label="Name"
+              sorts-column="name"
+              :sort-by="sortBy"
+              :sort-by-desc="sortByDesc"
+              class="table-cell w-64"
+              @sort="setSortBy($event)"
+            />
+            <MonsterTableHeading
+              label="Size"
+              sorts-column="size"
+              :sort-by="sortBy"
+              :sort-by-desc="sortByDesc"
+              class="table-cell w-32"
+              @sort="setSortBy($event)"
+            />
+            <MonsterTableHeading
+              label="CR"
+              sorts-column="cr"
+              :sort-by="sortBy"
+              :sort-by-desc="sortByDesc"
+              class="hidden sm:table-cell w-32"
+              @sort="setSortBy($event)"
+            />
+            <MonsterTableHeading
+              label="Type"
+              sorts-column="type"
+              :sort-by="sortBy"
+              :sort-by-desc="sortByDesc"
+              class="hidden lg:table-cell w-32"
+              @sort="setSortBy($event)"
+            />
+            <MonsterTableHeading
+              label="Alignment"
+              sorts-column="alignment"
+              class="hidden lg:table-cell w-32"
+              :sort-by="sortBy"
+              :sort-by-desc="sortByDesc"
+            />
           </tr>
         </thead>
         <tbody
