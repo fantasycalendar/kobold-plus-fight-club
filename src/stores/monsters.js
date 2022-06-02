@@ -142,7 +142,7 @@ export const useMonsters = defineStore("monsters", {
 
   getters: {
     paginated() {
-      return this.filtered.slice(0, 10);
+      return this.filtered.slice(0, useFilters().perPage);
     },
     filtered() {
       const filters = useFilters();
