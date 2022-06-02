@@ -35,8 +35,6 @@ watch(maxCr, (updatedIndex) => {
 });
 
 watch(sliderValue, (value) => {
-  console.log(sliderValue.value, defaultValue.value);
-
   filters.cr.min = value[0];
   minCr.value = filters.crValues[Math.round(value[0])].value;
   filters.cr.max = value[1];
@@ -82,9 +80,9 @@ filters.$subscribe((mutation, state) => {
     </div>
 
     <div
-      class="relative px-6 pt-1 pb-4 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md"
+      class="relative px-6 pt-1 pb-3 bg-white border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md"
     >
-      <div class="my-6 mx-2">
+      <div class="mb-4 mt-3 mx-2">
         <Slider
           :min="0"
           :max="33"
