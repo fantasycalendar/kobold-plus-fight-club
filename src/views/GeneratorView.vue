@@ -35,26 +35,10 @@ export default {
       storedSourcesVersion: "2.0.0",
 
       showFilters: false,
-      showSourcesModal: false,
-      showEncounterModal: false,
-      showPartyModal: false,
-      showImporterModal: false,
 
       mobileEncounterTab: false,
 
-      searchKeyboardShortcut: navigator.platform.toLowerCase().includes("mac")
-        ? "⌘K"
-        : "Ctrl K",
-      filters: {},
-      searchPlaceholder: "",
       nonDefaultFiltersCount: 0,
-
-      loadedSources: [],
-      loadedMonsters: [],
-      tab: "history",
-
-      encounterHistory: [],
-      savedEncounters: [],
 
       loadedEncounterIndex: null,
       loadedLastEncounter: false,
@@ -197,16 +181,6 @@ export default {
       console.log(this.difficultySelectOpen);
     },
 
-    setSortBy(type) {
-      if (type === this.sortBy) {
-        this.sortByDesc = !this.sortByDesc;
-      } else {
-        this.sortByDesc = true;
-      }
-      this.sortBy = type;
-      this.updateFilteredMonsters();
-    },
-
     toggleTheme() {
       let theme = localStorage.theme === "dark" ? "light" : "dark";
       this.theme = theme;
@@ -273,22 +247,6 @@ export default {
 
     deletePlayer(partyIndex, playerIndex) {
       this.savedParties[partyIndex].players.splice(playerIndex, 1);
-    },
-
-    async fetchData() {
-      this.formatSources(await this.fetchSources());
-      this.formatMonsters(await this.fetchMonsters());
-      this.searchPlaceholder = helpers.randomArrayElement(
-        this.allMonsters
-      ).name;
-
-      if (this.loadedEncounterIndex !== null) {
-        this.encounter.load(this.savedEncounters[this.loadedEncounterIndex]);
-      } else if (this.encounterHistory.length && this.loadedLastEncounter) {
-        this.encounter.load(
-          this.encounterHistory[this.encounterHistory.length - 1]
-        );
-      }
     },
 
     setPage(page) {
@@ -370,171 +328,6 @@ export default {
           { number: this.totalPages },
         ];
       }
-    },
-
-    async fetchSources() {
-      if (
-        this.loadedSources.length > 0 &&
-        helpers.versionCompare(
-          this.sourcesVersion,
-          this.storedSourcesVersion
-        ) === 0
-      ) {
-        return this.loadedSources;
-      }
-
-      let sources = [];
-
-      await fetch("/src/json/se_sources.json")
-        .then((res) => res.json())
-        .then((data) => {
-          sources = sources.concat(data);
-        });
-
-      await fetch("/src/json/se_third_party_sources.json")
-        .then((res) => res.json())
-        .then((data) => {
-          sources = sources.concat(data);
-        });
-
-      await fetch("/src/json/se_community_sources.json")
-        .then((res) => res.json())
-        .then((data) => {
-          sources = sources.concat(data);
-        });
-
-      this.loadedSources = sources.map((source) => {
-        source.enabled = !!source.default;
-        return source;
-      });
-
-      return this.loadedSources;
-    },
-
-    async fetchMonsters() {
-      if (
-        this.loadedMonsters.length > 0 &&
-        helpers.versionCompare(
-          this.storedSourcesVersion,
-          this.sourcesVersion
-        ) === 0
-      ) {
-        return this.loadedMonsters;
-      }
-
-      let monsters = [];
-
-      await fetch("/src/json/se_monsters.json")
-        .then((res) => res.json())
-        .then((data) => {
-          monsters = monsters.concat(data);
-        });
-
-      await fetch("/src/json/se_third_party_monsters.json")
-        .then((res) => res.json())
-        .then((data) => {
-          monsters = monsters.concat(data);
-        });
-
-      await fetch("/src/json/se_community_monsters.json")
-        .then((res) => res.json())
-        .then((data) => {
-          monsters = monsters.concat(data);
-        });
-
-      this.loadedMonsters = monsters;
-
-      this.storedSourcesVersion = this.sourcesVersion;
-
-      return this.loadedMonsters;
-    },
-
-    formatSources(data) {
-      this.sources = data.reduce((acc, source) => {
-        acc[source.name] = source;
-        return acc;
-      }, {});
-    },
-
-    formatMonsters(data) {
-      this.allMonsters = data.map((data) => {
-        const monster = new Monster(this, data);
-        this.monsterLookupTable[monster.slug] = monster;
-        return monster;
-      });
-      this.environments = Object.values(this.environments);
-      this.environments.sort((a, b) => {
-        return a.value > b.label ? -1 : 1;
-      });
-      this.environments.unshift({ value: "any", label: "Any Environment" });
-      window.dispatchEvent(
-        new CustomEvent("set-environments", { detail: this.environments })
-      );
-    },
-
-    filterMonsters(
-      crString = false,
-      filterCallback = () => {
-        return true;
-      }
-    ) {
-      const monsters = this.allMonsters.filter((monster) => {
-        return (
-          monster.sourceEnabled &&
-          filterCallback(monster) &&
-          monster.filter(this.search, this.filters, crString)
-        );
-      });
-      monsters.sort((a, b) => {
-        if (this.sortBy === "cr") {
-          return this.sortByDesc
-            ? a[this.sortBy].numeric - b[this.sortBy].numeric
-            : b[this.sortBy].numeric - a[this.sortBy].numeric;
-        } else if (this.sortBy === "alignment") {
-          return this.sortByDesc
-            ? a[this.sortBy].bits - b[this.sortBy].bits
-            : b[this.sortBy].bits - a[this.sortBy].bits;
-        }
-        return this.sortByDesc
-          ? a[this.sortBy] > b[this.sortBy]
-            ? 1
-            : -1
-          : a[this.sortBy] < b[this.sortBy]
-          ? 1
-          : -1;
-      });
-      return monsters;
-    },
-
-    filtersChanged($event) {
-      const { name, value, asArray } = $event.detail;
-      this.filters[name] = asArray ? Object.values(value) : value;
-      this.nonDefaultFiltersCount = Object.entries(this.filters).filter(
-        (entry) => {
-          const [name, filter] = entry;
-          switch (name) {
-            case "cr":
-              return filter.min !== 0 || filter.max !== 30;
-            case "alignment":
-              return filter !== CONST.ALL_ALIGNMENTS;
-            default:
-              return filter.length && !filter.includes("any");
-          }
-        }
-      ).length;
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        this.updateFilteredMonsters();
-      }, 150);
-    },
-
-    updateFilteredMonsters() {
-      this.filteredMonsters = this.filterMonsters();
-      this.updatePagination();
-    },
-
-    resetFilters() {
-      this.search = "";
     },
 
     formatNumber(num) {
