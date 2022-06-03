@@ -8,12 +8,19 @@ import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
 import SearchBox from "../components/SearchBox.vue";
 import PartyPanel from "../components/PartyPanel.vue";
+import SelectInput from "../components/SelectInput.vue";
 
-import {useEncounter} from "../stores/encounter";
-import {useParty} from "../stores/party";
+import { useEncounter } from "../stores/encounter";
+import { useParty } from "../stores/party";
 
 export default {
-  components: { SearchBox, FiltersSlideover, MonsterTable, PartyPanel },
+  components: {
+    SearchBox,
+    FiltersSlideover,
+    MonsterTable,
+    PartyPanel,
+    SelectInput,
+  },
   emits: ["modal"],
 
   setup() {
@@ -23,7 +30,7 @@ export default {
     return {
       encounter,
       party,
-    }
+    };
   },
 
   data() {
@@ -39,9 +46,7 @@ export default {
         })
       ),
       encounterType: "random",
-
-      difficultySelectOpen: false,
-      difficulty: "medium",
+      CONST,
     };
   },
 
@@ -339,210 +344,33 @@ export default {
           <div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
             <div class="w-full col-span-1 sm:col-span-3">
               <label id="difficulty-label" class="sr-only"> Difficulty </label>
-              <div
-                class="mt-1 relative"
-                @click.outside="difficultySelectOpen = false"
-              >
-                <button
-                  @click="difficultySelectOpen = true"
-                  type="button"
-                  class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  aria-haspopup="listbox"
-                  aria-expanded="true"
-                  aria-labelledby="listbox-label"
-                >
-                  <span
-                    class="block truncate"
-                    v-text="
-                      difficulty.slice(0, 1).toUpperCase() + difficulty.slice(1)
-                    "
-                  ></span>
-                  <span
-                    class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
-                  >
-                    <svg
-                      class="h-5 w-5 text-gray-400"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                </button>
-
-                <ul
-                  v-show="difficultySelectOpen"
-                  class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
-                  tabindex="-1"
-                  role="listbox"
-                  aria-labelledby="listbox-label"
-                  x-transition:enter=""
-                  x-transition:enter-start=""
-                  x-transition:enter-end=""
-                  x-transition:leave="transition ease-in duration-100"
-                  x-transition:leave-start="opacity-100"
-                  x-transition:leave-end="opacity-0"
-                >
-                  <li
-                    v-for="option of ['easy', 'medium', 'hard', 'deadly']"
-                    @click="
-                      difficulty = option;
-                      difficultySelectOpen = false;
-                    "
-                    :class="{
-                      'text-white bg-emerald-600': difficulty === option,
-                      'text-gray-900 dark:text-gray-300': difficulty !== option,
-                    }"
-                    class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9"
-                    role="option"
-                  >
-                    <span
-                      class="group-hover:text-white font-normal block truncate"
-                      v-html="
-                        option.slice(0, 1).toUpperCase() + option.slice(1)
-                      "
-                    >
-                    </span>
-                    <span
-                      :class="{
-                        'text-gray-200': difficulty === option,
-                        'text-gray-600 dark:text-gray-400':
-                          difficulty !== option,
-                      }"
-                      class="text-xs group-hover:text-gray-200"
-                      v-text="formatNumber(party.experience[option]) + 'xp'"
-                    ></span>
-
-                    <span
-                      v-show="difficulty === option"
-                      :class="{
-                        'text-white': difficulty === option,
-                        'text-emerald-600': difficulty !== option,
-                      }"
-                      class="absolute inset-y-0 right-0 flex items-center pr-4"
-                    >
-                      <svg
-                        class="h-5 w-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </span>
-                  </li>
-                </ul>
-              </div>
+              <SelectInput
+                v-model="encounter.difficulty"
+                :label="encounter.difficulty.slice(0, 1).toUpperCase() + encounter.difficulty.slice(1)"
+                :options="
+                  ['easy', 'medium', 'hard', 'deadly'].map((option) => {
+                    return {
+                      key: option,
+                      label: option.slice(0, 1).toUpperCase() + option.slice(1),
+                    };
+                  })
+                "
+                :option-subtext="
+                  (option) => formatNumber(party.experience[option.key]) + 'xp'
+                "
+              ></SelectInput>
             </div>
 
             <div class="w-full col-span-1 sm:col-span-5">
-              <label id="composition-label" class="sr-only">
-                Composition
-              </label>
-              <div
-                class="mt-1 relative"
-                @click.outside="encounterTypeSelectOpen = false"
-              >
-                <button
-                  @click="encounterTypeSelectOpen = true"
-                  type="button"
-                  class="bg-white dark:bg-gray-700 relative w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  aria-haspopup="listbox"
-                  aria-expanded="true"
-                  aria-labelledby="composition-label"
-                >
-                  <span
-                    class="block truncate"
-                    v-text="encounterTypes[encounterType].label"
-                  ></span>
-                  <span
-                    class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
-                  >
-                    <svg
-                      class="h-5 w-5 text-gray-400"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                </button>
-
-                <ul
-                  v-show="encounterTypeSelectOpen"
-                  class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
-                  tabindex="-1"
-                  role="listbox"
-                  aria-labelledby="composition-label"
-                  x-transition:enter=""
-                  x-transition:enter-start=""
-                  x-transition:enter-end=""
-                  x-transition:leave="transition ease-in duration-100"
-                  x-transition:leave-start="opacity-100"
-                  x-transition:leave-end="opacity-0"
-                >
-                  <li
-                    v-for="type of Object.values(encounterTypes)"
-                    @click="
-                      encounterType = type.key;
-                      encounterTypeSelectOpen = false;
-                    "
-                    :class="{
-                      'text-white bg-emerald-600': encounterType === type.key,
-                      'text-gray-900 dark:text-gray-300':
-                        encounterType !== type.key,
-                    }"
-                    class="text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9"
-                    role="option"
-                  >
-                    <span
-                      class="font-normal block truncate"
-                      v-text="type.label"
-                    >
-                    </span>
-
-                    <span
-                      :class="{
-                        'text-white': encounterType === type.key,
-                        'text-emerald-600': encounterType !== type.key,
-                      }"
-                      class="absolute inset-y-0 right-0 flex items-center pr-4"
-                    >
-                      <svg
-                        v-show="encounterType === type.key"
-                        class="h-5 w-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </span>
-                  </li>
-                </ul>
-              </div>
+              <SelectInput
+                v-model="encounter.type"
+                :label="CONST.ENCOUNTER_TYPES[encounter.type].name"
+                :options="
+                  Object.entries(CONST.ENCOUNTER_TYPES).map((entry) => {
+                    return { key: entry[0], label: entry[1].name };
+                  })
+                "
+              ></SelectInput>
             </div>
           </div>
 
@@ -780,6 +608,9 @@ export default {
       </div>
     </div>
 
-    <FiltersSlideover :show-filters="showFilters" @close="showFilters = false" />
+    <FiltersSlideover
+      :show-filters="showFilters"
+      @close="showFilters = false"
+    />
   </div>
 </template>
