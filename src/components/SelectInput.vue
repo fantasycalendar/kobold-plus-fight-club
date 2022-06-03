@@ -51,8 +51,8 @@
           :key="option.key"
           @click="setValue(option)"
           :class="{
-            'text-white bg-emerald-600': modelValue === option,
-            'text-gray-900 dark:text-gray-300': modelValue !== option,
+            'text-white bg-emerald-600': modelValue === option.key,
+            'text-gray-900 dark:text-gray-300': modelValue !== option.key,
           }"
           class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9"
           role="option"
@@ -64,8 +64,8 @@
           </span>
           <span
             :class="{
-              'text-gray-200': modelValue === option,
-              'text-gray-600 dark:text-gray-400': modelValue !== option,
+              'text-gray-200': modelValue === option.key,
+              'text-gray-600 dark:text-gray-400': modelValue !== option.key,
             }"
             class="text-xs group-hover:text-gray-200"
             v-if="hasOptionSubtext"
@@ -73,10 +73,10 @@
           ></span>
 
           <span
-            v-show="modelValue === option"
+            v-show="modelValue === option.key"
             :class="{
-              'text-white': modelValue === option,
-              'text-emerald-600': modelValue !== option,
+              'text-white': modelValue === option.key,
+              'text-emerald-600': modelValue !== option.key,
             }"
             class="absolute inset-y-0 right-0 flex items-center pr-4"
           >
