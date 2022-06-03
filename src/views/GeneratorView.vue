@@ -268,7 +268,7 @@ export default {
     <div
       id="encounter_box"
       :class="{ 'hidden md:flex': mobileEncounterTab }"
-      class="hidden md:absolute md:inset-y-0 md:py-8 md:left-4 md:pr-4 md:pl-4 pb-8 md:flex w-full px-8 2xl:pr-4 flex-col flex-shrink-0 md:w-[28rem] overflow-y-auto scrollbar"
+      class="md:absolute md:inset-y-0 md:py-8 md:left-4 md:pr-4 md:pl-4 pb-8 md:flex w-full px-8 2xl:pr-4 flex-col flex-shrink-0 md:w-[28rem] overflow-y-auto scrollbar"
     >
       <PartyPanel></PartyPanel>
       <EncounterPanel></EncounterPanel>

@@ -68,7 +68,6 @@ const encounter = useEncounter();
             :value="group.players"
             @change="group.players = Math.max(1, $event.target.value)"
             class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
-            value="4"
           />
 
           <div
@@ -86,7 +85,6 @@ const encounter = useEncounter();
               group.level = Math.max(1, Math.min(20, $event.target.value))
             "
             class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
-            value="4"
           />
 
           <div
