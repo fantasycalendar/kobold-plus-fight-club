@@ -320,7 +320,7 @@ const pagination = computed(() => {
       No monsters found with the current filter -
       <span
         class="primary-link select-none cursor-pointer"
-        @click="$emit('reset-filters')"
+        @click="filters.reset()"
         >reset filters</span
       >
     </div>
