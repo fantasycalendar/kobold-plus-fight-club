@@ -185,15 +185,15 @@ const pagination = computed(() => {
               <dl class="font-normal">
                 <dt class="sr-only">Sources</dt>
                 <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
-                  <div v-for="(source, index) of monster.sources">
-                    <span
-                      :title="source.fullText"
-                      v-html="
-                        `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>` +
-                        (index < monster.sources.length - 1 ? ', ' : '')
-                      "
-                    ></span>
-                  </div>
+                  <span
+                    :title="source.fullText"
+                    v-for="(source, index) of monster.sources"
+                    :key="source.name"
+                    v-html="
+                      `<span class='underline decoration-dotted cursor-help underline-offset-2 decoration-gray-400 dark:decoration-gray-500'>${source.reference.shortname}</span>` +
+                      (index < monster.sources.length - 1 ? ', ' : '')
+                    "
+                  ></span>
                 </dd>
                 <dt class="sr-only sm:hidden">Type</dt>
                 <dd

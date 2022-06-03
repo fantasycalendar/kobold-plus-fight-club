@@ -122,16 +122,8 @@ export const useFilters = defineStore("filters", {
         : searchable.includes(this.search.toLowerCase());
     },
     reset() {
-      return [
-        "alignment",
-        "size",
-        "type",
-        "environment",
-        "legendary",
-        "cr",
-      ].forEach(
-        (field) =>
-          (this[field] = JSON.parse(JSON.stringify(this.defaults[field])))
+      return Object.entries(this.defaults).forEach(
+        ([field, value]) => (this[field] = JSON.parse(JSON.stringify(value)))
       );
     },
     isDefault(field) {
@@ -149,49 +141,45 @@ export const useFilters = defineStore("filters", {
         : "Search for a monster";
     },
     isRegex() {
-      return false;
+      // return false;
 
       /* Here be dragons ... We'll address this later. */
 
-      // if (!this.search) {
-      //   // Wait ... How'd you get here??
-      //   this.regexedSearch = "";
-      //   this.regex = null;
-      //   this.isValidRegex = false;
-      //   return false;
-      // }
-      //
-      // // We already know the answer for this one
-      // if (this.search === this.regexedSearch) {
-      //   return this.isValidRegex;
-      // }
-      //
-      // console.log('Updating regexed search');
-      //
-      // this.regexedSearch = this.search;
-      //
-      // // Want to determine whether something is a valid regex?
-      // // Try to make a regex out of it and listen for yelling.
-      // let checkRegex = this.search.match(/^\/(.*?)\/?$/);
-      // if (checkRegex) {
-      //   try {
-      //     this.regex = new RegExp(checkRegex[1]);
-      //     this.isValidRegex = true;
-      //
-      //     console.log("Is regex: ", this.regex);
-      //
-      //     return true;
-      //   } catch (e) {
-      //     this.regex = null;
-      //     this.isValidRegex = false;
-      //     return false;
-      //   }
-      // }
-      //
-      // // If we got this far ... it wasn't regex.
-      // this.regex = null;
-      // this.isValidRegex = false;
-      // return false;
+      if (!this.search) {
+        // Wait ... How'd you get here??
+        this.regexedSearch = "";
+        this.regex = null;
+        this.isValidRegex = false;
+        return false;
+      }
+
+      // We already know the answer for this one
+      if (this.search === this.regexedSearch) {
+        return this.isValidRegex;
+      }
+
+      this.regexedSearch = this.search;
+
+      // Want to determine whether something is a valid regex?
+      // Try to make a regex out of it and listen for yelling.
+      let checkRegex = this.search.match(/^\/(.*?)\/?$/);
+      if (checkRegex) {
+        try {
+          this.regex = new RegExp(checkRegex[1], "i");
+          this.isValidRegex = true;
+
+          return true;
+        } catch (e) {
+          this.regex = null;
+          this.isValidRegex = false;
+          return false;
+        }
+      }
+
+      // If we got this far ... it wasn't regex.
+      this.regex = null;
+      this.isValidRegex = false;
+      return false;
     },
     minCr() {
       return parseInt(this.crValues[this.cr.min].value);

@@ -1,14 +1,9 @@
 <script setup></script>
 
 <script>
-import Choices from "choices.js";
 import hotkeys from "hotkeys-js";
-import encounter from "../js/encounter.js";
-import noUiSlider from "nouislider";
 import * as helpers from "../js/helpers.js";
 import CONST from "../js/constants.js";
-import Monster from "../js/monster.js";
-import tippy from "tippy.js";
 import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
 import SearchBox from "../components/SearchBox.vue";
@@ -33,9 +28,6 @@ export default {
 
   data() {
     return {
-      sourcesVersion: "2.1.0",
-      storedSourcesVersion: "2.0.0",
-
       showFilters: false,
 
       mobileEncounterTab: false,
@@ -50,8 +42,6 @@ export default {
 
       difficultySelectOpen: false,
       difficulty: "medium",
-
-      timer: null,
     };
   },
 
@@ -266,12 +256,6 @@ export default {
     ) {
       this.showFilters = true;
     }
-
-    this.$watch("sources", () => {
-      this.enabledSources = Object.values(this.sources).filter(
-        (source) => source.enabled
-      );
-    });
   },
 };
 </script>
