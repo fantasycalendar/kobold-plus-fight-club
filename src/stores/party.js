@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import CONST from "../js/constants.js";
+import {useEncounter} from "./encounter";
 
 export const useParty = defineStore("party", {
   state: () => {
@@ -112,28 +113,22 @@ export const useParty = defineStore("party", {
 
   getters: {
     experience() {
-      return this.groups.reduce(this.getGroupExperience, {});
-
-      // We'll enable this once the player store is actually a thing
-      // return usePlayers().active.reduce(this.getGroupExperience, experience);
+      const experience = this.groups.reduce(this.getGroupExperience, {});
+      return this.activePlayers.reduce(this.getGroupExperience, experience);
     },
     totalPlayersToGainXP() {
-      return this.groups.reduce(
-        (acc, group) => acc + (group.getsXP ? parseInt(group.players) : 0),
-        0
+      return (
+        this.groups.reduce(
+          (acc, group) => acc + (group.getsXP ? parseInt(group.players) : 0),
+          0
+        ) + this.activePlayers.length
       );
-      // We'll add this back once the player store is actually a thing
-      // + usePlayers().active.length;
     },
     totalExperiencePerPlayer() {
-      return 1500;
-      // We'll enable this once the encounter store is actually a thing
-      // return Math.round(useEncounter().totalExp / this.totalPlayersToGainXP);
+      return Math.round(useEncounter().totalExp / this.totalPlayersToGainXP);
     },
     totalAdjustedExperiencePerPlayer() {
-      return 1300;
-      // We'll enable this once the encounter store is actually a thing
-      // return Math.round(useEncounter().adjustedXP / this.totalPlayersToGainXP);
+      return Math.round(useEncounter().adjustedXP / this.totalPlayersToGainXP);
     },
     totalPlayers() {
       return (
