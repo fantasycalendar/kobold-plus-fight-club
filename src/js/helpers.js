@@ -1,3 +1,18 @@
+import { useLocalStorage } from "@vueuse/core/index";
+
+export function migrateLocalStorage(newKey, oldKey, defaultValue) {
+  let value = useLocalStorage(
+    newKey,
+    localStorage.getItem(oldKey) ?? defaultValue
+  );
+
+  if (typeof localStorage.getItem(oldKey) !== "undefined") {
+    localStorage.removeItem(oldKey);
+  }
+
+  return value;
+}
+
 /**
  *  Returns a floating point number between a minimum and maximum value
  *

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { useMonsters } from "./monsters";
+import * as helpers from "../js/helpers.js";
 
 export const useFilters = defineStore("filters", {
   state: () => {
@@ -118,6 +119,20 @@ export const useFilters = defineStore("filters", {
       return (
         JSON.stringify(this[field]) === JSON.stringify(this.defaults[field])
       );
+    },
+    overriddenCopy(overrides = {}) {
+      return {
+        ...helpers.clone({
+          alignment: this.alignment,
+          size: this.size,
+          legendary: this.legendary,
+          type: this.type,
+          environment: this.environment,
+          minCr: this.minCr,
+          maxCr: this.maxCr,
+        }),
+        ...overrides,
+      };
     },
   },
   getters: {

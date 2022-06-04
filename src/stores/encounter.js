@@ -24,8 +24,12 @@ export const useEncounter = defineStore("encounter", {
       ],
       loadedIndex: null,
       loadedLast: false,
-      difficulty: "medium",
-      type: "random",
+      difficulty: helpers.migrateLocalStorage(
+        "encounter_difficulty",
+        "difficulty",
+        "medium"
+      ),
+      type: useLocalStorage("encounter_type", "random"),
       history: useLocalStorage("encounter_history", []),
       saved: useLocalStorage("encounter_saved", []),
     };
@@ -90,10 +94,6 @@ export const useEncounter = defineStore("encounter", {
           monster,
           count: group.count,
         });
-
-        if (encounterTemplate.subtractive) {
-          totalAvailableXP -= group.count * monster.cr.exp;
-        }
       }
 
       newEncounter.reverse();
@@ -117,8 +117,12 @@ export const useEncounter = defineStore("encounter", {
       }
 
       let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
+
       let monsterList = monsters.filterBy(
-        useFilters(),
+        useFilters().overriddenCopy({
+          minCr: monsterTargetCR.numeric,
+          maxCr: monsterTargetCR.numeric,
+        }),
         (monster) => {
           return (
             !encounter.some((group) => group.monster === monster) &&
@@ -145,7 +149,10 @@ export const useEncounter = defineStore("encounter", {
 
         let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRNewIndex]];
         monsterList = monsters.filterBy(
-          useFilters(),
+          useFilters().overriddenCopy({
+            minCr: monsterTargetCR.numeric,
+            maxCr: monsterTargetCR.numeric,
+          }),
           (monster) => {
             return !encounter.some((group) => group.monster === monster);
           }
@@ -223,12 +230,9 @@ export const useEncounter = defineStore("encounter", {
       return multipliers[multiplierCategory];
     },
     getNewMonster(group) {
-      const monsterList = useMonsters().filterBy(
-        useFilters(),
-        (monster) => {
-          return !this.groups.some((group) => group.monster === monster);
-        }
-      );
+      const monsterList = useMonsters().filterBy(useFilters(), (monster) => {
+        return !this.groups.some((group) => group.monster === monster);
+      });
 
       if (!monsterList.length) return;
       group.monster = helpers.randomArrayElement(monsterList);
@@ -412,7 +416,7 @@ export const useEncounter = defineStore("encounter", {
         const [upperKey, upperValue] = levels[i];
         const ratio = helpers.ratio(lowerValue, upperValue, this.adjustedExp);
 
-        if(ratio >= 10) {
+        if (ratio >= 10) {
           return "... what.";
         }
 
