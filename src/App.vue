@@ -12,9 +12,11 @@ import NotificationArea from "./components/NotificationArea.vue";
 import { useMonsters } from "./stores/monsters";
 import { useSources } from "./stores/sources";
 import {onMounted} from "vue";
+import {useModals} from "./stores/modals";
 
 const monsters = useMonsters();
 const sources = useSources();
+const modals = useModals();
 
 onMounted(async () => {
   await sources.fetch();
@@ -29,10 +31,6 @@ export default {
   data() {
     return {
       theme: window.theme,
-      showImporterModal: false,
-      showKeyboardModal: false,
-      showSourcesModal: false,
-      showEncounterModal: false,
       sources: [],
     };
   },
@@ -47,12 +45,6 @@ export default {
     toggleTheme() {
       this.theme = this.theme === "light" ? "dark" : "light";
       document.documentElement.classList.toggle("dark", this.theme === "dark");
-    },
-
-    showModal(modalData) {
-      console.log(modalData);
-
-      this["show" + modalData.name + "Modal"] = true;
     },
 
     setupHotkeys() {
@@ -136,13 +128,15 @@ export default {
   <div
     class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-300 flex flex-col"
   >
-    <HeaderNav @modal="showModal" v-model:theme="theme" />
+    <HeaderNav v-model:theme="theme" />
 
-    <RouterView @modal="showModal" />
+    <RouterView />
 
-    <ImporterModal v-model:show="showImporterModal" />
-    <KeyboardModal v-model:show="showKeyboardModal" />
-    <SourcesModal v-model:show="showSourcesModal" />
+    <ImporterModal />
+    <KeyboardModal />
+    <SourcesModal />
+    <PartyModal />
+    <EncounterModal />
 
     <NotificationArea />
   </div>

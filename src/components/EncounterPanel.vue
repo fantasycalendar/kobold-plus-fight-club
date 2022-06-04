@@ -2,19 +2,17 @@
 import SelectInput from "./SelectInput.vue";
 import EncounterMonster from "./EncounterMonster.vue";
 import EmptyStateButton from "./EmptyStateButton.vue";
-import EncounterModal from "./EncounterModal.vue";
 import ImprovedInitiativeButton from "./ImprovedInitiativeButton.vue";
 
 import * as helpers from "../js/helpers";
-import {useEncounter} from "../stores/encounter";
-import {useParty} from "../stores/party";
+import { useEncounter } from "../stores/encounter";
+import { useParty } from "../stores/party";
 import CONST from "../js/constants";
-import {ref} from "vue";
+import { useModals } from "../stores/modals";
 
 const encounter = useEncounter();
 const party = useParty();
-
-const showModal = ref(false);
+const modals = useModals();
 </script>
 
 <template>
@@ -26,7 +24,7 @@ const showModal = ref(false);
         <a
           href="javascript:"
           class="primary-link text-sm"
-          @click="showModal = true"
+          @click="modals.show('encounter')"
           >History</a
         >
       </div>
@@ -52,7 +50,8 @@ const showModal = ref(false);
                 })
               "
               :option-subtext="
-                (option) => helpers.formatNumber(party.experience[option.key]) + 'xp'
+                (option) =>
+                  helpers.formatNumber(party.experience[option.key]) + 'xp'
               "
             ></SelectInput>
           </div>
@@ -199,9 +198,5 @@ const showModal = ref(false);
         </button>
       </div>
     </div>
-
-    <teleport to="body">
-      <EncounterModal v-model:show="showModal" />
-    </teleport>
   </div>
 </template>

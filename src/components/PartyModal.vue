@@ -1,5 +1,14 @@
+<script setup>
+import Modal from "./Modal.vue";
+import { useParty } from "../stores/party";
+import {useModals} from "../stores/modals";
+
+const parties = useParty();
+const modals = useModals();
+</script>
+
 <template>
-  <Modal v-model:show="showModal" title="Manage your parties and players">
+  <Modal v-model:show="modals.party" title="Manage your parties and players">
     <div class="my-3 sm:mt-0 w-full">
       <div
         class="my-2 max-h-96 overflow-y-auto scrollbar overflow-x-hidden text-gray-700 dark:text-gray-300"
@@ -254,7 +263,7 @@
 
     <template #footer>
       <button
-        @click="showModal = false"
+        @click="modals.hide('party')"
         type="button"
         class="button-primary-md"
       >
@@ -270,26 +279,3 @@
     </template>
   </Modal>
 </template>
-
-<script setup>
-import Modal from "./Modal.vue";
-import { defineEmits, ref, watch } from "vue";
-import { useParty } from "../stores/party";
-
-const emit = defineEmits(["update:show"]);
-
-const props = defineProps({
-  show: Boolean,
-});
-
-const parties = useParty();
-const showModal = ref(false);
-
-watch(showModal, (value) => emit("update:show", value));
-watch(
-  () => props.show,
-  (value) => (showModal.value = value)
-);
-</script>
-
-<style scoped></style>

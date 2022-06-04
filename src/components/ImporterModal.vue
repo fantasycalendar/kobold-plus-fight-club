@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model:show="showModal" title="Import Custom Monsters">
+  <Modal v-model:show="modals.importer" title="Import Custom Monsters">
     <div class="my-3 sm:mt-0 w-full" v-show="step === 1">
       <label for="importer_source">Import from</label>
       <select
@@ -262,6 +262,7 @@
 import Importer from "../js/importer.js";
 import Modal from "./Modal.vue";
 import {useMonsters} from "../stores/monsters";
+import {useModals} from "../stores/modals";
 
 export default {
   name: "ImporterModal",
@@ -276,15 +277,16 @@ export default {
 
   setup() {
     const monsters = useMonsters();
+    const modals = useModals()
 
     return {
       monsters,
+      modals,
     };
   },
 
   data() {
     return {
-      showModal: false,
       importerResourceLocator: "",
       importerSourceType: "google-sheets",
       importerHtml: "",
@@ -306,8 +308,6 @@ export default {
           this.importerSourceType
         ))
     );
-    this.$watch("showModal", (value) => this.$emit("update:show", value));
-    this.$watch("show", (value) => (this.showModal = value));
   },
 
   methods: {
@@ -346,7 +346,7 @@ export default {
       );
 
       this.step = 1;
-      this.$emit("update:show", false);
+      this.modals.hide("importer");
     },
     abortImport() {
       this.loadImporter();
@@ -357,7 +357,7 @@ export default {
       this.importError = "";
     },
     cancelImport() {
-      this.$emit("update:show", false);
+      this.modals.hide("importer");
       this.abortImport();
     },
     downloadExampleFile() {

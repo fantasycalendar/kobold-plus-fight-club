@@ -3,6 +3,7 @@ import { ref, computed, defineEmits, onMounted } from "vue";
 import { useMonsters } from "../stores/monsters";
 import { useSources } from "../stores/sources";
 import { useFilters } from "../stores/filters";
+import { useModals } from "../stores/modals";
 import LoadingSpinner from "./LoadingSpinner.vue";
 import MonsterTableHeading from "./MonsterTableHeading.vue";
 import { useEncounter } from "../stores/encounter";
@@ -304,7 +305,7 @@ const pagination = computed(() => {
       No sources are enabled -
       <span
         class="primary-link select-none cursor-pointer"
-        @click="$emit('modal', { name: 'Sources' })"
+        @click="modals.show('sources')"
         >enable some now</span
       >
     </div>

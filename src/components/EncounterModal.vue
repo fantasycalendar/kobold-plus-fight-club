@@ -1,36 +1,21 @@
 <script setup>
 import Modal from "./Modal.vue";
-import { watch, ref } from "vue";
-import {useEncounter} from "../stores/encounter";
-
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const emit = defineEmits(["update:show"]);
-
-const showModal = ref(false);
-
-watch(showModal, (value) => emit("update:show", value));
-watch(
-  () => props.show,
-  (value) => (showModal.value = value)
-);
+import { ref } from "vue";
+import { useEncounter } from "../stores/encounter";
+import { useModals } from "../stores/modals";
 
 const tab = ref("history");
 const encounter = useEncounter();
+const modals = useModals();
 
 function generateNew() {
   encounter.generateRandom();
-  emit("update:show", false);
+  modals.hide("encounter");
 }
 </script>
 
 <template>
-  <Modal v-model:show="showModal">
+  <Modal v-model:show="modals.encounter">
     <div class="w-full flex pb-3">
       <div class="sm:hidden w-full">
         <label for="tabs" class="sr-only">Select a tab</label>
@@ -270,7 +255,7 @@ function generateNew() {
 
     <template #footer>
       <button
-        @click="$emit('update:show', false)"
+        @click="modals.hide('encounter')"
         type="button"
         class="button-primary-md"
       >

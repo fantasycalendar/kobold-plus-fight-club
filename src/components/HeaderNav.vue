@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import {useNotifications} from "../stores/notifications.js";
+import {useModals} from "../stores/modals";
 
 const notifications = useNotifications();
+const modals = useModals();
 
 const props = defineProps({
   theme: {
@@ -48,7 +50,7 @@ const menu = ref(false);
             Test Notification
           </a>
           <a
-            @click="$emit('modal', { name: 'Keyboard' })"
+            @click="modals.show('keyboard')"
             href="javascript:"
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
             >Keyboard Shortcuts
@@ -58,7 +60,7 @@ const menu = ref(false);
             ></a
           >
           <a
-            @click="$emit('modal', { name: 'Importer' })"
+            @click="modals.show('importer')"
             href="javascript:"
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
             >Import Custom Monsters</a

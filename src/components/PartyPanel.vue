@@ -1,14 +1,13 @@
 <script setup>
 import { useParty } from "../stores/party";
 import { useEncounter } from "../stores/encounter";
+import { useModals } from "../stores/modals";
+
 import { formatNumber } from "../js/helpers.js";
-import PartyModal from "./PartyModal.vue";
-import { ref } from "vue";
 
 const party = useParty();
 const encounter = useEncounter();
-
-const showModal = ref(false);
+const modals = useModals();
 </script>
 
 <template>
@@ -19,7 +18,7 @@ const showModal = ref(false);
 
         <a
           class="primary-link text-sm"
-          @click="showModal = true"
+          @click="modals.show('party')"
           href="javascript:"
         >
           Manage
@@ -189,8 +188,4 @@ const showModal = ref(false);
       </div>
     </div>
   </div>
-
-  <teleport to="body">
-    <PartyModal v-model:show="showModal"></PartyModal>
-  </teleport>
 </template>
