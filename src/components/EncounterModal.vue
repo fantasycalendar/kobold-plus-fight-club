@@ -75,7 +75,7 @@ function generateNew() {
         <div
           v-for="(_, index) of encounter.saved"
           @click="
-            encounter.loadedIndex !== encounter.saved.length - index - 1 &&
+            Number(encounter.loadedIndex) !== encounter.saved.length - index - 1 &&
               encounter.loadFromSaved(encounter.saved.length - index - 1)
           "
           class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
@@ -87,14 +87,14 @@ function generateNew() {
           :key="index"
           :class="{
             'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer':
-              encounter.loadedIndex !== encounter.saved.length - index - 1,
+              Number(encounter.loadedIndex) !== encounter.saved.length - index - 1,
           }"
         >
           <div
             class="grow flex items-center mr-2 grow truncate overflow-ellipsis"
             :class="{
               'font-medium':
-                encounter.loadedIndex === encounter.saved.length - index - 1,
+                Number(encounter.loadedIndex) === encounter.saved.length - index - 1,
             }"
           >
             <span
@@ -119,7 +119,7 @@ function generateNew() {
             >
               <div
                 v-show="
-                  encounter.loadedIndex === encounter.saved.length - index - 1
+                  Number(encounter.loadedIndex) === encounter.saved.length - index - 1
                 "
                 class="text-emerald-600 h-full flex items-center justify-center"
               >
@@ -127,7 +127,7 @@ function generateNew() {
               </div>
               <div
                 v-show="
-                  encounter.loadedIndex !== encounter.saved.length - index - 1
+                  Number(encounter.loadedIndex) !== encounter.saved.length - index - 1
                 "
                 class="items-center h-full justify-center cursor-pointer select-none hidden group-hover:flex text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
               >
@@ -171,14 +171,14 @@ function generateNew() {
             "
             :class="{
               'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': !(
-                encounter.loadedIndex === null &&
+                Number(encounter.loadedIndex) === null &&
                 index === 0 &&
                 encounter.groups.length
               ),
             }"
             @click="
               !(
-                encounter.loadedIndex === null &&
+                Number(encounter.loadedIndex) === null &&
                 index === 0 &&
                 encounter.groups.length
               ) &&
@@ -190,7 +190,7 @@ function generateNew() {
               class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis"
               :class="{
                 'font-medium':
-                  encounter.loadedIndex === null &&
+                  Number(encounter.loadedIndex) === null &&
                   index === 0 &&
                   encounter.groups.length,
               }"
@@ -222,7 +222,7 @@ function generateNew() {
                 </div>
                 <div
                   v-show="
-                    encounter.loadedIndex === null &&
+                    Number(encounter.loadedIndex) === null &&
                     index === 0 &&
                     encounter.groups.length
                   "

@@ -21,7 +21,7 @@ defineProps({
 
 <template>
   <div
-    class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden"
+    class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-30 2xl:z-0 overflow-hidden"
     aria-labelledby="slide-over-title"
     role="dialog"
     aria-modal="true"

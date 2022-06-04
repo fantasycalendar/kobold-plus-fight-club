@@ -1,6 +1,8 @@
 <script setup>
 import Modal from "./Modal.vue";
-import {useModals} from "../stores/modals";
+import { useModals } from "../stores/modals";
+import { onBeforeMount } from "vue";
+import hotkeys from "hotkeys-js";
 
 const modals = useModals();
 
@@ -15,6 +17,14 @@ const keyboardHelp = [
   { key: "ctrl+s", description: "Save the current encounter" },
   { key: "esc", description: "Close any open dialogs" },
 ];
+
+onBeforeMount(() => {
+  hotkeys("ctrl+/", () => {
+    modals.toggle("keyboard");
+
+    return false;
+  });
+});
 </script>
 
 <template>

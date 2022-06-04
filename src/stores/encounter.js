@@ -6,6 +6,7 @@ import CONST from "../js/constants";
 import { useMonsters } from "./monsters";
 import { useFilters } from "./filters";
 import { useLocalStorage } from "@vueuse/core/index";
+import hotkeys from "hotkeys-js";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
@@ -22,7 +23,7 @@ export const useEncounter = defineStore("encounter", {
         "rocks fall",
         "someone insulted the DM",
       ],
-      loadedIndex: null,
+      loadedIndex: useLocalStorage("encounter_loaded_index", null),
       loadedLast: false,
       difficulty: helpers.migrateLocalStorage(
         "encounter_difficulty",

@@ -1,11 +1,22 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useFilters } from "../stores/filters.js";
+import hotkeys from "hotkeys-js";
 
 const filters = useFilters();
 const keyboardText = ref(
   navigator.platform.toLowerCase().includes("mac") ? "⌘K" : "Ctrl K"
 );
+
+const searchBox = ref(null);
+
+onMounted(() => {
+  hotkeys("ctrl+k", () => {
+    searchBox.value.focus();
+
+    return false;
+  });
+});
 </script>
 
 <template>
@@ -44,6 +55,7 @@ const keyboardText = ref(
             type="search"
             name="search"
             id="search"
+            ref="searchBox"
             v-model="filters.search"
             class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none pl-10 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"
             :placeholder="filters.searchPlaceholder"

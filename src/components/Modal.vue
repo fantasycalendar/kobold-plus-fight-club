@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="fixed z-10 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" v-cloak aria-modal="true">
+  <div v-show="show" class="fixed z-40 inset-0 overflow-y-auto scrollbar" aria-labelledby="modal-title" role="dialog" v-cloak aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
       <transition
           enter-active-class="ease-out duration-300"

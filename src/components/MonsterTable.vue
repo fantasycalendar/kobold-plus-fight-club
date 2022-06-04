@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineEmits, onMounted } from "vue";
+import { ref, computed, defineEmits, onBeforeMount } from "vue";
 import { useMonsters } from "../stores/monsters";
 import { useSources } from "../stores/sources";
 import { useFilters } from "../stores/filters";
@@ -7,6 +7,7 @@ import { useModals } from "../stores/modals";
 import LoadingSpinner from "./LoadingSpinner.vue";
 import MonsterTableHeading from "./MonsterTableHeading.vue";
 import { useEncounter } from "../stores/encounter";
+import hotkeys from "hotkeys-js";
 
 const emit = defineEmits(["modal"]);
 
@@ -97,9 +98,19 @@ const pagination = computed(() => {
   }
 });
 
-// onMounted(() => {
-//   updatePagination();
-// });
+onBeforeMount(() => {
+  hotkeys("ctrl+[,ctrl+]", (event, handler) => {
+    switch (handler.key) {
+      case "ctrl+[":
+        currentPage.value--;
+        return false;
+      case "ctrl+]":
+        currentPage.value++;
+        return false;
+    }
+    return false;
+  });
+});
 </script>
 
 <template>

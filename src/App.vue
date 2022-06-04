@@ -11,7 +11,7 @@ import EncounterModal from "./components/EncounterModal.vue";
 import NotificationArea from "./components/NotificationArea.vue";
 import { useMonsters } from "./stores/monsters";
 import { useSources } from "./stores/sources";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 
 const monsters = useMonsters();
 const sources = useSources();
@@ -46,61 +46,28 @@ export default {
     },
 
     setupHotkeys() {
-      hotkeys(
-        "ctrl+/,ctrl+k,ctrl+shift+\\,ctrl+f,ctrl+[,ctrl+],ctrl+g,ctrl+s,esc",
-        (event, handler) => {
-          switch (handler.key) {
-            case "ctrl+/":
-              this.showKeyboardModal = !this.showKeyboardModal;
-              return false;
-            case "ctrl+k":
-              document.getElementById("search").focus();
-              return false;
-            case "ctrl+shift+\\":
-              this.toggleTheme();
-              return false;
-            case "ctrl+f":
-              this.showFilters =
-                Math.max(
-                  document.body.scrollWidth,
-                  document.documentElement.scrollWidth,
-                  document.body.offsetWidth,
-                  document.documentElement.offsetWidth,
-                  document.documentElement.clientWidth
-                ) > 1535
-                  ? true
-                  : (this.showFilters = !this.showFilters);
-              return false;
-            case "ctrl+[":
-              this.setPageNumber(this.currentPage - 1);
-              return false;
-            case "ctrl+]":
-              this.setPageNumber(this.currentPage + 1);
-              return false;
-            case "ctrl+s":
-              this.encounter.save();
-              return false;
-            case "ctrl+g":
-              this.encounter.generateRandom();
-              return false;
-            case "esc":
-              this.showPartyModal = false;
-              this.showKeyboardModal = false;
-              this.showFilters =
-                Math.max(
-                  document.body.scrollWidth,
-                  document.documentElement.scrollWidth,
-                  document.body.offsetWidth,
-                  document.documentElement.offsetWidth,
-                  document.documentElement.clientWidth
-                ) > 1535;
-              this.showSourcesModal = false;
-              break;
-          }
-
-          return true;
+      hotkeys("ctrl+shift+\\,esc", (event, handler) => {
+        switch (handler.key) {
+          case "ctrl+shift+\\":
+            this.toggleTheme();
+            return false;
+          case "esc":
+            this.showPartyModal = false;
+            this.showKeyboardModal = false;
+            this.showFilters =
+              Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+              ) > 1535;
+            this.showSourcesModal = false;
+            break;
         }
-      );
+
+        return true;
+      });
     },
   },
 

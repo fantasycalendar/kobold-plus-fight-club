@@ -7,7 +7,7 @@ export const useSources = defineStore("sources", {
   state: () => {
     return {
       version: "2.1.0",
-      storedVersion: useLocalStorage("stored_sources_version", ""),
+      storedVersion: useLocalStorage("stored_sources_version", "2.1.0"),
 
       builtIn: useLocalStorage("sources", []),
       imported: useLocalStorage("imported_sources", []),
@@ -19,12 +19,14 @@ export const useSources = defineStore("sources", {
     },
 
     async fetch() {
-      // if (
-      //   this.builtIn.length &&
-      //   versionCompare(this.version, this.storedVersion) === 0
-      // ) {
-      //   return this.builtIn;
-      // }
+      if (
+        this.builtIn.length &&
+        versionCompare(this.version, this.storedVersion) === 0
+      ) {
+        return this.builtIn;
+      }
+
+      // this.storedVersion = this.version;
 
       let fetched = [];
 
@@ -46,22 +48,17 @@ export const useSources = defineStore("sources", {
           fetched = fetched.concat(data);
         });
 
-      this.builtIn = this.builtIn.length
-        ? fetched.map((newSource) => {
-            const foundOldSource = this.enabled.find((oldSource) => {
-              return newSource["name"] === oldSource["name"];
-            });
+      this.builtIn = fetched.map((newSource) => {
+        const foundOldSource = this.builtIn.find((oldSource) => {
+          return newSource["name"] === oldSource["name"];
+        });
 
-            newSource.enabled = foundOldSource
-              ? foundOldSource.enabled
-              : !!newSource.default;
+        newSource.enabled = foundOldSource
+          ? foundOldSource.enabled
+          : !!newSource.default;
 
-            return newSource;
-          })
-        : fetched.map((source) => {
-            source.enabled = !!source.default;
-            return source;
-          });
+        return newSource;
+      });
 
       return this.builtIn;
     },

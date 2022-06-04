@@ -17,5 +17,8 @@ export const useModals = defineStore("modals", {
     hide(modalName) {
       this[modalName] = false;
     },
+    toggle(modalName) {
+      this[modalName] = !this[modalName];
+    },
   },
 });
