@@ -13,8 +13,6 @@ const sliderValue = ref([
     filters.cr.max
 ]);
 
-console.log(sliderValue.value);
-
 // This formatter function is given to NoUISlider's options, to do one thing:
 // Transform numeric indexes into visual label numbers. A simple example:
 // If in NoUISlider we select index 2, that becomes CR 1/2, visually.

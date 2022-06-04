@@ -19,13 +19,6 @@ export const useMonsters = defineStore("monsters", {
       loading: true,
     };
   },
-
-  hydrate(storeState, initialState) {
-    storeState.builtIn = useLocalStorage("monsters", []);
-    storeState.imported = useLocalStorage("imported_monsters", []);
-    storeState.lookup = []; //useLocalStorage("monster_lookup", {});
-  },
-
   actions: {
     async fetch() {
       let fetched = [];
@@ -90,15 +83,13 @@ export const useMonsters = defineStore("monsters", {
 
     filterBy(filters, crString, filterCallback = null) {
       if(filterCallback) {
-        return this.all.filter(filterCallback);
+        return this.enabled.filter(filterCallback);
       }
 
-      return this.all.filter((monster) => {
+      return this.enabled.filter((monster) => {
         if (filters.search && filters.searchFor && !filters.searchFor(monster.searchable)) {
           return false;
         }
-
-        const crString = false;
 
         if (
           filters.size.length &&
@@ -145,6 +136,9 @@ export const useMonsters = defineStore("monsters", {
   },
 
   getters: {
+    enabled() {
+      return this.all.filter((monster) => monster.sourceEnabled);
+    },
     paginated: (state) => {
       return (page, sortFunction = null) => {
         const filters = useFilters();

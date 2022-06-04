@@ -16,16 +16,6 @@ export const useParty = defineStore("party", {
       saved: useLocalStorage("saved_parties", []),
     };
   },
-  hydrate(storeState) {
-    storeState.groups = useLocalStorage("groups", [
-      {
-        players: 4,
-        level: 1,
-        getsXP: true,
-      },
-    ]);
-    storeState.saved = useLocalStorage("saved_parties", []);
-  },
   actions: {
     addGroup() {
       const lastGroup = this.groups[this.groups.length - 1] ?? {

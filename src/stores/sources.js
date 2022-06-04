@@ -13,16 +13,9 @@ export const useSources = defineStore("sources", {
       imported: useLocalStorage("imported_sources", []),
     };
   },
-
-  hydrate(storeState, initialState) {
-    storeState.builtIn = useLocalStorage("sources", []);
-    storeState.imported = useLocalStorage("imported_sources", []);
-    storeState.storedVersion = useLocalStorage("stored_sources_version", "");
-  },
-
   actions: {
     find(name) {
-      return this.all.filter((source) => source.name === name)[0] ?? null;
+      return this.all.find((source) => source.name === name);
     },
 
     async fetch() {
@@ -72,26 +65,21 @@ export const useSources = defineStore("sources", {
 
       return this.builtIn;
     },
+    includeSources(sources) {
+      this.imported = this.imported.concat(sources);
+    },
   },
 
   getters: {
     all() {
-      return this.builtIn.concat(this.imported);
-    },
-    includeSources(sources) {
-      this.imported = this.imported.concat(sources);
+      return [...this.builtIn, ...this.imported];
+      // return this.builtIn.concat(this.imported);
     },
     enabled() {
       return this.all.filter((source) => !!source.enabled);
     },
-    formatted() {
-      return this.all.reduce((acc, source) => {
-        acc[source.name] = source;
-        return acc;
-      }, this.all);
-    },
     byType() {
-      const sources = Object.values(this.all).reduce((acc, source) => {
+      const sources = this.all.reduce((acc, source) => {
         const container = acc.find((obj) => obj.title === source.type);
         if (!container) {
           acc.push({

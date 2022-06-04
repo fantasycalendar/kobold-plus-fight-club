@@ -3,18 +3,6 @@ import { useLocalStorage } from "@vueuse/core/index";
 import { useMonsters } from "./monsters";
 
 export const useFilters = defineStore("filters", {
-  hydrate(storeState) {
-    storeState.size = useLocalStorage("size", []);
-    storeState.legendary = useLocalStorage("legendary", []);
-    storeState.type = useLocalStorage("type", []);
-    storeState.environment = useLocalStorage("environment", []);
-    storeState.cr = useLocalStorage("cr", {
-      min: 0,
-      max: 33,
-    });
-    storeState.search = useLocalStorage("search", "");
-    storeState.perPage = useLocalStorage("per_page", 10);
-  },
   state: () => {
     return {
       defaults: {

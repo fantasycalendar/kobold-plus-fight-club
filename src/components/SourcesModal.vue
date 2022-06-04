@@ -1,7 +1,6 @@
 <script setup>
 import Modal from "./Modal.vue";
 import SourcesModalSource from "./SourcesModalSource.vue";
-import { ref, computed } from "vue";
 
 import { useModals } from "../stores/modals";
 import { useSources } from "../stores/sources";

@@ -18,6 +18,7 @@ const monsters = useMonsters();
 const sources = useSources();
 const filters = useFilters();
 const encounter = useEncounter();
+const modals = useModals();
 
 const currentPage = ref(1);
 

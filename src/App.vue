@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
 import HeaderNav from "./components/HeaderNav.vue";
 
 import ImporterModal from "./components/ImporterModal.vue";
@@ -12,11 +12,9 @@ import NotificationArea from "./components/NotificationArea.vue";
 import { useMonsters } from "./stores/monsters";
 import { useSources } from "./stores/sources";
 import {onMounted} from "vue";
-import {useModals} from "./stores/modals";
 
 const monsters = useMonsters();
 const sources = useSources();
-const modals = useModals();
 
 onMounted(async () => {
   await sources.fetch();

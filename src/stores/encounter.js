@@ -5,7 +5,7 @@ import { useNotifications } from "./notifications";
 import CONST from "../js/constants";
 import { useMonsters } from "./monsters";
 import { useFilters } from "./filters";
-import {useLocalStorage} from "@vueuse/core/index";
+import { useLocalStorage } from "@vueuse/core/index";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
@@ -29,10 +29,6 @@ export const useEncounter = defineStore("encounter", {
       history: useLocalStorage("encounter_history", []),
       saved: useLocalStorage("encounter_saved", []),
     };
-  },
-  hydrate(storeState, initialState) {
-      storeState.history = useLocalStorage("encounter_history", []);
-      storeState.saved = useLocalStorage("encounter_saved", []);
   },
   actions: {
     getDifficultyFromExperience(exp) {
@@ -66,6 +62,7 @@ export const useEncounter = defineStore("encounter", {
       let targetExp;
       const newEncounter = [];
       encounterTemplate.groups.reverse();
+
       for (const group of encounterTemplate.groups) {
         targetExp = encounterTemplate.subtractive
           ? totalAvailableXP / encounterTemplate.groups.length
@@ -73,7 +70,11 @@ export const useEncounter = defineStore("encounter", {
 
         targetExp /= group.count;
 
-        const monster = this.getBestMonster(targetExp, newEncounter, group.count);
+        const monster = this.getBestMonster(
+          targetExp,
+          newEncounter,
+          group.count
+        );
         if (!monster) {
           useNotifications().notify({
             title: "Failed to generate encounter!",
@@ -91,7 +92,7 @@ export const useEncounter = defineStore("encounter", {
         });
 
         if (encounterTemplate.subtractive) {
-          targetExp -= group.count * monster.cr.exp;
+          totalAvailableXP -= group.count * monster.cr.exp;
         }
       }
 
@@ -158,16 +159,14 @@ export const useEncounter = defineStore("encounter", {
     getEncounterTemplate() {
       let template = helpers.clone(CONST.ENCOUNTER_TYPES[this.type]);
 
-      if (template.samples) {
-        template = helpers.randomArrayElement(template.samples);
-        if (this.type === "random") {
-          template = {
-            subtractive: true,
-            groups: template.map((num) => {
-              return { count: num };
-            }),
-          };
-        }
+      template = helpers.randomArrayElement(template.samples);
+      if (this.type === "random") {
+        template = {
+          subtractive: true,
+          groups: template.map((num) => {
+            return { count: num };
+          }),
+        };
       }
 
       const players = Number(useParty().totalPlayers);
@@ -415,6 +414,10 @@ export const useEncounter = defineStore("encounter", {
         const [lowerKey, lowerValue] = levels[i - 1];
         const [upperKey, upperValue] = levels[i];
         const ratio = helpers.ratio(lowerValue, upperValue, this.adjustedExp);
+
+        if(ratio >= 10) {
+          return "... what.";
+        }
 
         if (upperKey === "daily" && ratio >= 0.0) {
           if (ratio >= 0.2) {

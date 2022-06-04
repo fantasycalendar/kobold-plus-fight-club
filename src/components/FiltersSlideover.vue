@@ -1,3 +1,24 @@
+<script setup>
+import Multiselect from "@vueform/multiselect";
+import AlignmentGrid from "./AlignmentGrid.vue";
+import { useFilters } from "../stores/filters.js";
+import ChallengeRatingSlider from "./ChallengeRatingSlider.vue";
+import { useModals } from "../stores/modals";
+
+const filters = useFilters();
+const modals = useModals();
+
+defineProps({
+  showFilters: {
+    type: Boolean,
+    default: false,
+  },
+});
+</script>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
+
+
 <template>
   <div
     class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-50 2xl:z-0 overflow-hidden"
@@ -172,23 +193,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import Multiselect from "@vueform/multiselect";
-import AlignmentGrid from "./AlignmentGrid.vue";
-import { useFilters } from "../stores/filters.js";
-import ChallengeRatingSlider from "./ChallengeRatingSlider.vue";
-import {useModals} from "../stores/modals";
-
-const filters = useFilters();
-const modals = useModals();
-
-defineProps({
-  showFilters: {
-    type: Boolean,
-    default: false,
-  },
-});
-</script>
-
-<style src="@vueform/multiselect/themes/default.css"></style>

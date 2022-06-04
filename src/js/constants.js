@@ -146,7 +146,7 @@ const CONST = {
     },
     boss: {
       name: "Boss",
-      groups: [{ count: 1, ratio: 1.0 }],
+      samples: [{ groups: [{ count: 1, ratio: 1.0 }] }],
     },
     boss_minions: {
       name: "Boss with minions",
