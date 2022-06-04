@@ -85,7 +85,7 @@
               >
                 <div class="flex">
                   <button
-                    @click="$emit('modal', 'Sources')"
+                    @click="modals.show('sources')"
                     class="button-primary-md w-full"
                   >
                     <span class="w-full text-center">Manage sources</span>
@@ -178,8 +178,10 @@ import Multiselect from "@vueform/multiselect";
 import AlignmentGrid from "./AlignmentGrid.vue";
 import { useFilters } from "../stores/filters.js";
 import ChallengeRatingSlider from "./ChallengeRatingSlider.vue";
+import {useModals} from "../stores/modals";
 
 const filters = useFilters();
+const modals = useModals();
 
 defineProps({
   showFilters: {
