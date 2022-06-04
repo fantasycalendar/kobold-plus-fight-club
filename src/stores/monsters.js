@@ -81,57 +81,65 @@ export const useMonsters = defineStore("monsters", {
       this.imported = this.imported.concat(this.includeMonster());
     },
 
-    filterBy(filters, crString, filterCallback = null) {
-      if(filterCallback) {
-        return this.enabled.filter(filterCallback);
-      }
+    filterBy(filters, filterCallback = () => true) {
+      return this.enabled
+        .filter((monster) => {
+          if (
+            filters.search &&
+            filters.searchFor &&
+            !filters.searchFor(monster.searchable)
+          ) {
+            return false;
+          }
 
-      return this.enabled.filter((monster) => {
-        if (filters.search && filters.searchFor && !filters.searchFor(monster.searchable)) {
-          return false;
-        }
-
-        if (
-          filters.size.length &&
-          !filters.size.includes(monster.size.toLowerCase())
-        )
-          return false;
-
-        if (filters.legendary.indexOf("legendary") > -1 && !monster.legendary) {
-          return false;
-        }
-
-        if (filters.legendary.indexOf("legendary_lair") > -1 && !monster.lair) {
-          return false;
-        }
-
-        if (
-          filters.type.length &&
-          !filters.type.includes(monster.type.toLowerCase())
-        )
-          return false;
-
-        if (
-          filters.environment.length &&
-          !filters.environment.find((environment) =>
-            monster.environment.includes(environment.toLowerCase())
+          if (
+            filters.size.length &&
+            !filters.size.includes(monster.size.toLowerCase())
           )
-        ) {
-          return false;
-        }
+            return false;
 
-        if (!crString && (filters.minCr > 0 || filters.maxCr < 30)) {
-          if (filters.minCr > 0 && monster.cr.numeric < filters.minCr) {
+          if (
+            filters.legendary.indexOf("legendary") > -1 &&
+            !monster.legendary
+          ) {
             return false;
           }
 
-          if (filters.maxCr < 30 && monster.cr.numeric > filters.maxCr) {
+          if (
+            filters.legendary.indexOf("legendary_lair") > -1 &&
+            !monster.lair
+          ) {
             return false;
           }
-        }
 
-        return true;
-      });
+          if (
+            filters.type.length &&
+            !filters.type.includes(monster.type.toLowerCase())
+          )
+            return false;
+
+          if (
+            filters.environment.length &&
+            !filters.environment.find((environment) =>
+              monster.environment.includes(environment.toLowerCase())
+            )
+          ) {
+            return false;
+          }
+
+          if (filters.minCr > 0 || filters.maxCr < 30) {
+            if (filters.minCr > 0 && monster.cr.numeric < filters.minCr) {
+              return false;
+            }
+
+            if (filters.maxCr < 30 && monster.cr.numeric > filters.maxCr) {
+              return false;
+            }
+          }
+
+          return true;
+        })
+        .filter(filterCallback);
     },
   },
 
@@ -142,7 +150,7 @@ export const useMonsters = defineStore("monsters", {
     paginated: (state) => {
       return (page, sortFunction = null) => {
         const filters = useFilters();
-        if(!sortFunction) {
+        if (!sortFunction) {
           sortFunction = (a, b) => a.name.localeCompare(b.name);
         }
 
@@ -154,7 +162,7 @@ export const useMonsters = defineStore("monsters", {
     filtered() {
       const filters = useFilters();
 
-      return this.filterBy(filters, "", null);
+      return this.filterBy(filters);
     },
   },
 });

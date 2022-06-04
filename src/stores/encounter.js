@@ -119,7 +119,6 @@ export const useEncounter = defineStore("encounter", {
       let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
       let monsterList = monsters.filterBy(
         useFilters(),
-        monsterTargetCR.string,
         (monster) => {
           return (
             !encounter.some((group) => group.monster === monster) &&
@@ -147,7 +146,6 @@ export const useEncounter = defineStore("encounter", {
         let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRNewIndex]];
         monsterList = monsters.filterBy(
           useFilters(),
-          monsterTargetCR.string,
           (monster) => {
             return !encounter.some((group) => group.monster === monster);
           }
@@ -227,7 +225,6 @@ export const useEncounter = defineStore("encounter", {
     getNewMonster(group) {
       const monsterList = useMonsters().filterBy(
         useFilters(),
-        group.monster.cr.string,
         (monster) => {
           return !this.groups.some((group) => group.monster === monster);
         }
