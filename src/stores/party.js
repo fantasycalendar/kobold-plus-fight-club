@@ -12,7 +12,7 @@ export const useParty = defineStore("party", {
           getsXP: true,
         },
       ]),
-      saved: [],
+      saved: useLocalStorage("saved_parties", []),
     };
   },
   hydrate(storeState) {
@@ -28,6 +28,7 @@ export const useParty = defineStore("party", {
   actions: {
     addGroup() {
       const lastGroup = this.groups[this.groups.length - 1] ?? {
+        id: 1,
         players: 4,
         level: 1,
         getsXP: true,
@@ -47,6 +48,65 @@ export const useParty = defineStore("party", {
         deadly: (acc?.deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
         daily: (acc?.daily ?? 0) + groupExp.daily * (group?.players ?? 1),
       };
+    },
+
+    createParty() {
+      this.saved.forEach((party) => (party.editing = false));
+      this.saved.push({
+        id: this.saved.length,
+        name: "Party " + (this.saved.length + 1),
+        editing: true,
+        players: [],
+      });
+      this.createPlayer(this.saved.length - 1);
+    },
+
+    activateParty(partyIndex) {
+      this.saved[partyIndex].players.forEach(
+        (player) => (player.active = true)
+      );
+    },
+
+    deactivateParty(partyIndex) {
+      this.saved[partyIndex].players.forEach(
+        (player) => (player.active = false)
+      );
+    },
+
+    deleteParty(partyIndex) {
+      this.saved.splice(partyIndex, 1);
+    },
+
+    playerChange(player) {
+      if (player.currentHp > player.maxHp) {
+        player.maxHp = player.currentHp;
+      }
+    },
+
+    createPlayer(partyIndex) {
+      this.saved[partyIndex].players.push({
+        name: "Player " + (this.saved[partyIndex].players.length + 1),
+        initiativeMod: 0,
+        initiativeAdvantage: false,
+        level:
+          this.saved[partyIndex].players[
+            this.saved[partyIndex].players.length - 1
+          ]?.level ?? 1,
+        maxHp:
+          this.saved[partyIndex].players[
+            this.saved[partyIndex].players.length - 1
+          ]?.maxHp ?? 10,
+        currentHp:
+          this.saved[partyIndex].players[
+            this.saved[partyIndex].players.length - 1
+          ]?.currentHp ?? 10,
+        active: false,
+        partyIndex: 0,
+      });
+    },
+
+    deletePlayer(partyIndex, playerIndex) {
+      this.saved[partyIndex].players.splice(playerIndex, 1);
     },
   },
 

@@ -7,13 +7,9 @@ import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
 import SearchBox from "../components/SearchBox.vue";
 import PartyPanel from "../components/PartyPanel.vue";
-import SelectInput from "../components/SelectInput.vue";
-import EmptyStateButton from "../components/EmptyStateButton.vue";
-import EncounterMonster from "../components/EncounterMonster.vue";
 import EncounterPanel from "../components/EncounterPanel.vue";
 
 import { useEncounter } from "../stores/encounter";
-import { useParty } from "../stores/party";
 
 export default {
   components: {
@@ -21,116 +17,27 @@ export default {
     FiltersSlideover,
     MonsterTable,
     PartyPanel,
-    SelectInput,
-    EmptyStateButton,
-    EncounterMonster,
     EncounterPanel,
   },
   emits: ["modal"],
 
   setup() {
     const encounter = useEncounter();
-    const party = useParty();
 
     return {
       encounter,
-      party,
+      CONST,
     };
   },
 
   data() {
     return {
       showFilters: false,
-
       mobileEncounterTab: false,
-
-      encounterTypeSelectOpen: false,
-      encounterTypes: Object.fromEntries(
-        Object.entries(CONST.ENCOUNTER_TYPES).map((entry) => {
-          return [entry[0], { key: entry[0], label: entry[1].name }];
-        })
-      ),
-      encounterType: "random",
-      CONST,
     };
   },
 
   methods: {
-    playerChange(player) {
-      if (player.currentHp > player.maxHp) {
-        player.maxHp = player.currentHp;
-      }
-    },
-    showDifficultySelect() {
-      this.difficultySelectOpen = true;
-      console.log(this.difficultySelectOpen);
-    },
-
-    hideDifficultySelect() {
-      this.difficultySelectOpen = false;
-      console.log(this.difficultySelectOpen);
-    },
-
-    enablePartyModal() {
-      this.showPartyModal = true;
-
-      if (this.party.saved.length === 1) {
-        this.party.saved[0].editing = true;
-      }
-    },
-
-    createParty() {
-      this.party.saved.forEach((party) => (party.editing = false));
-      this.party.saved.push({
-        name: "Party " + (this.party.saved.length + 1),
-        editing: true,
-        players: [],
-      });
-      this.createPlayer(this.party.saved.length - 1);
-    },
-
-    activateParty(partyIndex) {
-      this.party.saved[partyIndex].players.forEach(
-        (player) => (player.active = true)
-      );
-    },
-
-    deactivateParty(partyIndex) {
-      this.party.saved[partyIndex].players.forEach(
-        (player) => (player.active = false)
-      );
-    },
-
-    deleteParty(partyIndex) {
-      this.party.saved.splice(partyIndex, 1);
-    },
-
-    createPlayer(partyIndex) {
-      this.party.saved[partyIndex].players.push({
-        name: "Player " + (this.party.saved[partyIndex].players.length + 1),
-        initiativeMod: 0,
-        initiativeAdvantage: false,
-        level:
-          this.party.saved[partyIndex].players[
-            this.party.saved[partyIndex].players.length - 1
-          ]?.level ?? 1,
-        maxHp:
-          this.party.saved[partyIndex].players[
-            this.party.saved[partyIndex].players.length - 1
-          ]?.maxHp ?? 10,
-        currentHp:
-          this.party.saved[partyIndex].players[
-            this.party.saved[partyIndex].players.length - 1
-          ]?.currentHp ?? 10,
-        active: false,
-        partyIndex: 0,
-      });
-    },
-
-    deletePlayer(partyIndex, playerIndex) {
-      this.party.saved[partyIndex].players.splice(playerIndex, 1);
-    },
-
     setupHotkeys() {
       hotkeys(
         "ctrl+/,ctrl+k,ctrl+shift+\\,ctrl+f,ctrl+[,ctrl+],ctrl+g,ctrl+s,esc",
@@ -156,12 +63,6 @@ export default {
                 ) > 1535
                   ? true
                   : (this.showFilters = !this.showFilters);
-              return false;
-            case "ctrl+[":
-              this.setPageNumber(this.currentPage - 1);
-              return false;
-            case "ctrl+]":
-              this.setPageNumber(this.currentPage + 1);
               return false;
             case "ctrl+s":
               this.encounter.save();

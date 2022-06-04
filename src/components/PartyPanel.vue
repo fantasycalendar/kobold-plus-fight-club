@@ -2,9 +2,13 @@
 import { useParty } from "../stores/party";
 import { useEncounter } from "../stores/encounter";
 import { formatNumber } from "../js/helpers.js";
+import PartyModal from "./PartyModal.vue";
+import { ref } from "vue";
 
 const party = useParty();
 const encounter = useEncounter();
+
+const showModal = ref(false);
 </script>
 
 <template>
@@ -15,7 +19,7 @@ const encounter = useEncounter();
 
         <a
           class="primary-link text-sm"
-          @click="$emit('modal', { name: 'Party' })"
+          @click="showModal = true"
           href="javascript:"
         >
           Manage
@@ -26,22 +30,21 @@ const encounter = useEncounter();
         class="grid grid-cols-[1fr_34px] gap-y-2 align-center mb-2"
         v-show="party.activePlayers.length"
       >
-        <div v-for="party in party.saved" :key="party.name">
+        <div v-for="party in party.saved" :key="party.name" class="contents">
           <div
+            class="contents"
             v-for="player in party.players.filter((player) => player.active)"
             :key="player.name"
           >
-            <div class="contents">
-              <div v-text="player.name"></div>
+            <div v-text="player.name"></div>
 
-              <button
-                @click="player.active = false"
-                type="button"
-                class="button-danger-outline-md inline-flex justify-center !py-0"
-              >
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+            <button
+              @click="player.active = false"
+              type="button"
+              class="button-danger-outline-md inline-flex justify-center !py-0"
+            >
+              <i class="fas fa-times"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -186,4 +189,8 @@ const encounter = useEncounter();
       </div>
     </div>
   </div>
+
+  <teleport to="body">
+    <PartyModal v-model:show="showModal"></PartyModal>
+  </teleport>
 </template>

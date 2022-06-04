@@ -32,7 +32,6 @@ export default {
       showImporterModal: false,
       showKeyboardModal: false,
       showSourcesModal: false,
-      showPartyModal: false,
       showEncounterModal: false,
       sources: [],
     };
@@ -144,7 +143,6 @@ export default {
     <ImporterModal v-model:show="showImporterModal" />
     <KeyboardModal v-model:show="showKeyboardModal" />
     <SourcesModal v-model:show="showSourcesModal" />
-    <PartyModal v-model:show="showPartyModal" />
     <EncounterModal v-model:show="showEncounterModal" />
 
     <NotificationArea />
