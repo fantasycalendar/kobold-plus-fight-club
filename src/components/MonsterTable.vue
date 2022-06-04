@@ -298,7 +298,7 @@ const pagination = computed(() => {
     </div>
 
     <div
-      v-show="!monsters.loading && sources.loaded.length === 0"
+      v-show="!monsters.loading && sources.enabled.length === 0"
       class="w-full text-center text-lg my-4"
     >
       No sources are enabled -
@@ -311,7 +311,7 @@ const pagination = computed(() => {
     <div
       v-show="
         !monsters.loading &&
-        sources.loaded.length > 0 &&
+        sources.enabled.length > 0 &&
         monsters.filtered.length === 0
       "
       class="w-full text-center text-lg my-4"

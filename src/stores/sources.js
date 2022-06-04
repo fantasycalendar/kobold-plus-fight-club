@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { versionCompare } from "../js/helpers";
+import Monster from "../js/monster";
 
 export const useSources = defineStore("sources", {
   state: () => {
@@ -8,13 +9,14 @@ export const useSources = defineStore("sources", {
       version: "2.1.0",
       storedVersion: useLocalStorage("stored_sources_version", ""),
 
-      loaded: [],
-      all: useLocalStorage("sources", []),
+      builtIn: useLocalStorage("sources", []),
+      imported: useLocalStorage("imported_sources", []),
     };
   },
 
   hydrate(storeState, initialState) {
-    storeState.all = useLocalStorage("sources", []);
+    storeState.builtIn = useLocalStorage("sources", []);
+    storeState.imported = useLocalStorage("imported_sources", []);
     storeState.storedVersion = useLocalStorage("stored_sources_version", "");
   },
 
@@ -25,10 +27,10 @@ export const useSources = defineStore("sources", {
 
     async fetch() {
       // if (
-      //   this.loaded.length &&
+      //   this.builtIn.length &&
       //   versionCompare(this.version, this.storedVersion) === 0
       // ) {
-      //   return this.loaded;
+      //   return this.builtIn;
       // }
 
       let fetched = [];
@@ -51,9 +53,9 @@ export const useSources = defineStore("sources", {
           fetched = fetched.concat(data);
         });
 
-      this.loaded = this.loaded.length
+      this.builtIn = this.builtIn.length
         ? fetched.map((newSource) => {
-            const foundOldSource = this.loadedSources.find((oldSource) => {
+            const foundOldSource = this.enabled.find((oldSource) => {
               return newSource["name"] === oldSource["name"];
             });
 
@@ -68,15 +70,20 @@ export const useSources = defineStore("sources", {
             return source;
           });
 
-      console.log(this.loaded);
-
-      this.all = this.loaded;
-
-      return this.all;
+      return this.builtIn;
     },
   },
 
   getters: {
+    all() {
+      return this.builtIn.concat(this.imported);
+    },
+    includeSources(sources) {
+      this.imported = this.imported.concat(sources);
+    },
+    enabled() {
+      return this.all.filter((source) => !!source.enabled);
+    },
     formatted() {
       return this.all.reduce((acc, source) => {
         acc[source.name] = source;
