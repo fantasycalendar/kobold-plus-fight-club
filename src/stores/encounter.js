@@ -5,11 +5,12 @@ import { useNotifications } from "./notifications";
 import CONST from "../js/constants";
 import { useMonsters } from "./monsters";
 import { useFilters } from "./filters";
+import {useLocalStorage} from "@vueuse/core/index";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
     return {
-      groups: [],
+      groups: useLocalStorage("encounter_groups", []),
       insaneDifficultyStrings: [
         "an incredibly bad idea",
         "suicide",
@@ -25,9 +26,13 @@ export const useEncounter = defineStore("encounter", {
       loadedLast: false,
       difficulty: "medium",
       type: "random",
-      history: [],
-      saved: [],
+      history: useLocalStorage("encounter_history", []),
+      saved: useLocalStorage("encounter_saved", []),
     };
+  },
+  hydrate(storeState, initialState) {
+      storeState.history = useLocalStorage("encounter_history", []);
+      storeState.saved = useLocalStorage("encounter_saved", []);
   },
   actions: {
     getDifficultyFromExperience(exp) {
@@ -59,7 +64,7 @@ export const useEncounter = defineStore("encounter", {
         baseExpBudget / this.getMultiplier(encounterTemplate.total);
 
       let targetExp;
-      const encounter = [];
+      const newEncounter = [];
       encounterTemplate.groups.reverse();
       for (const group of encounterTemplate.groups) {
         targetExp = encounterTemplate.subtractive
@@ -68,7 +73,7 @@ export const useEncounter = defineStore("encounter", {
 
         targetExp /= group.count;
 
-        const monster = this.getBestMonster(targetExp, encounter, group.count);
+        const monster = this.getBestMonster(targetExp, newEncounter, group.count);
         if (!monster) {
           useNotifications().notify({
             title: "Failed to generate encounter!",
@@ -80,7 +85,7 @@ export const useEncounter = defineStore("encounter", {
           return false;
         }
 
-        encounter.push({
+        newEncounter.push({
           monster,
           count: group.count,
         });
@@ -90,9 +95,9 @@ export const useEncounter = defineStore("encounter", {
         }
       }
 
-      encounter.reverse();
+      newEncounter.reverse();
 
-      this.groups = encounter;
+      this.groups = newEncounter;
 
       this.saveToHistory(true);
     },
@@ -221,7 +226,8 @@ export const useEncounter = defineStore("encounter", {
       return multipliers[multiplierCategory];
     },
     getNewMonster(group) {
-      const monsterList = useMonsters().filter(
+      const monsterList = useMonsters().filterBy(
+        useFilters(),
         group.monster.cr.string,
         (monster) => {
           return !this.groups.some((group) => group.monster === monster);

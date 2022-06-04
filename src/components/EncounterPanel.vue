@@ -2,15 +2,19 @@
 import SelectInput from "./SelectInput.vue";
 import EncounterMonster from "./EncounterMonster.vue";
 import EmptyStateButton from "./EmptyStateButton.vue";
+import EncounterModal from "./EncounterModal.vue";
 import ImprovedInitiativeButton from "./ImprovedInitiativeButton.vue";
 
 import * as helpers from "../js/helpers";
 import {useEncounter} from "../stores/encounter";
 import {useParty} from "../stores/party";
 import CONST from "../js/constants";
+import {ref} from "vue";
 
 const encounter = useEncounter();
 const party = useParty();
+
+const showModal = ref(false);
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const party = useParty();
         <a
           href="javascript:"
           class="primary-link text-sm"
-          @click="$emit('modal', { name: 'Encounter' })"
+          @click="showModal = true"
           >History</a
         >
       </div>
@@ -195,5 +199,9 @@ const party = useParty();
         </button>
       </div>
     </div>
+
+    <teleport to="body">
+      <EncounterModal v-model:show="showModal" />
+    </teleport>
   </div>
 </template>

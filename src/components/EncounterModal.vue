@@ -1,6 +1,7 @@
 <script setup>
 import Modal from "./Modal.vue";
 import { watch, ref } from "vue";
+import {useEncounter} from "../stores/encounter";
 
 const props = defineProps({
   show: {
@@ -20,14 +21,11 @@ watch(
 );
 
 const tab = ref("history");
-const savedEncounters = ref([]);
-const encounterHistory = ref([]);
-const loadedEncounterIndex = ref(0);
-const encounter = ref({});
+const encounter = useEncounter();
 
 function generateNew() {
-  this.encounter.generateRandom();
-  this.$emit("update:show", false);
+  encounter.generateRandom();
+  emit("update:show", false);
 }
 </script>
 
@@ -90,34 +88,34 @@ function generateNew() {
         class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300"
       >
         <div
-          v-for="(_, index) of savedEncounters"
+          v-for="(_, index) of encounter.saved"
           @click="
-            loadedEncounterIndex !== savedEncounters.length - index - 1 &&
-              encounter.loadFromSaved(savedEncounters.length - index - 1)
+            encounter.loadedIndex !== encounter.saved.length - index - 1 &&
+              encounter.loadFromSaved(encounter.saved.length - index - 1)
           "
           class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
           :title="
-            savedEncounters[savedEncounters.length - index - 1]
+            encounter.saved[encounter.saved.length - index - 1]
               .map((group) => `${group.monster.name} x${group.count}`)
               .join(', ')
           "
           :key="index"
           :class="{
             'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer':
-              loadedEncounterIndex !== savedEncounters.length - index - 1,
+              encounter.loadedIndex !== encounter.saved.length - index - 1,
           }"
         >
           <div
             class="grow flex items-center mr-2 grow truncate overflow-ellipsis"
             :class="{
               'font-medium':
-                loadedEncounterIndex === savedEncounters.length - index - 1,
+                encounter.loadedIndex === encounter.saved.length - index - 1,
             }"
           >
             <span
               v-text="
-                savedEncounters[savedEncounters.length - index - 1]
-                  ? savedEncounters[savedEncounters.length - index - 1]
+                encounter.saved[encounter.saved.length - index - 1]
+                  ? encounter.saved[encounter.saved.length - index - 1]
                       .map((group) => `${group.monster.name} x${group.count}`)
                       .join(', ')
                   : ''
@@ -136,7 +134,7 @@ function generateNew() {
             >
               <div
                 v-show="
-                  loadedEncounterIndex === savedEncounters.length - index - 1
+                  encounter.loadedIndex === encounter.saved.length - index - 1
                 "
                 class="text-emerald-600 h-full flex items-center justify-center"
               >
@@ -144,7 +142,7 @@ function generateNew() {
               </div>
               <div
                 v-show="
-                  loadedEncounterIndex !== savedEncounters.length - index - 1
+                  encounter.loadedIndex !== encounter.saved.length - index - 1
                 "
                 class="items-center h-full justify-center cursor-pointer select-none hidden group-hover:flex text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
               >
@@ -162,7 +160,7 @@ function generateNew() {
       </div>
 
       <div
-        v-show="!savedEncounters.length"
+        v-show="!encounter.saved.length"
         type="button"
         class="relative block w-full border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-lg p-12 text-center"
       >
@@ -178,28 +176,28 @@ function generateNew() {
       <div
         class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300"
       >
-        <div v-for="(_, index) of encounterHistory">
+        <div v-for="(_, index) of encounter.history">
           <div
             class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
             :title="
-              encounterHistory[encounterHistory.length - index - 1]
+              encounter.history[encounter.history.length - index - 1]
                 .map((group) => `${group.monster.name} x${group.count}`)
                 .join(', ')
             "
             :class="{
               'group hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer': !(
-                loadedEncounterIndex === null &&
+                encounter.loadedIndex === null &&
                 index === 0 &&
                 encounter.groups.length
               ),
             }"
             @click="
               !(
-                loadedEncounterIndex === null &&
+                encounter.loadedIndex === null &&
                 index === 0 &&
                 encounter.groups.length
               ) &&
-                encounter.loadFromHistory(encounterHistory.length - index - 1)
+                encounter.loadFromHistory(encounter.history.length - index - 1)
             "
             :key="index"
           >
@@ -207,15 +205,15 @@ function generateNew() {
               class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis"
               :class="{
                 'font-medium':
-                  loadedEncounterIndex === null &&
+                  encounter.loadedIndex === null &&
                   index === 0 &&
                   encounter.groups.length,
               }"
             >
               <span
                 v-text="
-                  encounterHistory[encounterHistory.length - index - 1]
-                    ? encounterHistory[encounterHistory.length - index - 1]
+                  encounter.history[encounter.history.length - index - 1]
+                    ? encounter.history[encounter.history.length - index - 1]
                         .map((group) => `${group.monster.name} x${group.count}`)
                         .join(', ')
                     : ''
@@ -239,7 +237,7 @@ function generateNew() {
                 </div>
                 <div
                   v-show="
-                    loadedEncounterIndex === null &&
+                    encounter.loadedIndex === null &&
                     index === 0 &&
                     encounter.groups.length
                   "
@@ -254,7 +252,7 @@ function generateNew() {
       </div>
 
       <button
-        v-show="!encounterHistory.length"
+        v-show="!encounter.history.length"
         @click="generateNew"
         type="button"
         class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
@@ -280,7 +278,7 @@ function generateNew() {
       </button>
       <button
         v-show="tab === 'history'"
-        @click="encounterHistory = []"
+        @click="encounter.history = []"
         type="button"
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
       >
