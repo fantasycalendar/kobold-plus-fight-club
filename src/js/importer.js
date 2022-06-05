@@ -245,39 +245,84 @@ export default class Importer {
 
     static loadersHtml = {
         'google-sheets': () => {
-            return `
-                <label class="mb-1" for="import_resource_locator">Insert a Google Sheet ID or link. To create your own, you can <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">refer to this example.</a></label>
-                <input name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
-            `;
+            return {
+                template: `
+                    <label class="mb-1" for="import_resource_locator">Insert a Google Sheet ID or link. To create your own, you can <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">refer to this example.</a></label>
+                    <input name="import_resource_locator" id="import_resource_locator" type="text" @change="$emit('update:modelValue', importerResourceLocator)" v-model="importerResourceLocator">
+                `,
+                props: {
+                    modelValue: String,
+                },
+                mounted() {
+                    this.importerResourceLocator = this.modelValue;
+                },
+                data() {
+                    return {
+                        importerResourceLocator: ""
+                    }
+                }
+            };
         },
         'json-raw': () => {
-            return `
-                <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="downloadExampleFile">download an example file to edit.</a></label>
-                <div class="mt-1">
-                    <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
-                </div>
-            `;
+            return {
+                template: `
+                    <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="$emit('downloadExample')">download an example file to edit.</a></label>
+                    <div class="mt-1">
+                        <textarea id="import_resource_locator" v-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
+                    </div>
+                `,
+                props: {
+                    modelValue: String,
+                },
+                data() {
+                    return {
+                        importerResourceLocator: "",
+                    }
+                }
+            };
         },
         'json-file': () => {
-            return `
-                <label class="mb-1 block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download an example file to edit.</a></label>                
-                <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
-            `;
+            return {
+                template: `
+                    <label class="mb-1 block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="$emit('downloadExample')">download an example file to edit.</a></label>                
+                    <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
+                `,
+                props: {
+                    modelValue: String,
+                },
+                data() {
+                    return {
+                        importerResourceLocator: "",
+                    }
+                }
+            };
         },
         'csv-file': () => {
-            return `
-                <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download example files to edit.</a></label>
-                <div class="grid grid-cols-2 gap-2 mt-2">                
-                    <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
-                    <label class="" id="file_input_label_1" for="import_resource_locator_file_2">Monsters CSV</label>                
-                    <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
-                    <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
-                </div>
-            `;
+            return {
+                template: `
+                    <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="$emit('downloadExample')">download example files to edit.</a></label>
+                    <div class="grid grid-cols-2 gap-2 mt-2">                
+                        <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
+                        <label class="" id="file_input_label_1" for="import_resource_locator_file_2">Monsters CSV</label>                
+                        <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
+                        <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
+                    </div>
+                `,
+                props: {
+                    modelValue: String,
+                },
+                data() {
+                    return {
+                        importerResourceLocator: []
+                    }
+                }
+            };
         },
     }
 
     static async canImport(resourceLocator, type) {
+        console.log(resourceLocator);
+
         if(!resourceLocator) {
             return [false, "You must provide an import source."];
         }

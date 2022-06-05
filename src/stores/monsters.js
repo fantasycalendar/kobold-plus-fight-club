@@ -77,8 +77,11 @@ export const useMonsters = defineStore("monsters", {
       return monster;
     },
 
-    addToImported(monsters) {
-      this.imported = this.imported.concat(this.includeMonster());
+    import(monsters) {
+      this.imported = [...this.imported, ...monsters];
+      this.instancedImports = this.instancedImports.concat(
+        monsters.map(this.includeMonster)
+      );
     },
 
     filterBy(filters, filterCallback = () => true) {

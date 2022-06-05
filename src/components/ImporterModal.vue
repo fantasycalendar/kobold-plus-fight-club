@@ -2,6 +2,11 @@
   <Modal v-model:show="modals.importer" title="Import Custom Monsters">
     <div class="my-3 sm:mt-0 w-full" v-show="step === 1">
       <label for="importer_source">Import from</label>
+      <span
+        class="border border-red-500"
+        v-text="importerResourceLocator"
+      ></span>
+
       <select
         v-model="importerSourceType"
         @change="loadImporter"
@@ -17,7 +22,9 @@
         </optgroup>
       </select>
 
-      <div class="mb-4" v-html="importerHtml"></div>
+      <div class="mb-4">
+        <component :is="importerHtml" v-model="importerResourceLocator"></component>
+      </div>
       <div class="text-red-400 dark:text-red-600" v-show="importError.length">
         <i class="fa fa-exclamation-triangle"></i>
         <span v-text="importError"></span>
@@ -261,8 +268,10 @@
 <script>
 import Importer from "../js/importer.js";
 import Modal from "./Modal.vue";
-import {useMonsters} from "../stores/monsters";
-import {useModals} from "../stores/modals";
+import { useMonsters } from "../stores/monsters";
+import { useModals } from "../stores/modals";
+import { useSources } from "../stores/sources";
+import { shallowReactive, shallowRef } from "vue";
 
 export default {
   name: "ImporterModal",
@@ -277,11 +286,15 @@ export default {
 
   setup() {
     const monsters = useMonsters();
-    const modals = useModals()
+    const sources = useSources();
+    const modals = useModals();
+    const importerHtml = shallowRef(Importer.loadersHtml["google-sheets"]());
 
     return {
       monsters,
+      sources,
       modals,
+      importerHtml,
     };
   },
 
@@ -289,7 +302,6 @@ export default {
     return {
       importerResourceLocator: "",
       importerSourceType: "google-sheets",
-      importerHtml: "",
       step: 1,
       stagedMonsters: [],
       stagedSources: [],
@@ -300,17 +312,28 @@ export default {
 
   mounted() {
     this.loadImporter();
-    this.$watch(
-      "importerResourceLocator",
-      async (value) =>
-        ([this.canImport, this.importError] = await Importer.canImport(
-          value,
-          this.importerSourceType
-        ))
-    );
+  },
+
+  watch: {
+    importerResourceLocator(newValue, oldValue) {
+      if (!newValue) {
+        this.canImport = false;
+        this.importError = "";
+        return;
+      }
+
+      this.validate(newValue);
+    },
   },
 
   methods: {
+    async validate(newValue) {
+      [this.canImport, this.importError] = await Importer.canImport(
+        newValue,
+        this.importerSourceType
+      );
+    },
+
     loadImporter() {
       this.importerHtml = "";
       this.importerHtml = Importer.loadersHtml[this.importerSourceType]();
@@ -328,12 +351,10 @@ export default {
       this.step = 2;
     },
     finishImport() {
-      // importedSources = importedSources.concat(this.stagedSources)
-      // formatSources(this.stagedSources);
+      this.sources.import(this.stagedSources);
       this.stagedSources = [];
 
-      // importedMonsters = importedMonsters.concat(this.stagedMonsters)
-      // formatMonsters(this.stagedMonsters);
+      this.monsters.import(this.stagedMonsters);
       this.stagedMonsters = [];
 
       dispatchEvent(

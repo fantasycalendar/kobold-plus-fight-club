@@ -70,7 +70,9 @@ export const useSources = defineStore("sources", {
   getters: {
     all() {
       return [...this.builtIn, ...this.imported];
-      // return this.builtIn.concat(this.imported);
+    },
+    import(sources) {
+      this.imported = [...this.import, ...sources];
     },
     enabled() {
       return this.all.filter((source) => !!source.enabled);
