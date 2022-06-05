@@ -40,21 +40,24 @@ export default {
   },
 
   methods: {
+    filtersTest() {
+      return Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      ) > 1535
+        ? true
+        : !this.showFilters;
+    },
+
     setupHotkeys() {
       this.hotkeys.register(
         "ctrl+f",
         "Toggle the filters sidebar",
         () => {
-          this.showFilters =
-            Math.max(
-              document.body.scrollWidth,
-              document.documentElement.scrollWidth,
-              document.body.offsetWidth,
-              document.documentElement.offsetWidth,
-              document.documentElement.clientWidth
-            ) > 1535
-              ? true
-              : (this.showFilters = !this.showFilters);
+          this.showFilters = this.filtersTest();
 
           return false;
         },
@@ -79,6 +82,16 @@ export default {
           return false;
         },
         70
+      );
+
+      this.hotkeys.register(
+        "esc",
+        "(You shouldn't see this)",
+        () => {
+          this.showFilters = this.filtersTest();
+        },
+        0,
+        true // Hidden
       );
     },
   },
