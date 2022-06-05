@@ -12,9 +12,13 @@ import NotificationArea from "./components/NotificationArea.vue";
 import { useMonsters } from "./stores/monsters";
 import { useSources } from "./stores/sources";
 import { onMounted } from "vue";
+import { useHotkeys } from "./stores/hotkeys";
+import { useModals } from "./stores/modals";
 
 const monsters = useMonsters();
 const sources = useSources();
+const hotkeys = useHotkeys();
+const modals = useModals();
 
 onMounted(async () => {
   await sources.fetch();
@@ -23,8 +27,6 @@ onMounted(async () => {
 </script>
 
 <script>
-import hotkeys from "hotkeys-js";
-
 export default {
   data() {
     return {
@@ -44,47 +46,27 @@ export default {
       this.theme = this.theme === "light" ? "dark" : "light";
       document.documentElement.classList.toggle("dark", this.theme === "dark");
     },
-
-    setupHotkeys() {
-      hotkeys("ctrl+shift+\\,esc", (event, handler) => {
-        switch (handler.key) {
-          case "ctrl+shift+\\":
-            this.toggleTheme();
-            return false;
-          case "esc":
-            this.showPartyModal = false;
-            this.showKeyboardModal = false;
-            this.showFilters =
-              Math.max(
-                document.body.scrollWidth,
-                document.documentElement.scrollWidth,
-                document.body.offsetWidth,
-                document.documentElement.offsetWidth,
-                document.documentElement.clientWidth
-              ) > 1535;
-            this.showSourcesModal = false;
-            break;
-        }
-
-        return true;
-      });
-    },
   },
 
   created() {
-    this.setupHotkeys();
+    this.hotkeys.register(
+      "ctrl+shift+\\",
+      "Toggles light/dark theme",
+      () => {
+        this.toggleTheme();
+        return false;
+      },
+      30
+    );
 
-    if (
-      Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-      ) > 1535
-    ) {
-      this.showFilters = true;
-    }
+    this.hotkeys.register(
+      "esc",
+      "Closes any open dialogs",
+      () => {
+        this.modals.closeAll();
+      },
+      90
+    );
   },
 };
 </script>

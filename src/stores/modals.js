@@ -20,5 +20,11 @@ export const useModals = defineStore("modals", {
     toggle(modalName) {
       this[modalName] = !this[modalName];
     },
+    closeAll() {
+      ["importer", "encounter", "sources", "party", "keyboard"].forEach(
+        (modal) => {
+          this.hide(modal);
+      });
+    },
   },
 });

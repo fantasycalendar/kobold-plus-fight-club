@@ -7,7 +7,7 @@ import { useModals } from "../stores/modals";
 import LoadingSpinner from "./LoadingSpinner.vue";
 import MonsterTableHeading from "./MonsterTableHeading.vue";
 import { useEncounter } from "../stores/encounter";
-import hotkeys from "hotkeys-js";
+import { useHotkeys } from "../stores/hotkeys";
 
 const emit = defineEmits(["modal"]);
 
@@ -20,6 +20,7 @@ const sources = useSources();
 const filters = useFilters();
 const encounter = useEncounter();
 const modals = useModals();
+const hotkeys = useHotkeys();
 
 const currentPage = ref(1);
 
@@ -99,17 +100,25 @@ const pagination = computed(() => {
 });
 
 onBeforeMount(() => {
-  hotkeys("ctrl+[,ctrl+]", (event, handler) => {
-    switch (handler.key) {
-      case "ctrl+[":
-        currentPage.value--;
-        return false;
-      case "ctrl+]":
-        currentPage.value++;
-        return false;
-    }
-    return false;
-  });
+  hotkeys.register(
+    "ctrl+[",
+    "Previous monsters search page",
+    () => {
+      currentPage.value--;
+      return false;
+    },
+    60
+  );
+
+  hotkeys.register(
+    "ctrl+]",
+    "Next monsters search page",
+    () => {
+      currentPage.value++;
+      return false;
+    },
+    40
+  );
 });
 </script>
 

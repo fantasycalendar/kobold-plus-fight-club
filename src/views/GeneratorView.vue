@@ -1,7 +1,6 @@
 <script setup></script>
 
 <script>
-import hotkeys from "hotkeys-js";
 import CONST from "../js/constants.js";
 import FiltersSlideover from "../components/FiltersSlideover.vue";
 import MonsterTable from "../components/MonsterTable.vue";
@@ -10,6 +9,7 @@ import PartyPanel from "../components/PartyPanel.vue";
 import EncounterPanel from "../components/EncounterPanel.vue";
 
 import { useEncounter } from "../stores/encounter";
+import { useHotkeys } from "../stores/hotkeys";
 
 export default {
   components: {
@@ -23,9 +23,11 @@ export default {
 
   setup() {
     const encounter = useEncounter();
+    const hotkeys = useHotkeys();
 
     return {
       encounter,
+      hotkeys,
       CONST,
     };
   },
@@ -39,29 +41,45 @@ export default {
 
   methods: {
     setupHotkeys() {
-      hotkeys(["ctrl+f", "ctrl+s", "ctrl+g"].join(","), (event, handler) => {
-        switch (handler.key) {
-          case "ctrl+s":
-            this.encounter.save();
-            return false;
-          case "ctrl+g":
-            this.encounter.generateRandom();
-            return false;
-          case "ctrl+f":
-            this.showFilters =
-              Math.max(
-                document.body.scrollWidth,
-                document.documentElement.scrollWidth,
-                document.body.offsetWidth,
-                document.documentElement.offsetWidth,
-                document.documentElement.clientWidth
-              ) > 1535
-                ? true
-                : (this.showFilters = !this.showFilters);
+      this.hotkeys.register(
+        "ctrl+f",
+        "Toggle the filters sidebar",
+        () => {
+          this.showFilters =
+            Math.max(
+              document.body.scrollWidth,
+              document.documentElement.scrollWidth,
+              document.body.offsetWidth,
+              document.documentElement.offsetWidth,
+              document.documentElement.clientWidth
+            ) > 1535
+              ? true
+              : (this.showFilters = !this.showFilters);
 
-            return false;
-        }
-      });
+          return false;
+        },
+        0
+      );
+
+      this.hotkeys.register(
+        "ctrl+s",
+        "Save the current encounter",
+        () => {
+          this.encounter.save();
+          return false;
+        },
+        80
+      );
+
+      this.hotkeys.register(
+        "ctrl+g",
+        "Generate an encounter",
+        () => {
+          this.encounter.generateRandom();
+          return false;
+        },
+        70
+      );
     },
   },
 

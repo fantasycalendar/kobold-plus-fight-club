@@ -1,9 +1,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useFilters } from "../stores/filters.js";
-import hotkeys from "hotkeys-js";
+import { useHotkeys } from "../stores/hotkeys";
 
 const filters = useFilters();
+const hotkeys = useHotkeys();
+
 const keyboardText = ref(
   navigator.platform.toLowerCase().includes("mac") ? "⌘K" : "Ctrl K"
 );
@@ -11,11 +13,15 @@ const keyboardText = ref(
 const searchBox = ref(null);
 
 onMounted(() => {
-  hotkeys("ctrl+k", () => {
-    searchBox.value.focus();
-
-    return false;
-  });
+  hotkeys.register(
+    "ctrl+k",
+    "Focus the search box",
+    () => {
+      searchBox.value.focus();
+      return false;
+    },
+    50
+  );
 });
 </script>
 
