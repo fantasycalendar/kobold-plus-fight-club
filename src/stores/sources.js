@@ -62,17 +62,14 @@ export const useSources = defineStore("sources", {
 
       return this.builtIn;
     },
-    includeSources(sources) {
-      this.imported = this.imported.concat(sources);
+    import(importing) {
+      this.imported = [...this.imported, ...importing];
     },
   },
 
   getters: {
     all() {
       return [...this.builtIn, ...this.imported];
-    },
-    import(sources) {
-      this.imported = [...this.import, ...sources];
     },
     enabled() {
       return this.all.filter((source) => !!source.enabled);

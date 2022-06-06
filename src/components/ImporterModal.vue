@@ -2,10 +2,6 @@
   <Modal v-model:show="modals.importer" title="Import Custom Monsters">
     <div class="my-3 sm:mt-0 w-full" v-show="step === 1">
       <label for="importer_source">Import from</label>
-      <span
-        class="border border-red-500"
-        v-text="importerResourceLocator"
-      ></span>
 
       <select
         v-model="importerSourceType"
@@ -15,15 +11,21 @@
         class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none rounded-md focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"
       >
         <optgroup label="More to come...">
-          <option value="google-sheets">Google Sheets</option>
-          <option value="json-raw">Raw JSON</option>
-          <option value="json-file">JSON File</option>
-          <option value="csv-file">CSV Files</option>
+          <option
+            v-for="type in Importer.types"
+            :value="type.key"
+            :key="type.key"
+            v-text="type.label"
+          ></option>
         </optgroup>
       </select>
 
       <div class="mb-4">
-        <component :is="importerHtml" v-model="importerResourceLocator"></component>
+        <component
+          :is="importerHtml"
+          v-model="importerResourceLocator"
+          @downloadExample="downloadExampleFile"
+        ></component>
       </div>
       <div class="text-red-400 dark:text-red-600" v-show="importError.length">
         <i class="fa fa-exclamation-triangle"></i>
@@ -240,7 +242,7 @@
       </button>
 
       <div class="flex justify-end">
-        <!--			Step 2 button			-->
+        <!--			Step 2 buttons			-->
         <button
           v-show="step === 2"
           class="button-danger-outline-md mr-2"
@@ -271,7 +273,7 @@ import Modal from "./Modal.vue";
 import { useMonsters } from "../stores/monsters";
 import { useModals } from "../stores/modals";
 import { useSources } from "../stores/sources";
-import { shallowReactive, shallowRef } from "vue";
+import { shallowRef } from "vue";
 
 export default {
   name: "ImporterModal",
@@ -288,20 +290,21 @@ export default {
     const monsters = useMonsters();
     const sources = useSources();
     const modals = useModals();
-    const importerHtml = shallowRef(Importer.loadersHtml["google-sheets"]());
+    const importerHtml = shallowRef(Importer.loadersHtml("csv-file"));
 
     return {
       monsters,
       sources,
       modals,
       importerHtml,
+      Importer,
     };
   },
 
   data() {
     return {
       importerResourceLocator: "",
-      importerSourceType: "google-sheets",
+      importerSourceType: "csv-file",
       step: 1,
       stagedMonsters: [],
       stagedSources: [],
@@ -310,20 +313,26 @@ export default {
     };
   },
 
-  mounted() {
-    this.loadImporter();
-  },
+  created() {
+    this.$watch("importerResourceLocator", (newValue) => {
+      console.log(
+        "Importer modal noticed change to resource locator:",
+        newValue
+      );
 
-  watch: {
-    importerResourceLocator(newValue, oldValue) {
       if (!newValue) {
         this.canImport = false;
         this.importError = "";
+
         return;
       }
 
       this.validate(newValue);
-    },
+    });
+  },
+
+  mounted() {
+    this.loadImporter();
   },
 
   methods: {
@@ -333,10 +342,8 @@ export default {
         this.importerSourceType
       );
     },
-
     loadImporter() {
-      this.importerHtml = "";
-      this.importerHtml = Importer.loadersHtml[this.importerSourceType]();
+      this.importerHtml = Importer.loadersHtml(this.importerSourceType);
       this.importerResourceLocator = null;
     },
     async startImport() {

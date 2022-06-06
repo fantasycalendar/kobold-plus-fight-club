@@ -9,7 +9,6 @@ const regexCache = {};
 export const useMonsters = defineStore("monsters", {
   state: () => {
     return {
-      all: [],
       lastRegex: "",
       builtIn: useLocalStorage("monsters", []),
       imported: useLocalStorage("imported_monsters", []),
@@ -61,11 +60,9 @@ export const useMonsters = defineStore("monsters", {
           .filter(Boolean);
       }
 
-      this.all = this.instanced.concat(this.instancedImports);
-
       this.loading = false;
 
-      return this.all;
+      return this.instanced;
     },
 
     includeMonster(monster) {
@@ -147,6 +144,9 @@ export const useMonsters = defineStore("monsters", {
   },
 
   getters: {
+    all() {
+      return [...this.instanced, ...this.instancedImports];
+    },
     enabled() {
       return this.all.filter((monster) => monster.sourceEnabled);
     },
