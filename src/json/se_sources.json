@@ -1,6 +1,13 @@
 [
   {
     "type": "Official",
+    "name": "Systems Reference Document (SRD)",
+    "shortname": "SRD",
+    "link": "https://media.wizards.com/2016/downloads/DND/SRD-OGL_V5.1.pdf",
+    "default": true
+  },
+  {
+    "type": "Official",
     "name": "Monster Manual",
     "shortname": "MM",
     "link": "https://www.dndbeyond.com/sources/mm",
@@ -13,7 +20,7 @@
     "link": "https://www.dndbeyond.com/sources/cos/appendix-d-monsters-and-npcs"
   },
   {
-    "type": "Official Web Supplement",
+    "type": "Official",
     "name": "Basic Rules v1",
     "shortname": "Basic",
     "link": "https://media.wizards.com/2014/downloads/dnd/DMDnDBasicRules_v0.1.pdf",

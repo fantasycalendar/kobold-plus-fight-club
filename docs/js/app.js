@@ -9161,15 +9161,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var choices_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! choices.js */ "./node_modules/choices.js/public/assets/scripts/choices.js");
 /* harmony import */ var choices_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(choices_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var hotkeys_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! hotkeys-js */ "./node_modules/hotkeys-js/dist/hotkeys.esm.js");
-/* harmony import */ var _encounter_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./encounter.js */ "./src/js/encounter.js");
-/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! nouislider */ "./node_modules/nouislider/dist/nouislider.js");
-/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(nouislider__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
-/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants.js */ "./src/js/constants.js");
-/* harmony import */ var _monster_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./monster.js */ "./src/js/monster.js");
-/* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
-/* harmony import */ var _alpinejs_persist__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @alpinejs/persist */ "./node_modules/@alpinejs/persist/dist/module.esm.js");
-/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
+/* harmony import */ var _encounter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./encounter */ "./src/js/encounter.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./src/js/constants.js");
+/* harmony import */ var _monster__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./monster */ "./src/js/monster.js");
+/* harmony import */ var _importer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./importer */ "./src/js/importer.js");
+/* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
+/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! nouislider */ "./node_modules/nouislider/dist/nouislider.js");
+/* harmony import */ var nouislider__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(nouislider__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _alpinejs_persist__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @alpinejs/persist */ "./node_modules/@alpinejs/persist/dist/module.esm.js");
+/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -9206,29 +9207,34 @@ __webpack_require__(/*! @fortawesome/fontawesome-free */ "./node_modules/@fortaw
 
 
 
+
 var internationalNumberFormat = new Intl.NumberFormat('en-US');
 
 function app() {
   return {
-    sourcesVersion: "2.1.0",
-    storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("2.0.0").as('storedSourcesVersion'),
+    sourcesVersion: "2.3.0",
+    storedSourcesVersion: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("2.0.0").as('storedSourcesVersion'),
     menu: false,
     showFilters: false,
     showSourcesModal: false,
     showEncounterModal: false,
     showPartyModal: false,
     showKeyboardModal: false,
+    showImporterModal: false,
+    hasShownCustomMonstersNotification: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(false).as('hasShownCustomMonstersNotification'),
     mobileEncounterTab: false,
     filters: {},
     searchPlaceholder: "",
     nonDefaultFiltersCount: 0,
-    loadedSources: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('sources'),
-    loadedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('monsters'),
-    encounterHistory: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('encounterHistory'),
-    savedEncounters: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('savedEncounters'),
-    loadedEncounterIndex: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(null).as('loadedEncounterIndex'),
-    loadedLastEncounter: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(false).as('loadedLastEncounter'),
-    savedParties: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([]).as('savedParties'),
+    loadedSources: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('sources'),
+    importedSources: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('importedSources'),
+    loadedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('monsters'),
+    importedMonsters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('importedMonsters'),
+    encounterHistory: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('encounterHistory'),
+    savedEncounters: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('savedEncounters'),
+    loadedEncounterIndex: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(null).as('loadedEncounterIndex'),
+    loadedLastEncounter: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(false).as('loadedLastEncounter'),
+    savedParties: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([]).as('savedParties'),
     sources: {},
     enabledSources: [],
     allMonsters: [],
@@ -9236,23 +9242,23 @@ function app() {
     monsterLookupTable: {},
     environments: {},
     totalPages: 1,
-    currentPage: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(1).as('currentPage'),
+    currentPage: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(1).as('currentPage'),
     pagination: [],
-    monstersPerPage: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(10).as("monstersPerPage"),
-    encounterType: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("random").as("encounterType"),
+    monstersPerPage: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(10).as("monstersPerPage"),
+    encounterType: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("random").as("encounterType"),
     encounterTypeSelectOpen: false,
-    encounterTypes: Object.fromEntries(Object.entries(_constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].ENCOUNTER_TYPES).map(function (entry) {
+    encounterTypes: Object.fromEntries(Object.entries(_constants__WEBPACK_IMPORTED_MODULE_5__["default"].ENCOUNTER_TYPES).map(function (entry) {
       return [entry[0], {
         key: entry[0],
         label: entry[1].name
       }];
     })),
     difficultySelectOpen: false,
-    difficulty: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("medium").as("difficulty"),
-    search: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("").as("search"),
-    encounter: _encounter_js__WEBPACK_IMPORTED_MODULE_3__["default"],
-    sortBy: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist("name").as("sortBy"),
-    sortByDesc: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(true).as("sortByDesc"),
+    difficulty: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("medium").as("difficulty"),
+    search: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("").as("search"),
+    encounter: _encounter__WEBPACK_IMPORTED_MODULE_3__["default"],
+    sortBy: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist("name").as("sortBy"),
+    sortByDesc: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(true).as("sortByDesc"),
     setSortBy: function setSortBy(type) {
       if (type === this.sortBy) {
         this.sortByDesc = !this.sortByDesc;
@@ -9329,7 +9335,7 @@ function app() {
     },
 
     party: {
-      groups: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist([{
+      groups: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist([{
         players: 4,
         level: 1,
         getsXP: true
@@ -9356,7 +9362,7 @@ function app() {
       getGroupExperience: function getGroupExperience(acc, group) {
         var _acc$easy, _group$players, _acc$medium, _group$players2, _acc$hard, _group$players3, _acc$deadly, _group$players4, _acc$daily, _group$players5;
 
-        var groupExp = _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].EXP[group.level];
+        var groupExp = _constants__WEBPACK_IMPORTED_MODULE_5__["default"].EXP[group.level];
         return {
           easy: ((_acc$easy = acc === null || acc === void 0 ? void 0 : acc.easy) !== null && _acc$easy !== void 0 ? _acc$easy : 0) + groupExp.easy * ((_group$players = group === null || group === void 0 ? void 0 : group.players) !== null && _group$players !== void 0 ? _group$players : 1),
           medium: ((_acc$medium = acc === null || acc === void 0 ? void 0 : acc.medium) !== null && _acc$medium !== void 0 ? _acc$medium : 0) + groupExp.medium * ((_group$players2 = group === null || group === void 0 ? void 0 : group.players) !== null && _group$players2 !== void 0 ? _group$players2 : 1),
@@ -9404,6 +9410,23 @@ function app() {
           return source.enabled;
         });
       });
+
+      if (!this.hasShownCustomMonstersNotification) {
+        setTimeout(function () {
+          dispatchEvent(new CustomEvent('notification', {
+            detail: {
+              title: 'Custom Monsters have arrived!',
+              body: 'Add more creatures to challenge your players - click on the "Import Custom Monsters" in the top bar to get started!',
+              icon: 'fa-skull text-4xl',
+              icon_color: 'text-emerald-600',
+              sticky: true,
+              callback: function callback() {
+                _this.hasShownCustomMonstersNotification = true;
+              }
+            }
+          }));
+        }, 1000);
+      }
     },
 
     get monsters() {
@@ -9454,16 +9477,20 @@ function app() {
 
                 _context.t0.formatSources.call(_context.t0, _context.t1);
 
+                _this2.formatSources(_this2.importedSources);
+
                 _context.t2 = _this2;
-                _context.next = 8;
+                _context.next = 9;
                 return _this2.fetchMonsters();
 
-              case 8:
+              case 9:
                 _context.t3 = _context.sent;
 
                 _context.t2.formatMonsters.call(_context.t2, _context.t3);
 
-                _this2.searchPlaceholder = _lib_js__WEBPACK_IMPORTED_MODULE_5__.randomArrayElement(_this2.allMonsters).name;
+                _this2.formatMonsters(_this2.importedMonsters);
+
+                _this2.searchPlaceholder = _helpers__WEBPACK_IMPORTED_MODULE_4__.randomArrayElement(_this2.allMonsters).name;
 
                 if (_this2.loadedEncounterIndex !== null) {
                   _this2.encounter.load(_this2.savedEncounters[_this2.loadedEncounterIndex]);
@@ -9471,7 +9498,7 @@ function app() {
                   _this2.encounter.load(_this2.encounterHistory[_this2.encounterHistory.length - 1]);
                 }
 
-              case 12:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -9574,7 +9601,7 @@ function app() {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                if (!(_this4.loadedSources.length > 0 && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
+                if (!(_this4.loadedSources.length && _helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this4.sourcesVersion, _this4.storedSourcesVersion) === 0)) {
                   _context2.next = 2;
                   break;
                 }
@@ -9607,10 +9634,28 @@ function app() {
                 });
 
               case 9:
-                _this4.loadedSources = sources.map(function (source) {
-                  source.enabled = !!source["default"];
-                  return source;
-                });
+                // This causes old sources that were enabled to remain enabled
+                if (_this4.loadedSources.length) {
+                  _this4.loadedSources = sources.map(function (newSource) {
+                    var foundOldSource = _this4.loadedSources.find(function (oldSource) {
+                      return newSource['name'] === oldSource["name"];
+                    });
+
+                    if (foundOldSource) {
+                      newSource.enabled = foundOldSource.enabled;
+                    } else {
+                      newSource.enabled = !!newSource["default"];
+                    }
+
+                    return newSource;
+                  });
+                } else {
+                  _this4.loadedSources = sources.map(function (source) {
+                    source.enabled = !!source["default"];
+                    return source;
+                  });
+                }
+
                 return _context2.abrupt("return", _this4.loadedSources);
 
               case 11:
@@ -9630,7 +9675,7 @@ function app() {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (!(_this5.loadedMonsters.length > 0 && _lib_js__WEBPACK_IMPORTED_MODULE_5__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
+                if (!(_this5.loadedSources.length && _helpers__WEBPACK_IMPORTED_MODULE_4__.versionCompare(_this5.storedSourcesVersion, _this5.sourcesVersion) === 0)) {
                   _context3.next = 2;
                   break;
                 }
@@ -9679,27 +9724,82 @@ function app() {
       this.sources = data.reduce(function (acc, source) {
         acc[source.name] = source;
         return acc;
-      }, {});
+      }, this.sources);
     },
     formatMonsters: function formatMonsters(data) {
       var _this6 = this;
 
-      this.allMonsters = data.map(function (data) {
-        var monster = new _monster_js__WEBPACK_IMPORTED_MODULE_7__["default"](_this6, data);
+      var newMonsters = data.map(function (data) {
+        var monster = new _monster__WEBPACK_IMPORTED_MODULE_6__["default"](_this6, data);
+
+        if (_this6.monsterLookupTable[monster.slug]) {
+          return false;
+        }
+
         _this6.monsterLookupTable[monster.slug] = monster;
         return monster;
+      }).filter(Boolean);
+      this.allMonsters = this.allMonsters.concat(newMonsters);
+      var environments = {};
+      var creatureTypes = new Set();
+      var creatureSizes = new Set();
+      this.allMonsters.forEach(function (monster) {
+        monster.environments.split(',').forEach(function (environment) {
+          if (environment && !environments[environment]) {
+            var label = environment = environment.trim();
+            label = label.slice(0, 1).toUpperCase() + label.slice(1);
+            environments[environment] = {
+              value: environment,
+              label: label
+            };
+          }
+        });
+        creatureTypes.add(monster.data.type);
+        creatureSizes.add(monster.data.size);
       });
-      this.environments = Object.values(this.environments);
-      this.environments.sort(function (a, b) {
+      environments = Object.values(environments);
+      environments.sort(function (a, b) {
         return a.value > b.label ? -1 : 1;
       });
-      this.environments.unshift({
+      environments.unshift({
         value: "any",
         label: "Any Environment"
       });
       window.dispatchEvent(new CustomEvent('set-environments', {
-        detail: this.environments
+        detail: environments
       }));
+      creatureTypes = Array.from(creatureTypes);
+      creatureTypes.sort();
+      creatureTypes = creatureTypes.map(function (type) {
+        return {
+          label: type,
+          value: type.toLowerCase()
+        };
+      });
+      creatureTypes.unshift({
+        value: "any",
+        label: "Any Type"
+      });
+      window.dispatchEvent(new CustomEvent('set-creature-types', {
+        detail: creatureTypes
+      }));
+    },
+    deleteImportedSource: function deleteImportedSource(sourceName) {
+      var sourceToDelete = this.sources[sourceName];
+      this.allMonsters = this.allMonsters.filter(function (monster) {
+        return !monster.sources.find(function (source) {
+          return source.actual_source === sourceToDelete;
+        });
+      });
+      this.importedMonsters = this.importedMonsters.filter(function (monster) {
+        return !monster.sources.startsWith(sourceName);
+      });
+      delete this.sources[sourceName];
+      var index = this.importedSources.findIndex(function (source) {
+        return source.name === sourceName;
+      });
+      this.importedSources.splice(index, 1);
+      this.updateFilteredMonsters();
     },
     filterMonsters: function filterMonsters() {
       var _this7 = this;
@@ -9741,7 +9841,7 @@ function app() {
             return filter.min !== 0 || filter.max !== 30;
 
           case "alignment":
-            return filter !== _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].ALL_ALIGNMENTS;
+            return filter !== _constants__WEBPACK_IMPORTED_MODULE_5__["default"].ALL_ALIGNMENTS;
 
           default:
             return filter.length && !filter.includes('any');
@@ -9870,7 +9970,7 @@ function app() {
           return player.active;
         }).forEach(function (player, playerIndex) {
           data.Combatants.push({
-            Id: _lib_js__WEBPACK_IMPORTED_MODULE_5__.slugify("".concat(party.name, "-").concat(player.name)),
+            Id: _helpers__WEBPACK_IMPORTED_MODULE_4__.slugify("".concat(party.name, "-").concat(player.name)),
             Name: player.name,
             InitiativeModifier: player.initiativeMod,
             InitiativeAdvantage: player.initiativeAdvantage,
@@ -9913,14 +10013,14 @@ function multiSlider($el, name, options, updateCallback) {
       max: '30'
     },
     options: options,
-    value: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist({
+    value: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist({
       min: '0',
       max: '30'
     }).as(name),
     init: function init() {
       var _this10 = this;
 
-      this.slider = nouislider__WEBPACK_IMPORTED_MODULE_4___default().create($el, {
+      this.slider = nouislider__WEBPACK_IMPORTED_MODULE_8___default().create($el, {
         start: [options.findIndex(function (option) {
           return option.value === _this10.value.min;
         }), options.findIndex(function (option) {
@@ -9951,8 +10051,8 @@ function multiSlider($el, name, options, updateCallback) {
         detail: {
           name: "cr",
           value: {
-            min: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.min].numeric,
-            max: _constants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CR[this.value.max].numeric
+            min: _constants__WEBPACK_IMPORTED_MODULE_5__["default"].CR[this.value.min].numeric,
+            max: _constants__WEBPACK_IMPORTED_MODULE_5__["default"].CR[this.value.max].numeric
           }
         }
       }));
@@ -9990,9 +10090,10 @@ function multiSlider($el, name, options, updateCallback) {
 function multiSelect($el, name, options) {
   return {
     multiple: true,
-    value: alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].$persist(['any']).as(name),
+    value: alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].$persist(['any']).as(name),
     name: name,
     options: options,
+    completedSetup: false,
     init: function init() {
       var _this11 = this;
 
@@ -10003,6 +10104,10 @@ function multiSelect($el, name, options) {
     },
     setUp: function setUp() {
       var _this12 = this;
+
+      if (this.completedSetup) {
+        return;
+      }
 
       var choices = new (choices_js__WEBPACK_IMPORTED_MODULE_1___default())($el, {
         allowHTML: true,
@@ -10048,6 +10153,7 @@ function multiSelect($el, name, options) {
         return refreshChoices();
       });
       this.onFiltersChanged();
+      this.completedSetup = true;
     },
     onFiltersChanged: function onFiltersChanged() {
       window.dispatchEvent(new CustomEvent('filters-changed', {
@@ -10069,12 +10175,13 @@ window.hotkeys = hotkeys_js__WEBPACK_IMPORTED_MODULE_2__["default"];
 window.app = app;
 window.multiSelect = multiSelect;
 window.multiSlider = multiSlider;
-window.noUiSlider = (nouislider__WEBPACK_IMPORTED_MODULE_4___default());
+window.noUiSlider = (nouislider__WEBPACK_IMPORTED_MODULE_8___default());
 window.Choices = (choices_js__WEBPACK_IMPORTED_MODULE_1___default());
-window.tippy = tippy_js__WEBPACK_IMPORTED_MODULE_10__["default"];
-window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"];
-alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].plugin(_alpinejs_persist__WEBPACK_IMPORTED_MODULE_8__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_9__["default"].start();
+window.tippy = tippy_js__WEBPACK_IMPORTED_MODULE_11__["default"];
+window.Importer = _importer__WEBPACK_IMPORTED_MODULE_7__["default"];
+window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"];
+alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].plugin(_alpinejs_persist__WEBPACK_IMPORTED_MODULE_9__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_10__["default"].start();
 
 /***/ }),
 
@@ -10089,7 +10196,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers.js */ "./src/js/helpers.js");
 
 var CONST = {
   EXP: {
@@ -10640,7 +10747,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers.js */ "./src/js/helpers.js");
 /* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants.js */ "./src/js/constants.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -10723,11 +10830,11 @@ var encounter = {
           upperKey = _levels$i[0],
           upperValue = _levels$i[1];
 
-      var _ratio = _lib_js__WEBPACK_IMPORTED_MODULE_0__.ratio(lowerValue, upperValue, exp);
+      var _ratio = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.ratio(lowerValue, upperValue, exp);
 
       if (upperKey === "daily" && _ratio >= 0.0) {
         if (_ratio >= 0.2) {
-          return _ratio >= 1.0 ? "like " + _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(this.insaneDifficultyStrings) : _ratio >= 0.6 ? 'extremely deadly' : "really deadly";
+          return _ratio >= 1.0 ? "like " + _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(this.insaneDifficultyStrings) : _ratio >= 0.6 ? 'extremely deadly' : "really deadly";
         }
 
         return lowerKey;
@@ -10740,7 +10847,7 @@ var encounter = {
       }
     }
 
-    var ratio = _lib_js__WEBPACK_IMPORTED_MODULE_0__.ratio(0, levels[0][1], exp);
+    var ratio = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.ratio(0, levels[0][1], exp);
     return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
   },
 
@@ -10884,13 +10991,13 @@ var encounter = {
       });
     }
 
-    return _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
+    return _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
   },
   getEncounterTemplate: function getEncounterTemplate() {
-    var template = _lib_js__WEBPACK_IMPORTED_MODULE_0__.clone(_constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCOUNTER_TYPES[this.app.encounterType]);
+    var template = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.clone(_constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCOUNTER_TYPES[this.app.encounterType]);
 
     if (template.samples) {
-      template = _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(template.samples);
+      template = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(template.samples);
 
       if (this.app.encounterType === "random") {
         template = {
@@ -10911,7 +11018,7 @@ var encounter = {
           part = part.replaceAll("players", players);
           return eval(part);
         });
-        group.count = parts.length > 1 ? _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomIntBetween.apply(_lib_js__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(parts)) : parts[0];
+        group.count = parts.length > 1 ? _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomIntBetween.apply(_helpers_js__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(parts)) : parts[0];
       }
 
       return group;
@@ -10964,7 +11071,7 @@ var encounter = {
       });
     });
     if (!monsterList.length) return;
-    group.monster = _lib_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
+    group.monster = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.randomArrayElement(monsterList);
     this.saveToHistory();
   },
   addMonster: function addMonster(monster) {
@@ -11075,7 +11182,7 @@ var encounter = {
   load: function load(encounter) {
     var _this2 = this;
 
-    var groups = _lib_js__WEBPACK_IMPORTED_MODULE_0__.clone(encounter).map(function (group) {
+    var groups = _helpers_js__WEBPACK_IMPORTED_MODULE_0__.clone(encounter).map(function (group) {
       group.monster = _this2.app.monsterLookupTable[group.monster.slug];
       if (!group.monster) return false;
       return group;
@@ -11119,24 +11226,28 @@ var encounter = {
 
 /***/ }),
 
-/***/ "./src/js/lib.js":
-/*!***********************!*\
-  !*** ./src/js/lib.js ***!
-  \***********************/
+/***/ "./src/js/helpers.js":
+/*!***************************!*\
+  !*** ./src/js/helpers.js ***!
+  \***************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "clone": () => (/* binding */ clone),
+/* harmony export */   "downloadFile": () => (/* binding */ downloadFile),
 /* harmony export */   "isValidHttpUrl": () => (/* binding */ isValidHttpUrl),
 /* harmony export */   "randomArrayElement": () => (/* binding */ randomArrayElement),
 /* harmony export */   "randomFloatBetween": () => (/* binding */ randomFloatBetween),
 /* harmony export */   "randomIntBetween": () => (/* binding */ randomIntBetween),
 /* harmony export */   "ratio": () => (/* binding */ ratio),
 /* harmony export */   "slugify": () => (/* binding */ slugify),
+/* harmony export */   "validateJSON": () => (/* binding */ validateJSON),
 /* harmony export */   "versionCompare": () => (/* binding */ versionCompare)
 /* harmony export */ });
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
 /**
  *  Returns a floating point number between a minimum and maximum value
  *
@@ -11270,6 +11381,1038 @@ function versionCompare(v1, v2, options) {
 
   return 0;
 }
+/**
+ * Determines whether a string is actually valid JSON
+ */
+
+function validateJSON(jsonString) {
+  try {
+    var o = JSON.parse(jsonString); // Handle non-exception-throwing cases:
+    // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+    // but... JSON.parse(null) returns null, and typeof null === "object",
+    // so we must check for that, too. Thankfully, null is falsey, so this suffices:
+
+    if (o && _typeof(o) === "object") {
+      return o;
+    }
+  } catch (e) {}
+
+  return false;
+}
+function downloadFile(fileName, data, type) {
+  var a = document.createElement("a");
+  var file = new Blob([data], {
+    type: type
+  });
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+  a.remove();
+}
+
+/***/ }),
+
+/***/ "./src/js/importer.js":
+/*!****************************!*\
+  !*** ./src/js/importer.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Importer)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+var Importer = /*#__PURE__*/function () {
+  function Importer() {
+    _classCallCheck(this, Importer);
+  }
+
+  _createClass(Importer, null, [{
+    key: "_validateSources",
+    value: function _validateSources(sources) {
+      var _this = this;
+
+      var _iterator = _createForOfIteratorHelper(sources),
+          _step;
+
+      try {
+        var _loop = function _loop() {
+          var source = _step.value;
+          var sourceKeys = Object.keys(source);
+
+          var _iterator2 = _createForOfIteratorHelper(_this.sourcesRequiredHeaders),
+              _step2;
+
+          try {
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              var key = _step2.value;
+
+              if (Array.isArray(key)) {
+                if (!key.find(function (option) {
+                  return sourceKeys.includes(option);
+                })) {
+                  return {
+                    v: [false, "Sources are missing the required header: '".concat(key[0], "'")]
+                  };
+                }
+              } else if (!sourceKeys.includes(key)) {
+                return {
+                  v: [false, "Sources are missing the required header: '".concat(key, "'")]
+                };
+              }
+            }
+          } catch (err) {
+            _iterator2.e(err);
+          } finally {
+            _iterator2.f();
+          }
+        };
+
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _ret = _loop();
+
+          if (_typeof(_ret) === "object") return _ret.v;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return [true];
+    }
+  }, {
+    key: "_validateMonsters",
+    value: function _validateMonsters(monsters) {
+      var _this2 = this;
+
+      var _iterator3 = _createForOfIteratorHelper(monsters),
+          _step3;
+
+      try {
+        var _loop2 = function _loop2() {
+          var monster = _step3.value;
+          var monsterKeys = Object.keys(monster);
+
+          var _iterator4 = _createForOfIteratorHelper(_this2.monstersRequiredHeaders),
+              _step4;
+
+          try {
+            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+              var key = _step4.value;
+
+              if (Array.isArray(key)) {
+                if (!key.find(function (option) {
+                  return monsterKeys.includes(option);
+                })) {
+                  return {
+                    v: [false, "Monsters are missing the required header: '".concat(key[0], "'")]
+                  };
+                }
+              } else if (!monsterKeys.includes(key)) {
+                return {
+                  v: [false, "Monsters are missing the required header: '".concat(key, "'")]
+                };
+              }
+            }
+          } catch (err) {
+            _iterator4.e(err);
+          } finally {
+            _iterator4.f();
+          }
+        };
+
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _ret2 = _loop2();
+
+          if (_typeof(_ret2) === "object") return _ret2.v;
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
+      return [true];
+    }
+  }, {
+    key: "_validateGoogleSheets",
+    value: function () {
+      var _validateGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(resourceLocator) {
+        var _this3 = this;
+
+        var parts, i, initialLoad, monstersValid, sourcesValid;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")) {
+                  parts = resourceLocator.split('/');
+
+                  for (i = 0; i < parts.length; i++) {
+                    if (parts[i] === "d") {
+                      resourceLocator = parts[i + 1];
+                    }
+                  }
+                }
+
+                _context.next = 3;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  if (jsonifiedBody.error) {
+                    return [false, "Google responded with an error: \"".concat(jsonifiedBody.error.message, "\"")];
+                  }
+
+                  var monsters = jsonifiedBody.sheets.find(function (sheet) {
+                    return sheet.properties.title === 'Monsters';
+                  });
+
+                  if (!monsters) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Monsters'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
+                      return sheet.properties.title;
+                    }).join(', ') + "'"];
+                  }
+
+                  var sources = jsonifiedBody.sheets.find(function (sheet) {
+                    return sheet.properties.title === 'Sources';
+                  });
+
+                  if (!sources) {
+                    return [false, "Your Google Sheets workbook must contain a sheet called 'Sources'. Only found: '" + jsonifiedBody.sheets.map(function (sheet) {
+                      return sheet.properties.title;
+                    }).join(', ') + "'"];
+                  }
+
+                  return [true];
+                });
+
+              case 3:
+                initialLoad = _context.sent;
+
+                if (initialLoad[0]) {
+                  _context.next = 6;
+                  break;
+                }
+
+                return _context.abrupt("return", initialLoad);
+
+              case 6:
+                _context.next = 8;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
+
+                  var _iterator5 = _createForOfIteratorHelper(_this3.monstersRequiredHeaders),
+                      _step5;
+
+                  try {
+                    for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+                      var key = _step5.value;
+
+                      if (Array.isArray(key)) {
+                        if (!key.find(function (option) {
+                          return headers.includes(option);
+                        })) {
+                          return [false, "Monsters are missing the required header: '".concat(key[0], "'")];
+                        }
+                      } else if (!headers.includes(key)) {
+                        return [false, "Monsters are missing the required header: '".concat(key, "'")];
+                      }
+                    }
+                  } catch (err) {
+                    _iterator5.e(err);
+                  } finally {
+                    _iterator5.f();
+                  }
+
+                  return [true];
+                })["catch"](function (err) {
+                  console.error(err);
+                  return false;
+                });
+
+              case 8:
+                monstersValid = _context.sent;
+
+                if (monstersValid[0]) {
+                  _context.next = 11;
+                  break;
+                }
+
+                return _context.abrupt("return", monstersValid);
+
+              case 11:
+                _context.next = 13;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
+
+                  var _iterator6 = _createForOfIteratorHelper(_this3.sourcesRequiredHeaders),
+                      _step6;
+
+                  try {
+                    for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+                      var key = _step6.value;
+
+                      if (Array.isArray(key)) {
+                        if (!key.find(function (option) {
+                          return headers.includes(option);
+                        })) {
+                          return [false, "Sources are missing the required header: '".concat(key[0], "'")];
+                        }
+                      } else if (!headers.includes(key)) {
+                        return [false, "Sources are missing the required header: '".concat(key, "'")];
+                      }
+                    }
+                  } catch (err) {
+                    _iterator6.e(err);
+                  } finally {
+                    _iterator6.f();
+                  }
+
+                  return [true];
+                })["catch"](function (err) {
+                  console.error(err);
+                  return false;
+                });
+
+              case 13:
+                sourcesValid = _context.sent;
+
+                if (sourcesValid[0]) {
+                  _context.next = 16;
+                  break;
+                }
+
+                return _context.abrupt("return", sourcesValid);
+
+              case 16:
+                return _context.abrupt("return", [true, '']);
+
+              case 17:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function _validateGoogleSheets(_x) {
+        return _validateGoogleSheets2.apply(this, arguments);
+      }
+
+      return _validateGoogleSheets;
+    }()
+  }, {
+    key: "_validateJson",
+    value: function () {
+      var _validateJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(resourceLocator) {
+        var results, validMonsters, validSources;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return this._importJson(resourceLocator);
+
+              case 2:
+                results = _context2.sent;
+
+                if (results) {
+                  _context2.next = 5;
+                  break;
+                }
+
+                return _context2.abrupt("return", [false, "Couldn't resolve K+FC data, import source is probably invalid JSON."]);
+
+              case 5:
+                if (results.sources) {
+                  _context2.next = 7;
+                  break;
+                }
+
+                return _context2.abrupt("return", [false, "Your JSON must contain sources."]);
+
+              case 7:
+                if (results.monsters) {
+                  _context2.next = 9;
+                  break;
+                }
+
+                return _context2.abrupt("return", [false, "Your JSON has sources, but must also contain monsters."]);
+
+              case 9:
+                validMonsters = this._validateMonsters(results.monsters);
+
+                if (validMonsters[0]) {
+                  _context2.next = 12;
+                  break;
+                }
+
+                return _context2.abrupt("return", validMonsters);
+
+              case 12:
+                validSources = this._validateSources(results.sources);
+
+                if (validSources[0]) {
+                  _context2.next = 15;
+                  break;
+                }
+
+                return _context2.abrupt("return", validSources);
+
+              case 15:
+                return _context2.abrupt("return", [true, ""]);
+
+              case 16:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function _validateJson(_x2) {
+        return _validateJson2.apply(this, arguments);
+      }
+
+      return _validateJson;
+    }()
+  }, {
+    key: "_validateJsonFile",
+    value: function () {
+      var _validateJsonFile2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(resourceLocator) {
+        var results, validMonsters, validSources;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!(resourceLocator.type !== 'application/json')) {
+                  _context3.next = 2;
+                  break;
+                }
+
+                return _context3.abrupt("return", [false, "The file you provided isn't a text file containing JSON."]);
+
+              case 2:
+                _context3.next = 4;
+                return this._importJsonFile(resourceLocator);
+
+              case 4:
+                results = _context3.sent;
+
+                if (results) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                return _context3.abrupt("return", [false, "Couldn't resolve K+FC data, import source is probably invalid JSON."]);
+
+              case 7:
+                if (results.sources) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                return _context3.abrupt("return", [false, "Your JSON must contain sources."]);
+
+              case 9:
+                if (results.monsters) {
+                  _context3.next = 11;
+                  break;
+                }
+
+                return _context3.abrupt("return", [false, "Your JSON has sources, but must also contain monsters."]);
+
+              case 11:
+                validMonsters = this._validateMonsters(results.monsters);
+
+                if (validMonsters[0]) {
+                  _context3.next = 14;
+                  break;
+                }
+
+                return _context3.abrupt("return", validMonsters);
+
+              case 14:
+                validSources = this._validateSources(results.sources);
+
+                if (validSources[0]) {
+                  _context3.next = 17;
+                  break;
+                }
+
+                return _context3.abrupt("return", validSources);
+
+              case 17:
+                return _context3.abrupt("return", [true, ""]);
+
+              case 18:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function _validateJsonFile(_x3) {
+        return _validateJsonFile2.apply(this, arguments);
+      }
+
+      return _validateJsonFile;
+    }()
+  }, {
+    key: "_validateCSV",
+    value: function () {
+      var _validateCSV2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(resourceLocators) {
+        var results, validMonsters, validSources;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                if (!(!resourceLocators[0] || !resourceLocators[1])) {
+                  _context4.next = 2;
+                  break;
+                }
+
+                return _context4.abrupt("return", [false, '']);
+
+              case 2:
+                if (!(resourceLocators[0].type !== 'text/csv' || resourceLocators[1].type !== 'text/csv')) {
+                  _context4.next = 4;
+                  break;
+                }
+
+                return _context4.abrupt("return", [false, "The files you provided aren't valid CSV text files."]);
+
+              case 4:
+                _context4.next = 6;
+                return this._importCSV(resourceLocators);
+
+              case 6:
+                results = _context4.sent;
+
+                if (results) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                return _context4.abrupt("return", [false, "Couldn't resolve K+FC data, import source is probably an invalid CSV file."]);
+
+              case 9:
+                validMonsters = this._validateMonsters(results.monsters);
+
+                if (validMonsters[0]) {
+                  _context4.next = 12;
+                  break;
+                }
+
+                return _context4.abrupt("return", validMonsters);
+
+              case 12:
+                validSources = this._validateSources(results.sources);
+
+                if (validSources[0]) {
+                  _context4.next = 15;
+                  break;
+                }
+
+                return _context4.abrupt("return", validSources);
+
+              case 15:
+                return _context4.abrupt("return", [true, ""]);
+
+              case 16:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function _validateCSV(_x4) {
+        return _validateCSV2.apply(this, arguments);
+      }
+
+      return _validateCSV;
+    }()
+  }, {
+    key: "canImport",
+    value: function () {
+      var _canImport = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(resourceLocator, type) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (resourceLocator) {
+                  _context5.next = 2;
+                  break;
+                }
+
+                return _context5.abrupt("return", [false, "You must provide an import source."]);
+
+              case 2:
+                return _context5.abrupt("return", this.validators[type].bind(this)(resourceLocator));
+
+              case 3:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function canImport(_x5, _x6) {
+        return _canImport.apply(this, arguments);
+      }
+
+      return canImport;
+    }()
+  }, {
+    key: "import",
+    value: function () {
+      var _import2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6() {
+        var _ref,
+            _ref$resourceLocator,
+            resourceLocator,
+            _ref$type,
+            type,
+            _args6 = arguments;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _ref = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : {}, _ref$resourceLocator = _ref.resourceLocator, resourceLocator = _ref$resourceLocator === void 0 ? false : _ref$resourceLocator, _ref$type = _ref.type, type = _ref$type === void 0 ? 'google-sheets' : _ref$type;
+                return _context6.abrupt("return", this.loaders[type].bind(this)(resourceLocator));
+
+              case 2:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function _import() {
+        return _import2.apply(this, arguments);
+      }
+
+      return _import;
+    }()
+  }, {
+    key: "_importGoogleSheets",
+    value: function () {
+      var _importGoogleSheets2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7(resourceLocator) {
+        var parts, i, monsters, sources;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                if (resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")) {
+                  parts = resourceLocator.split('/');
+
+                  for (i = 0; i < parts.length; i++) {
+                    if (parts[i] === "d") {
+                      resourceLocator = parts[i + 1];
+                    }
+                  }
+                }
+
+                _context7.next = 3;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Monsters?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
+                  return jsonifiedBody.values.map(function (item) {
+                    return {
+                      "name": item[headers.indexOf("name")],
+                      "cr": item[headers.indexOf("cr")],
+                      "size": item[headers.indexOf("size")],
+                      "type": item[headers.indexOf("type")],
+                      "tags": item[headers.indexOf("tags")],
+                      "section": item[headers.indexOf("section")],
+                      "alignment": item[headers.indexOf("alignment")].toLowerCase(),
+                      "environment": item[headers.indexOf("environment")].toLowerCase(),
+                      "ac": item[headers.indexOf("ac")],
+                      "hp": item[headers.indexOf("hp")],
+                      "init": item[headers.indexOf("init")],
+                      "lair": item[headers.indexOf("lair?")] || item[headers.indexOf("lair")],
+                      "legendary": item[headers.indexOf("legendary?")] || item[headers.indexOf("legendary")],
+                      "unique": item[headers.indexOf("unique")] || item[headers.indexOf("unique?")],
+                      "sources": item[headers.indexOf("sources")]
+                    };
+                  });
+                })["catch"](function (err) {
+                  return console.error(err);
+                });
+
+              case 3:
+                monsters = _context7.sent;
+                _context7.next = 6;
+                return fetch("https://sheets.googleapis.com/v4/spreadsheets/".concat(resourceLocator, "/values/Sources?") + new URLSearchParams({
+                  key: this.key
+                })).then(function (response) {
+                  return response.json();
+                }).then(function (jsonifiedBody) {
+                  var headers = jsonifiedBody.values.splice(0, 1)[0].map(function (str) {
+                    return str.toLowerCase();
+                  });
+                  return jsonifiedBody.values.map(function (item) {
+                    return {
+                      "name": item[headers.indexOf("name")],
+                      "type": item[headers.indexOf("type")],
+                      "shortname": item[headers.indexOf("short name")] || item[headers.indexOf("shortname")],
+                      "link": item[headers.indexOf("link")],
+                      "custom": true,
+                      "enabled": true
+                    };
+                  });
+                })["catch"](function (err) {
+                  return console.error(err);
+                });
+
+              case 6:
+                sources = _context7.sent;
+                return _context7.abrupt("return", {
+                  sources: sources,
+                  monsters: monsters
+                });
+
+              case 8:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this);
+      }));
+
+      function _importGoogleSheets(_x7) {
+        return _importGoogleSheets2.apply(this, arguments);
+      }
+
+      return _importGoogleSheets;
+    }()
+  }, {
+    key: "_importJsonFile",
+    value: function () {
+      var _importJsonFile2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee8(resourceLocator) {
+        var data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                _context8.next = 2;
+                return this._loadFile(resourceLocator);
+
+              case 2:
+                data = _context8.sent;
+                return _context8.abrupt("return", this._importJson(data));
+
+              case 4:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+
+      function _importJsonFile(_x8) {
+        return _importJsonFile2.apply(this, arguments);
+      }
+
+      return _importJsonFile;
+    }()
+  }, {
+    key: "_importJson",
+    value: function () {
+      var _importJson2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee9(resourceLocator) {
+        var data, _iterator7, _step7, source;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                _context9.prev = 0;
+                data = JSON.parse(resourceLocator);
+                _iterator7 = _createForOfIteratorHelper(data.sources);
+
+                try {
+                  for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+                    source = _step7.value;
+                    source.custom = true;
+                  }
+                } catch (err) {
+                  _iterator7.e(err);
+                } finally {
+                  _iterator7.f();
+                }
+
+                return _context9.abrupt("return", data);
+
+              case 7:
+                _context9.prev = 7;
+                _context9.t0 = _context9["catch"](0);
+                console.error(_context9.t0);
+                return _context9.abrupt("return", false);
+
+              case 11:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, null, [[0, 7]]);
+      }));
+
+      function _importJson(_x9) {
+        return _importJson2.apply(this, arguments);
+      }
+
+      return _importJson;
+    }()
+  }, {
+    key: "_downloadExampleJson",
+    value: function _downloadExampleJson() {
+      var jsonExample = {
+        "sources": [{
+          "name": "Custom Source",
+          "type": "Custom",
+          "shortname": "CS",
+          "link": ""
+        }, {
+          "name": "Another Custom Source",
+          "type": "Third-Party",
+          "shortname": "ACS",
+          "link": "https://google.com/"
+        }],
+        "monsters": [{
+          "name": "Zombie",
+          "cr": "1/4",
+          "size": "Medium",
+          "type": "Undead",
+          "tags": "",
+          "section": "Zombies",
+          "alignment": "neutral evil",
+          "environment": "aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",
+          "ac": 8,
+          "hp": 22,
+          "init": -2,
+          "lair": "",
+          "legendary": "",
+          "unique": "",
+          "sources": "Custom Source: 5"
+        }, {
+          "name": "Bigger Zombie",
+          "cr": "1/2",
+          "size": "Large",
+          "type": "Undead",
+          "tags": "",
+          "section": "Zombies",
+          "alignment": "neutral evil",
+          "environment": "my custom place",
+          "ac": 10,
+          "hp": 41,
+          "init": -2,
+          "lair": "lair",
+          "legendary": "legendary",
+          "unique": "unique",
+          "sources": "Another Custom Source: 32"
+        }]
+      };
+      _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example.json", JSON.stringify(jsonExample, null, 4), "application/json");
+    }
+  }, {
+    key: "_importCSV",
+    value: function () {
+      var _importCSV2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee10(resourceLocators) {
+        var sources, monsters;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                _context10.next = 2;
+                return this._loadFile(resourceLocators[0]);
+
+              case 2:
+                sources = _context10.sent;
+
+                if (sources) {
+                  _context10.next = 5;
+                  break;
+                }
+
+                return _context10.abrupt("return", false);
+
+              case 5:
+                sources.forEach(function (source) {
+                  source.custom = true;
+                });
+                _context10.next = 8;
+                return this._loadFile(resourceLocators[1]);
+
+              case 8:
+                monsters = _context10.sent;
+
+                if (monsters) {
+                  _context10.next = 11;
+                  break;
+                }
+
+                return _context10.abrupt("return", false);
+
+              case 11:
+                return _context10.abrupt("return", {
+                  sources: this._formatCSV(sources),
+                  monsters: this._formatCSV(monsters)
+                });
+
+              case 12:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10, this);
+      }));
+
+      function _importCSV(_x10) {
+        return _importCSV2.apply(this, arguments);
+      }
+
+      return _importCSV;
+    }()
+  }, {
+    key: "_formatCSV",
+    value: function _formatCSV(str) {
+      var headers = str.slice(0, str.indexOf("\n")).split(',');
+      var rows = str.slice(str.indexOf("\n") + 1).split("\n");
+      return rows.map(function (row) {
+        var values = row.split(',');
+        return headers.reduce(function (obj, header, index) {
+          obj[header] = values[index];
+          return obj;
+        }, {});
+      });
+    }
+  }, {
+    key: "_downloadExampleCSV",
+    value: function _downloadExampleCSV() {
+      var sources = "name,type,shortname,link\n";
+      sources += "Custom Source,Custom,CS,\n";
+      sources += "Another Custom Source,Third-Party,ACS,https://google.com/";
+      _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example_sources.csv", sources, "text/csv");
+      var monsters = "name,cr,size,type,tags,section,alignment,environment,ac,hp,init,lair,legendary,unique,sources\n";
+      monsters += "Zombie,1/4,Medium,Undead,,Zombies,neutral evil,\"aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban\",8,22, -2,,,,Custom Source: 5\n";
+      monsters += "Bigger Zombie,1/2,Large,Undead,,Zombies,neutral evil,my custom place,10,41,-2,lair,legendary,unique,Another Custom Source: 32";
+      _helpers__WEBPACK_IMPORTED_MODULE_1__.downloadFile("example_monsters.csv", monsters, "text/csv");
+    }
+  }, {
+    key: "_loadFile",
+    value: function _loadFile(file) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          try {
+            resolve(reader.result);
+          } catch (err) {
+            console.error(err);
+            reject(err);
+          }
+        });
+        reader.readAsText(file);
+      });
+    }
+  }]);
+
+  return Importer;
+}();
+
+_defineProperty(Importer, "key", 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM');
+
+_defineProperty(Importer, "loaders", {
+  'google-sheets': Importer._importGoogleSheets,
+  'json-raw': Importer._importJson,
+  'json-file': Importer._importJsonFile,
+  'csv-file': Importer._importCSV
+});
+
+_defineProperty(Importer, "validators", {
+  'google-sheets': Importer._validateGoogleSheets,
+  'json-raw': Importer._validateJson,
+  'json-file': Importer._validateJsonFile,
+  'csv-file': Importer._validateCSV
+});
+
+_defineProperty(Importer, "exampleFiles", {
+  'json-raw': Importer._downloadExampleJson,
+  'json-file': Importer._downloadExampleJson,
+  'csv-file': Importer._downloadExampleCSV
+});
+
+_defineProperty(Importer, "sourcesRequiredHeaders", ["name", "type", ["shortname", "short name"], "link"]);
+
+_defineProperty(Importer, "monstersRequiredHeaders", ["name", "cr", "size", "type", "tags", "section", "alignment", "environment", "ac", "hp", "init", ["lair", "lair?"], ["legendary", "legendary?"], ["unique", "unique?"], "sources"]);
+
+_defineProperty(Importer, "loadersHtml", {
+  'google-sheets': function googleSheets() {
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Insert a Google Sheet ID or link. To create your own, you can <a class=\"primary-link\" target=\"_blank\" href=\"https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing\">refer to this example.</a></label>\n                <input name=\"import_resource_locator\" id=\"import_resource_locator\" type=\"text\" x-model=\"importerResourceLocator\">\n            ";
+  },
+  'json-raw': function jsonRaw() {
+    return "\n                <label class=\"mb-1\" for=\"import_resource_locator\">Input raw JSON or <a href=\"javascript:true\" class=\"primary-link\" @click=\"downloadExampleFile\">download an example file to edit.</a></label>\n                <div class=\"mt-1\">\n                    <textarea id=\"import_resource_locator\" x-model=\"importerResourceLocator\" rows=\"4\" name=\"comment\" class=\"border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600\"></textarea>\n                </div>\n            ";
+  },
+  'json-file': function jsonFile() {
+    return "\n                <label class=\"mb-1 block\" id=\"file_input_label\" for=\"import_resource_locator_file\">Upload JSON text file below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download an example file to edit.</a></label>                \n                <input accept=\"application/json\" class=\"block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"importerResourceLocator = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file\" type=\"file\">\n            ";
+  },
+  'csv-file': function csvFile() {
+    return "\n                <label class=\"mb-1\">Upload CSV text files below or <a class=\"primary-link\" href=\"javascript:true\" @click=\"downloadExampleFile\">download example files to edit.</a></label>\n                <div class=\"grid grid-cols-2 gap-2 mt-2\">                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_1\">Sources CSV</label>                \n                    <label class=\"\" id=\"file_input_label_1\" for=\"import_resource_locator_file_2\">Monsters CSV</label>                \n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_1\" type=\"file\">\n                    <input accept=\"text/csv\" class=\" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400\" @change=\"if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]\" aria-describedby=\"file_input_label\" id=\"import_resource_locator_file_2\" type=\"file\">\n                </div>\n            ";
+  }
+});
+
+
 
 /***/ }),
 
@@ -11285,7 +12428,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Monster)
 /* harmony export */ });
 /* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants.js */ "./src/js/constants.js");
-/* harmony import */ var _lib_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib.js */ "./src/js/lib.js");
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers.js */ "./src/js/helpers.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -11320,23 +12463,13 @@ var Monster = /*#__PURE__*/function () {
     this.app = app;
     this.data = data;
     this.cr = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].CR[this.data.cr];
-    this.slug = _lib_js__WEBPACK_IMPORTED_MODULE_1__.slugify(this.data.name + '-' + this.data.sources + "-" + this.cr.string);
+    this.slug = _helpers_js__WEBPACK_IMPORTED_MODULE_1__.slugify(this.data.name + '-' + this.data.sources + "-" + this.cr.string);
     this.tags = this.data.tags ? this.data.tags.split(/\s*,\s*/).sort() : null;
     this.special = !!this.data.special;
     this.legendary = !!this.data.legendary;
     this.lair = !!this.data.lair;
     this.unique = !!this.data.unique;
     this.alignment = this.data.alignment ? Monster.parseAlignment(this.data.alignment) : "";
-    this.environments.split(',').forEach(function (environment) {
-      if (environment && !_this.app.environments[environment]) {
-        var label = environment = environment.trim();
-        label = label.slice(0, 1).toUpperCase() + label.slice(1);
-        _this.app.environments[environment] = {
-          value: environment,
-          label: label
-        };
-      }
-    });
     this.searchable = [this.data.name, this.data.section, this.data.type, this.data.size, this.data.alignment ? this.alignment.text : "", this.data.cr.string].concat(this.tags).join("|").toLowerCase();
     this.sources = this.data.sources.split(', ').map(function (str) {
       var _str$split = str.split(": "),
@@ -11345,11 +12478,12 @@ var Monster = /*#__PURE__*/function () {
           location = _str$split2[1];
 
       var source = {};
+      source.actual_source = _this.app.sources[book];
 
-      if (!isNaN(location)) {
-        source.reference = _this.app.sources[book];
+      if (!isNaN(Number(location))) {
+        source.reference = source.actual_source;
         source.page = location;
-      } else if (_lib_js__WEBPACK_IMPORTED_MODULE_1__.isValidHttpUrl(location)) {
+      } else if (_helpers_js__WEBPACK_IMPORTED_MODULE_1__.isValidHttpUrl(location)) {
         source.reference = {
           name: book,
           shortname: book,
@@ -11396,7 +12530,7 @@ var Monster = /*#__PURE__*/function () {
     key: "sourceEnabled",
     get: function get() {
       return this.sources.find(function (source) {
-        return source.reference.enabled;
+        return source.actual_source.enabled;
       });
     }
   }, {

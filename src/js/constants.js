@@ -1,4 +1,4 @@
-import * as lib from "./lib.js";
+import * as helpers from "./helpers.js";
 
 const CONST = {
 
