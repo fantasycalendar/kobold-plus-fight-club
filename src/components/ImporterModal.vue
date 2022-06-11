@@ -8,7 +8,10 @@
         name="importer_source"
         id="importer_source"
         :options="Importer.types"
-        :label="Importer.types.find((type) => type.key === importerSourceType).label ?? 'Loading...'"
+        :label="
+          Importer.types.find((type) => type.key === importerSourceType)
+            .label ?? 'Loading...'
+        "
         class="mb-4"
       >
       </SelectInput>
@@ -295,7 +298,7 @@ export default {
     const monsters = useMonsters();
     const sources = useSources();
     const modals = useModals();
-    const importerHtml = shallowRef(Importer.loadersHtml("json-raw"));
+    const importerHtml = shallowRef(Importer.loadersHtml("google-sheets"));
 
     return {
       monsters,
@@ -309,7 +312,7 @@ export default {
   data() {
     return {
       importerResourceLocator: "",
-      importerSourceType: "json-raw",
+      importerSourceType: "google-sheets",
       step: 1,
       stagedMonsters: [],
       stagedSources: [],

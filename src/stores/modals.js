@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useModals = defineStore("modals", {
   state: () => {
     return {
-      importer: true,
+      importer: false,
       encounter: false,
       sources: false,
       party: false,
