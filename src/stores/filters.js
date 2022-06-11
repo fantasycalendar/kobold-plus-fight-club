@@ -138,23 +138,20 @@ export const useFilters = defineStore("filters", {
   getters: {
     filterFunctions() {
       return {
-        alignment: (monster) => {},
+        alignment: (monster) => monster.alignment.bits & this.alignment.bits,
         size: (monster) => this.size.includes(monster.size.toLowerCase()),
         type: (monster) => this.type.includes(monster.type.toLowerCase()),
         environment: (monster) =>
           this.environment.find((environment) =>
             monster.environment.includes(environment.toLowerCase())
           ),
-        legendary: (monster) => {
-          console.log(monster.name, monster.legendary);
-          if (this.legendary.indexOf("legendary") > -1 && !monster.legendary) {
-            return false;
-          }
-
-          if (this.legendary.indexOf("legendary_lair") > -1 && !monster.lair) {
-            return false;
-          }
-        },
+        legendary: (monster) =>
+          !(this.legendary.includes("legendary") && !monster.legendary) &&
+          !(this.legendary.includes("legendary_lair") && !monster.lair) &&
+          !(
+            this.legendary.includes("ordinary") &&
+            (monster.legendary || monster.lair)
+          ),
         cr: (monster) =>
           !(
             (this.minCr > 0 && monster.cr.numeric < this.minCr) ||

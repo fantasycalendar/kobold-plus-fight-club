@@ -13,6 +13,7 @@ export default class Monster {
     this.hp = attributes.hp;
     this.environment = attributes.environment.toLowerCase();
     this.isUnique = !!attributes["unique?"] || !!attributes["unique"];
+    this.lair = !!attributes["lair"] || !!attributes["lair?"];
 
     if(!this.cr) {
       console.log(attributes);
@@ -28,7 +29,6 @@ export default class Monster {
 
     this.special = !!attributes.special;
     this.legendary = !!attributes.legendary;
-    this.lair = !!attributes.lair;
     this.unique = !!attributes.unique;
     this.alignment = attributes.alignment
       ? Monster.parseAlignment(attributes.alignment)
