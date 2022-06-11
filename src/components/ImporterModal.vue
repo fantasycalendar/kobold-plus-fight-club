@@ -3,22 +3,15 @@
     <div class="my-3 sm:mt-0 w-full" v-show="step === 1">
       <label for="importer_source">Import from</label>
 
-      <select
+      <SelectInput
         v-model="importerSourceType"
-        @change="loadImporter"
         name="importer_source"
         id="importer_source"
-        class="mb-4 block w-full pl-3 pr-10 py-2 text-base focus:outline-none rounded-md focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"
+        :options="Importer.types"
+        :label="Importer.types.find((type) => type.key === importerSourceType).label ?? 'Loading...'"
+        class="mb-4"
       >
-        <optgroup label="More to come...">
-          <option
-            v-for="type in Importer.types"
-            :value="type.key"
-            :key="type.key"
-            v-text="type.label"
-          ></option>
-        </optgroup>
-      </select>
+      </SelectInput>
 
       <div class="mb-4">
         <component
@@ -281,6 +274,7 @@
 import Importer from "../js/importer.js";
 import Modal from "./Modal.vue";
 import AlertBox from "./AlertBox.vue";
+import SelectInput from "./SelectInput.vue";
 import { useMonsters } from "../stores/monsters";
 import { useModals } from "../stores/modals";
 import { useSources } from "../stores/sources";
@@ -288,7 +282,7 @@ import { shallowRef } from "vue";
 
 export default {
   name: "ImporterModal",
-  components: { Modal, AlertBox },
+  components: { Modal, AlertBox, SelectInput },
 
   props: {
     show: {
@@ -314,59 +308,7 @@ export default {
 
   data() {
     return {
-      importerResourceLocator: JSON.stringify({
-        sources: [
-          {
-            name: "Custom Source",
-            type: "Custom",
-            shortname: "CS",
-            link: "",
-          },
-          {
-            name: "Another Custom Source",
-            type: "Third-Party",
-            shortname: "ACS",
-            link: "https://google.com/",
-          },
-        ],
-        monsters: [
-          {
-            name: "Zombie",
-            cr: "1/4",
-            size: "Medium",
-            type: "Undead",
-            tags: "",
-            section: "Zombies",
-            alignment: "neutral evil",
-            environment:
-              "aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",
-            ac: 8,
-            hp: 22,
-            init: -2,
-            lair: "",
-            legendary: "",
-            unique: "",
-            sources: "Custom Source: 5",
-          },
-          {
-            name: "Bigger Zombie",
-            cr: "1/2",
-            size: "Large",
-            type: "Undead",
-            tags: "",
-            section: "Zombies",
-            alignment: "neutral evil",
-            environment: "my custom place",
-            ac: 10,
-            hp: 41,
-            init: -2,
-            lair: "lair",
-            legendary: "legendary",
-            unique: "unique",
-            sources: "Another Custom Source: 32",
-          },
-        ],
-      }),
+      importerResourceLocator: "",
       importerSourceType: "json-raw",
       step: 1,
       stagedMonsters: [],
@@ -394,6 +336,8 @@ export default {
 
       this.validate(newValue);
     });
+
+    this.$watch("importerSourceType", this.loadImporter);
   },
 
   mounted() {
