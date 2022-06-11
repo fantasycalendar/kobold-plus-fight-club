@@ -144,10 +144,6 @@ export const useFilters = defineStore("filters", {
         : "Search for a monster";
     },
     isRegex() {
-      // return false;
-
-      /* Here be dragons ... We'll address this later. */
-
       if (!this.search) {
         // Wait ... How'd you get here??
         this.regexedSearch = "";
@@ -156,7 +152,7 @@ export const useFilters = defineStore("filters", {
         return false;
       }
 
-      // We already know the answer for this one
+      // We already know the answer for this search term
       if (this.search === this.regexedSearch) {
         return this.isValidRegex;
       }

@@ -5,7 +5,7 @@ export const useModals = defineStore("modals", {
     return {
       importer: false,
       encounter: false,
-      sources: true,
+      sources: false,
       party: false,
       keyboard: false,
     };
