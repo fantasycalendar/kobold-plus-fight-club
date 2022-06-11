@@ -4,12 +4,15 @@ import { useSources } from "../stores/sources";
 
 export default class Monster {
   constructor(attributes) {
+    console.log(attributes);
+
     this.attributes = attributes;
     this.cr = CONST.CR[attributes.cr];
 
     this.name = attributes.name;
     this.type = attributes.type;
     this.size = attributes.size;
+    this.hp = attributes.hp;
     this.environment = attributes.environment.toLowerCase();
     this.isUnique = !!attributes["unique?"] || !!attributes["unique"];
 

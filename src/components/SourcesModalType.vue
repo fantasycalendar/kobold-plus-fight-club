@@ -28,17 +28,20 @@ function toggleAll() {
       >
         <div @click="open = !open" class="cursor-pointer">
           <i
-              class="fa mr-1"
-              :class="{
-            'fa-caret-right': !open,
-            'fa-caret-down': open,
-          }"
+            class="fa mr-1"
+            :class="{
+              'fa-caret-right': !open,
+              'fa-caret-down': open,
+            }"
           ></i>
           <span class="text-lg" v-text="type.title"></span>
         </div>
 
         <div class="primary-link cursor-pointer">
-          <span @click="toggleAll" v-text="anyEnabled ? 'Disable all' : 'Enable all'"></span>
+          <span
+            @click="toggleAll"
+            v-text="anyEnabled ? 'Disable all' : 'Enable all'"
+          ></span>
         </div>
       </div>
 

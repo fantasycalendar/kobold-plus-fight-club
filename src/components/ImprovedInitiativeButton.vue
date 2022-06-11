@@ -32,11 +32,13 @@ function sendToImprovedInitiative() {
   encounter.groups.forEach((group) => {
     const monster = group.monster;
     for (let i = 0; i < group.count; i++) {
+      console.log(monster);
+
       data.Combatants.push({
         Name: monster.name,
-        HP: { Value: monster.data.hp },
-        InitiativeModifier: monster.data.init,
-        AC: { Value: monster.data.ac },
+        HP: { Value: monster.hp },
+        InitiativeModifier: monster.init,
+        AC: { Value: monster.ac },
         Player: "npc",
       });
     }
