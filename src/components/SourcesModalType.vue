@@ -1,6 +1,6 @@
 <script setup>
 import SourcesModalSource from "./SourcesModalSource.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   type: {
@@ -9,24 +9,38 @@ const props = defineProps({
 });
 
 const open = ref(true);
+const anyEnabled = computed(
+  () => !!props.type.sources.filter((source) => source.enabled).length
+);
+
+function toggleAll() {
+  let targetState = !anyEnabled.value;
+
+  props.type.sources.forEach((source) => (source.enabled = targetState));
+}
 </script>
 
 <template>
   <div>
     <div class="mb-4">
-      <h4
-        class="text-gray-700 dark:text-gray-300 leading-6 mb-2 cursor-pointer"
-        @click="open = !open"
+      <div
+        class="text-gray-700 dark:text-gray-300 leading-6 mb-2 flex justify-between items-center"
       >
-        <i
-          class="fa mr-1"
-          :class="{
+        <div @click="open = !open" class="cursor-pointer">
+          <i
+              class="fa mr-1"
+              :class="{
             'fa-caret-right': !open,
             'fa-caret-down': open,
           }"
-        ></i>
-        <span v-text="type.title"></span>
-      </h4>
+          ></i>
+          <span class="text-lg" v-text="type.title"></span>
+        </div>
+
+        <div class="primary-link cursor-pointer">
+          <span @click="toggleAll" v-text="anyEnabled ? 'Disable all' : 'Enable all'"></span>
+        </div>
+      </div>
 
       <transition name="slide-fade">
         <div class="grid gap-2 grid-cols-6 md:grid-cols-12 w-full" v-if="open">
