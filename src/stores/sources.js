@@ -63,6 +63,7 @@ export const useSources = defineStore("sources", {
       return this.builtIn;
     },
     import(importing) {
+      importing.forEach((source) => (source.custom = true));
       this.imported = [...this.imported, ...importing];
     },
   },

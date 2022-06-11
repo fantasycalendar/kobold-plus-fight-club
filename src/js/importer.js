@@ -1,4 +1,5 @@
 import * as helpers from './helpers';
+import Papa from 'papaparse';
 
 export default class Importer {
     static googleApiKey = 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM'
@@ -272,9 +273,9 @@ export default class Importer {
                             <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="$emit('downloadExample')">download example files to edit.</a></label>
                             <div class="grid grid-cols-2 gap-2 mt-2">                
                                 <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
-                                <label class="" id="file_input_label_1" for="import_resource_locator_file_2">Monsters CSV</label>                
-                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerSourcesFile = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
-                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerMonstersFile = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
+                                <label class="" id="file_input_label_2" for="import_resource_locator_file_2">Monsters CSV</label>                
+                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerSourcesFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
+                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerMonstersFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
                             </div>
                         `
     }
@@ -287,26 +288,49 @@ export default class Importer {
             props: {
                 modelValue: [String, Array],
             },
+            methods: {
+                onFileUpdate(fileVar, fileList) {
+                    if(fileList.length) {
+                        this[fileVar] = fileList[0];
+                    }
+                }
+            },
             created() {
                 this.$watch("importerResourceLocator", (newValue) => {
-                    console.log(newValue);
+                    if(correctLoader !== 'csv-file') {
+                        this.importerMonstersFile = null;
+                        this.importerSourcesFile = null;
+                    }
+
                     this.$emit('update:modelValue', newValue);
                 });
 
                 this.$watch("importerSourcesFile", (newValue) => {
-                    if(!Array.isArray(this.importerResourceLocator)){
-                        this.importerResourceLocator = []
-                    }
                     console.log("Importer sources file update: ", newValue, this.importerResourceLocator);
-                    this.importerResourceLocator[0] = newValue
+                    this.importerResourceLocator = [
+                        newValue,
+                        this.importerMonstersFile,
+                    ]
+
+                    // Only emit the model update if we also have a monsters file
+                    if(this.importerMonstersFile && this.importerMonstersFile.length) {
+                        console.log("We have a monsters file, emitting", this.importerMonstersFile, this.importerMonstersFile.length);
+                        this.$emit('update:modelValue', this.importerResourceLocator);
+                    }
                 });
 
                 this.$watch("importerMonstersFile", (newValue) => {
-                    if(!Array.isArray(this.importerResourceLocator)){
-                        this.importerResourceLocator = []
-                    }
                     console.log("Importer monsters file update: ", newValue, this.importerResourceLocator);
-                    this.importerResourceLocator[1] = newValue
+                    this.importerResourceLocator = [
+                        this.importerSourcesFile,
+                        newValue,
+                    ]
+
+                    // Only emit the model update if we also have a monsters file
+                    if(this.importerSourcesFile && this.importerSourcesFile.length) {
+                        console.log("We have a sources file, emitting", this.importerSourcesFile, this.importerSourcesFile.length);
+                        this.$emit('update:modelValue', this.importerResourceLocator);
+                    }
                 });
             },
             mounted() {
@@ -315,8 +339,8 @@ export default class Importer {
             data() {
                 return {
                     importerResourceLocator: "",
-                    importerSourcesFile: File,
-                    importerMonstersFile: File,
+                    importerSourcesFile: null,
+                    importerMonstersFile: null,
                 }
             }
         };
@@ -479,9 +503,6 @@ export default class Importer {
         if(!sources){
             return false;
         }
-        sources.forEach((source) => {
-            source.custom = true;
-        });
 
         const monsters = await this._loadFile(resourceLocators[1]);
         if(!monsters){
@@ -489,22 +510,14 @@ export default class Importer {
         }
 
         return {
-            sources: this._formatCSV(sources),
-            monsters: this._formatCSV(monsters)
+            sources: Papa.parse(sources, {
+                header: true,
+            }).data,
+            monsters: Papa.parse(monsters, {
+                header: true,
+            }).data,
         }
 
-    }
-
-    static _formatCSV(str){
-        const headers = str.slice(0, str.indexOf("\n")).split(',');
-        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-        return rows.map(row => {
-            const values = row.split(',');
-            return headers.reduce((obj, header, index) => {
-                obj[header] = values[index];
-                return obj;
-            }, {});
-        })
     }
 
     static _downloadExampleCSV(){

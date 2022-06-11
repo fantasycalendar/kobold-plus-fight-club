@@ -17,6 +17,7 @@
     "flowbite": "^1.4.7",
     "hotkeys-js": "^3.9.4",
     "nouislider": "^15.5.1",
+    "papaparse": "^5.3.2",
     "pinia": "^2.0.14",
     "tippy.js": "^6.3.7",
     "vue": "^3.2.33",
