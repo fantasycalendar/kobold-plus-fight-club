@@ -88,6 +88,23 @@ export const useMonsters = defineStore("monsters", {
 
       this.imported = [...this.imported, ...monsters];
       this.instancedImports = [...this.instancedImports, ...instancedMonsters];
+
+      return {
+        success: true,
+        message: "Successfully imported monsters",
+      };
+    },
+
+    removeFromSource(source) {
+      this.imported = this.imported.filter(
+        (monster) => !monster.sources.startsWith(source.name)
+      );
+
+      this.instancedImports = this.imported
+        .map((monster) => this.includeMonster(monster))
+        .filter(Boolean);
+
+      console.log(this.instancedImports);
     },
 
     filterBy(filters, filterCallback = () => true) {

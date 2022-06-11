@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { versionCompare } from "../js/helpers";
+import {useMonsters} from "./monsters";
 
 export const useSources = defineStore("sources", {
   state: () => {
@@ -60,6 +61,15 @@ export const useSources = defineStore("sources", {
       });
 
       return this.builtIn;
+    },
+    remove(source) {
+      useMonsters().removeFromSource(source);
+
+      const found = this.imported.indexOf(source);
+
+      if(found > -1) {
+        this.imported.splice(found, 1);
+      }
     },
     import(importing) {
       importing = importing.filter((source) => {

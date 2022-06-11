@@ -282,6 +282,7 @@ import { useMonsters } from "../stores/monsters";
 import { useModals } from "../stores/modals";
 import { useSources } from "../stores/sources";
 import { shallowRef } from "vue";
+import {useNotifications} from "../stores/notifications";
 
 export default {
   name: "ImporterModal",
@@ -371,7 +372,7 @@ export default {
     },
     finishImport() {
       const sourceImportResults = this.sources.import(this.stagedSources);
-      if (!sourceImportResults.status) {
+      if (!sourceImportResults.success) {
         this.importFailed = true;
         this.canImport = false;
         this.importFailureReason = sourceImportResults.message;
@@ -380,7 +381,7 @@ export default {
       this.stagedSources = [];
 
       const monsterImportResults = this.monsters.import(this.stagedMonsters);
-      if (!monsterImportResults.status) {
+      if (!monsterImportResults.success) {
         this.importFailed = true;
         this.canImport = false;
         this.importFailureReason = monsterImportResults.message;
@@ -389,14 +390,10 @@ export default {
 
       this.stagedMonsters = [];
 
-      dispatchEvent(
-        new CustomEvent("notification", {
-          detail: {
-            title: "Import complete!",
-            body: "Your new source(s) have been imported",
-          },
-        })
-      );
+      useNotifications().notify({
+        title: "Import complete!",
+        body: "Your new source(s) have been imported",
+      });
 
       this.step = 1;
       this.modals.hide("importer");
