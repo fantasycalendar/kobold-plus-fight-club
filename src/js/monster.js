@@ -4,8 +4,6 @@ import { useSources } from "../stores/sources";
 
 export default class Monster {
   constructor(attributes) {
-    console.log(attributes);
-
     this.attributes = attributes;
     this.cr = CONST.CR[attributes.cr];
 
