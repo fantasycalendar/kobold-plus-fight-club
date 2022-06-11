@@ -34,6 +34,15 @@
     </div>
 
     <div class="my-3 sm:mt-0 w-full" v-show="step === 2">
+      <AlertBox
+        class="mb-3"
+        v-if="importFailed"
+        heading="An error occurred while importing"
+        role="danger"
+      >
+        {{ importFailureReason }}
+      </AlertBox>
+
       <div class="text-lg">New Sources</div>
 
       <div class="px-4 sm:px-6 lg:px-8">
@@ -253,6 +262,7 @@
         <button
           v-show="step === 2"
           class="button-primary-md"
+          :disabled="!canImport"
           @click="finishImport"
         >
           Looks Good, Import Them!
@@ -270,6 +280,7 @@
 <script>
 import Importer from "../js/importer.js";
 import Modal from "./Modal.vue";
+import AlertBox from "./AlertBox.vue";
 import { useMonsters } from "../stores/monsters";
 import { useModals } from "../stores/modals";
 import { useSources } from "../stores/sources";
@@ -277,7 +288,7 @@ import { shallowRef } from "vue";
 
 export default {
   name: "ImporterModal",
-  components: { Modal },
+  components: { Modal, AlertBox },
 
   props: {
     show: {
@@ -290,7 +301,7 @@ export default {
     const monsters = useMonsters();
     const sources = useSources();
     const modals = useModals();
-    const importerHtml = shallowRef(Importer.loadersHtml("csv-file"));
+    const importerHtml = shallowRef(Importer.loadersHtml("json-raw"));
 
     return {
       monsters,
@@ -303,13 +314,67 @@ export default {
 
   data() {
     return {
-      importerResourceLocator: "",
-      importerSourceType: "csv-file",
+      importerResourceLocator: JSON.stringify({
+        sources: [
+          {
+            name: "Custom Source",
+            type: "Custom",
+            shortname: "CS",
+            link: "",
+          },
+          {
+            name: "Another Custom Source",
+            type: "Third-Party",
+            shortname: "ACS",
+            link: "https://google.com/",
+          },
+        ],
+        monsters: [
+          {
+            name: "Zombie",
+            cr: "1/4",
+            size: "Medium",
+            type: "Undead",
+            tags: "",
+            section: "Zombies",
+            alignment: "neutral evil",
+            environment:
+              "aquatic, arctic, cave, coast, desert, dungeon, forest, grassland, mountain, ruins, swamp, underground, urban",
+            ac: 8,
+            hp: 22,
+            init: -2,
+            lair: "",
+            legendary: "",
+            unique: "",
+            sources: "Custom Source: 5",
+          },
+          {
+            name: "Bigger Zombie",
+            cr: "1/2",
+            size: "Large",
+            type: "Undead",
+            tags: "",
+            section: "Zombies",
+            alignment: "neutral evil",
+            environment: "my custom place",
+            ac: 10,
+            hp: 41,
+            init: -2,
+            lair: "lair",
+            legendary: "legendary",
+            unique: "unique",
+            sources: "Another Custom Source: 32",
+          },
+        ],
+      }),
+      importerSourceType: "json-raw",
       step: 1,
       stagedMonsters: [],
       stagedSources: [],
-      canImport: false,
+      canImport: true,
       importError: "",
+      importFailed: false,
+      importFailureReason: "",
     };
   },
 
@@ -358,10 +423,23 @@ export default {
       this.step = 2;
     },
     finishImport() {
-      this.sources.import(this.stagedSources);
+      const sourceImportResults = this.sources.import(this.stagedSources);
+      if (!sourceImportResults.status) {
+        this.importFailed = true;
+        this.canImport = false;
+        this.importFailureReason = sourceImportResults.message;
+        return;
+      }
       this.stagedSources = [];
 
-      this.monsters.import(this.stagedMonsters);
+      const monsterImportResults = this.monsters.import(this.stagedMonsters);
+      if (!monsterImportResults.status) {
+        this.importFailed = true;
+        this.canImport = false;
+        this.importFailureReason = monsterImportResults.message;
+        return;
+      }
+
       this.stagedMonsters = [];
 
       dispatchEvent(
@@ -383,6 +461,8 @@ export default {
       this.step = 1;
       this.canImport = false;
       this.importError = "";
+      this.importFailed = false;
+      this.importFailureReason = "";
     },
     cancelImport() {
       this.modals.hide("importer");

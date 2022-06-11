@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { versionCompare } from "../js/helpers";
-import Monster from "../js/monster";
 
 export const useSources = defineStore("sources", {
   state: () => {
@@ -63,8 +62,31 @@ export const useSources = defineStore("sources", {
       return this.builtIn;
     },
     import(importing) {
-      importing.forEach((source) => (source.custom = true));
+      importing = importing.filter((source) => {
+        source.custom = true;
+
+        return !this.imported.find(
+          (existingSource) =>
+            existingSource.name === source.name &&
+            existingSource.shortname === source.shortname
+        );
+      });
+
+      if (!importing.length) {
+        return {
+          success: false,
+          message:
+            "All of the sources in this import already exist. You can either enable them under 'Manage Sources' or delete them to re-import.",
+        };
+      }
+
       this.imported = [...this.imported, ...importing];
+
+      return {
+        success: true,
+        message: "Successfully imported sources",
+      };
+
     },
   },
 

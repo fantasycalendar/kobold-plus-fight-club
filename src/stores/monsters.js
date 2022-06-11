@@ -75,10 +75,19 @@ export const useMonsters = defineStore("monsters", {
     },
 
     import(monsters) {
+      const instancedMonsters = monsters
+        .map(this.includeMonster)
+        .filter(Boolean);
+
+      if (!instancedMonsters.length) {
+        return {
+          success: false,
+          message: "Monster import only contained duplicates",
+        };
+      }
+
       this.imported = [...this.imported, ...monsters];
-      this.instancedImports = this.instancedImports.concat(
-        monsters.map(this.includeMonster)
-      );
+      this.instancedImports = [...this.instancedImports, ...instancedMonsters];
     },
 
     filterBy(filters, filterCallback = () => true) {
