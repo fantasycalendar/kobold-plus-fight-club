@@ -11,7 +11,7 @@ const modals = useModals();
   <Modal v-model:show="modals.party" title="Manage your parties and players">
     <div class="my-3 sm:mt-0 w-full">
       <div
-        class="my-2 max-h-96 overflow-y-auto scrollbar overflow-x-hidden text-gray-700 dark:text-gray-300"
+        class="my-2 max-h-96 overflow-y-auto scrollbar scrollbar-dark overflow-x-hidden text-gray-700 dark:text-gray-300"
       >
         <div
           v-show="parties.saved.length"

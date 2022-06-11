@@ -21,8 +21,8 @@ const open = ref(true);
         <i
           class="fa mr-1"
           :class="{
-            'fa-chevron-right': !open,
-            'fa-chevron-down': open,
+            'fa-caret-right': !open,
+            'fa-caret-down': open,
           }"
         ></i>
         <span v-text="type.title"></span>
