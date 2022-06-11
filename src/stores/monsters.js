@@ -108,63 +108,8 @@ export const useMonsters = defineStore("monsters", {
     },
 
     filterBy(filters, filterCallback = () => true) {
-      return this.enabled
-        .filter((monster) => {
-          if (
-            filters.search &&
-            filters.searchFor &&
-            !filters.searchFor(monster.searchable)
-          ) {
-            return false;
-          }
-
-          if (
-            filters.size.length &&
-            !filters.size.includes(monster.size.toLowerCase())
-          )
-            return false;
-
-          if (
-            filters.legendary.indexOf("legendary") > -1 &&
-            !monster.legendary
-          ) {
-            return false;
-          }
-
-          if (
-            filters.legendary.indexOf("legendary_lair") > -1 &&
-            !monster.lair
-          ) {
-            return false;
-          }
-
-          if (
-            filters.type.length &&
-            !filters.type.includes(monster.type.toLowerCase())
-          )
-            return false;
-
-          if (
-            filters.environment.length &&
-            !filters.environment.find((environment) =>
-              monster.environment.includes(environment.toLowerCase())
-            )
-          ) {
-            return false;
-          }
-
-          if (filters.minCr > 0 || filters.maxCr < 30) {
-            if (filters.minCr > 0 && monster.cr.numeric < filters.minCr) {
-              return false;
-            }
-
-            if (filters.maxCr < 30 && monster.cr.numeric > filters.maxCr) {
-              return false;
-            }
-          }
-
-          return true;
-        })
+      return filters
+        .reduce((monsters, filter) => monsters.filter(filter), this.enabled)
         .filter(filterCallback);
     },
   },
@@ -191,7 +136,7 @@ export const useMonsters = defineStore("monsters", {
     filtered() {
       const filters = useFilters();
 
-      return this.filterBy(filters);
+      return this.filterBy(filters.active);
     },
   },
 });

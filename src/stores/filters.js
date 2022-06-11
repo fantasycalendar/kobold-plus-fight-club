@@ -136,6 +136,40 @@ export const useFilters = defineStore("filters", {
     },
   },
   getters: {
+    filterFunctions() {
+      return {
+        alignment: (monster) => {},
+        size: (monster) => this.size.includes(monster.size.toLowerCase()),
+        type: (monster) => this.type.includes(monster.type.toLowerCase()),
+        environment: (monster) =>
+          this.environment.find((environment) =>
+            monster.environment.includes(environment.toLowerCase())
+          ),
+        legendary: (monster) => {
+          console.log(monster.name, monster.legendary);
+          if (this.legendary.indexOf("legendary") > -1 && !monster.legendary) {
+            return false;
+          }
+
+          if (this.legendary.indexOf("legendary_lair") > -1 && !monster.lair) {
+            return false;
+          }
+        },
+        cr: (monster) =>
+          !(
+            (this.minCr > 0 && monster.cr.numeric < this.minCr) ||
+            (this.maxCr < 30 && monster.cr.numeric > this.maxCr)
+          ),
+      };
+    },
+    active() {
+      return ["alignment", "size", "type", "environment", "legendary", "cr"]
+        .filter(
+          (field) =>
+            JSON.stringify(this[field]) !== JSON.stringify(this.defaults[field])
+        )
+        .map((filterName) => this.filterFunctions[filterName]);
+    },
     searchPlaceholder() {
       let monsters = useMonsters();
 
