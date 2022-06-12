@@ -7,6 +7,7 @@ export const useFilters = defineStore("filters", {
   state: () => {
     return {
       defaults: {
+        search: "",
         alignment: {
           bits: 1023,
         },
@@ -138,6 +139,7 @@ export const useFilters = defineStore("filters", {
   getters: {
     filterFunctions() {
       return {
+        search: (monster) => this.searchFor(monster.searchable),
         alignment: (monster) => monster.alignment.bits & this.alignment.bits,
         size: (monster) => this.size.includes(monster.size.toLowerCase()),
         type: (monster) => this.type.includes(monster.type.toLowerCase()),
@@ -160,7 +162,15 @@ export const useFilters = defineStore("filters", {
       };
     },
     active() {
-      return ["alignment", "size", "type", "environment", "legendary", "cr"]
+      return [
+        "search",
+        "alignment",
+        "size",
+        "type",
+        "environment",
+        "legendary",
+        "cr",
+      ]
         .filter(
           (field) =>
             JSON.stringify(this[field]) !== JSON.stringify(this.defaults[field])
