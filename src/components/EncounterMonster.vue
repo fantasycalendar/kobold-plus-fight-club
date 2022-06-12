@@ -62,7 +62,7 @@
             min="1"
             class="flex-1 min-w-0 block w-16 px-3 py-2 rounded-none dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300"
             :value="group.count"
-            @change="$emit('count', Math.max(0, $event.target.value))"
+            @input="$emit('count', Math.max(0, $event.target.value))"
           />
           <button
             @click="$emit('subtract')"
