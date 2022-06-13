@@ -122,8 +122,9 @@ export const useFilters = defineStore("filters", {
       );
     },
     overriddenCopy(overrides = {}) {
-      return {
+      return this.getNonDefault({
         ...helpers.clone({
+          search: this.search,
           alignment: this.alignment,
           size: this.size,
           legendary: this.legendary,
@@ -133,35 +134,9 @@ export const useFilters = defineStore("filters", {
           maxCr: this.maxCr,
         }),
         ...overrides,
-      };
+      });
     },
-  },
-  getters: {
-    filterFunctions() {
-      return {
-        search: (monster) => this.searchFor(monster.searchable),
-        alignment: (monster) => monster.alignment.bits & this.alignment.bits,
-        size: (monster) => this.size.includes(monster.size.toLowerCase()),
-        type: (monster) => this.type.includes(monster.type.toLowerCase()),
-        environment: (monster) =>
-          this.environment.find((environment) =>
-            monster.environment.includes(environment.toLowerCase())
-          ),
-        legendary: (monster) =>
-          !(this.legendary.includes("legendary") && !monster.legendary) &&
-          !(this.legendary.includes("legendary_lair") && !monster.lair) &&
-          !(
-            this.legendary.includes("ordinary") &&
-            (monster.legendary || monster.lair)
-          ),
-        cr: (monster) =>
-          !(
-            (this.minCr > 0 && monster.cr.numeric < this.minCr) ||
-            (this.maxCr < 30 && monster.cr.numeric > this.maxCr)
-          ),
-      };
-    },
-    active() {
+    getNonDefault(state = this) {
       return [
         "search",
         "alignment",
@@ -173,9 +148,41 @@ export const useFilters = defineStore("filters", {
       ]
         .filter(
           (field) =>
-            JSON.stringify(this[field]) !== JSON.stringify(this.defaults[field])
+            JSON.stringify(state[field]) !==
+            JSON.stringify(this.defaults[field])
         )
-        .map((filterName) => this.filterFunctions[filterName]);
+        .map((filterName) => this.filterFunctions(state)[filterName]);
+    },
+  },
+  getters: {
+    filterFunctions() {
+      return (state = this) => {
+        return {
+          search: (monster) => this.searchFor(monster.searchable),
+          alignment: (monster) => monster.alignment.bits & state.alignment.bits,
+          size: (monster) => state.size.includes(monster.size.toLowerCase()),
+          type: (monster) => state.type.includes(monster.type.toLowerCase()),
+          environment: (monster) =>
+            state.environment.find((environment) =>
+              monster.environment.includes(environment.toLowerCase())
+            ),
+          legendary: (monster) =>
+            !(state.legendary.includes("legendary") && !monster.legendary) &&
+            !(state.legendary.includes("legendary_lair") && !monster.lair) &&
+            !(
+              state.legendary.includes("ordinary") &&
+              (monster.legendary || monster.lair)
+            ),
+          cr: (monster) =>
+            !(
+              (state.minCr > 0 && monster.cr.numeric < state.minCr) ||
+              (state.maxCr < 30 && monster.cr.numeric > state.maxCr)
+            ),
+        };
+      };
+    },
+    active() {
+      return this.getNonDefault();
     },
     searchPlaceholder() {
       let monsters = useMonsters();
@@ -227,18 +234,8 @@ export const useFilters = defineStore("filters", {
     maxCr() {
       return parseInt(this.crValues[this.cr.max].value);
     },
-    nonDefault() {
-      return [
-        "alignment",
-        "size",
-        "type",
-        "environment",
-        "legendary",
-        "cr",
-      ].filter(
-        (field) =>
-          JSON.stringify(this[field]) !== JSON.stringify(this.defaults[field])
-      ).length;
+    activeCount() {
+      return this.getNonDefault().length;
     },
     environmentOptions() {
       let results = new Set(

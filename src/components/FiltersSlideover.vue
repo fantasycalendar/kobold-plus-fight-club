@@ -113,7 +113,7 @@ defineProps({
                   </button>
 
                   <button
-                    :disabled="!filters.nonDefault"
+                    :disabled="!filters.activeCount"
                     @click="filters.reset()"
                     class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2"
                   >
