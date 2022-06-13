@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore,acceptHMRUpdate } from "pinia";
 
 export const useModals = defineStore("modals", {
   state: () => {
@@ -28,3 +28,7 @@ export const useModals = defineStore("modals", {
     },
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useModals, import.meta.hot));
+}

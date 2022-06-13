@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore,acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import CONST from "../js/constants.js";
 import {useEncounter} from "./encounter";
@@ -143,3 +143,7 @@ export const useParty = defineStore("party", {
     },
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useParty, import.meta.hot));
+}

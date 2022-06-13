@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore,acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { useMonsters } from "./monsters";
 import * as helpers from "../js/helpers.js";
@@ -258,3 +258,7 @@ export const useFilters = defineStore("filters", {
     },
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useFilters, import.meta.hot));
+}

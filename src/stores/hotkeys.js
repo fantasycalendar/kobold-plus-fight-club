@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore,acceptHMRUpdate } from "pinia";
 import hotkeys from "hotkeys-js";
 
 export const useHotkeys = defineStore("hotkeys", {
@@ -35,3 +35,7 @@ export const useHotkeys = defineStore("hotkeys", {
     },
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useHotkeys, import.meta.hot));
+}

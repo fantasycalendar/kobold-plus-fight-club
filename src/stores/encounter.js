@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
 import { useParty } from "./party";
 import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
@@ -471,3 +471,7 @@ export const useEncounter = defineStore("encounter", {
     },
   },
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useEncounter, import.meta.hot))
+}
