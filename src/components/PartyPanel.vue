@@ -124,7 +124,7 @@ const modals = useModals();
         v-show="!(party.activePlayers.length || party.groups.length)"
       >
         <button
-          @click="$emit('modal', 'Party')"
+          @click="modals.show('party')"
           type="button"
           class="button-primary-outline-md align-self-start w-full md:mt-4 md:mt-auto flex justify-center"
         >

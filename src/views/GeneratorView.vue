@@ -34,22 +34,29 @@ export default {
 
   data() {
     return {
-      showFilters: false,
+      showFilters: this.filtersTest(),
       mobileEncounterTab: false,
     };
   },
 
   methods: {
     filtersTest() {
-      return Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-      ) > 1535
-        ? true
-        : !this.showFilters;
+      return (
+        Math.max(
+          document.body.scrollWidth,
+          document.documentElement.scrollWidth,
+          document.body.offsetWidth,
+          document.documentElement.offsetWidth,
+          document.documentElement.clientWidth
+        ) > 1535
+      );
+    },
+
+    listenForResize() {
+      window.addEventListener(
+        "resize",
+        () => (this.showFilters = this.filtersTest())
+      );
     },
 
     setupHotkeys() {
@@ -98,21 +105,7 @@ export default {
 
   created() {
     this.setupHotkeys();
-    // this.encounter.app = this;
-    // this.party.app = this;
-    // this.fetchData();
-
-    if (
-      Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-      ) > 1535
-    ) {
-      this.showFilters = true;
-    }
+    this.listenForResize();
   },
 };
 </script>
