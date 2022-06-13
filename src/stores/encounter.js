@@ -39,6 +39,10 @@ export const useEncounter = defineStore("encounter", {
     getDifficultyFromExperience(exp) {
       const levels = useParty().experience;
 
+      if (!levels) {
+        return "N/A";
+      }
+
       if (exp === 0) return "None";
       if (exp < levels.easy) return "Trivial";
       if (exp < levels.medium) return "Easy";
@@ -50,9 +54,7 @@ export const useEncounter = defineStore("encounter", {
     generateRandom() {
       const party = useParty();
 
-      if (!party.totalPlayers) {
-        party.addPlayerGroup();
-      }
+      party.ensureGroup();
 
       const totalExperienceTarget = party.experience[this.difficulty];
 
@@ -318,11 +320,9 @@ export const useEncounter = defineStore("encounter", {
         this.loadedIndex = this.saved.length;
         this.saved = [...this.saved, encounter];
       }
-      dispatchEvent(
-        new CustomEvent("notification", {
-          detail: { title: "Encounter saved" },
-        })
-      );
+      useNotifications().notify({
+        title: "Encounter saved",
+      });
     },
 
     loadFromHistory(index) {
@@ -331,19 +331,17 @@ export const useEncounter = defineStore("encounter", {
       const encounter = this.history.splice(index, 1)[0];
       this.history.push(encounter);
       this.load(encounter);
-      dispatchEvent(
-        new CustomEvent("notification", {
-          detail: {
-            title: "Encounter loaded",
-            body: this.groups
-              .map((group) => `${group.monster.name} x${group.count}`)
-              .join(", "),
-          },
-        })
-      );
+      useNotifications().notify({
+          title: "Encounter loaded",
+          body: this.groups
+            .map((group) => `${group.monster.name} x${group.count}`)
+            .join(", "),
+        });
     },
 
     load(encounter) {
+      useParty().ensureGroup();
+
       const groups = helpers
         .clone(encounter)
         .map((group) => {
@@ -360,16 +358,12 @@ export const useEncounter = defineStore("encounter", {
       this.loadedLast = false;
       this.loadedIndex = index;
       this.load(this.saved[index]);
-      dispatchEvent(
-        new CustomEvent("notification", {
-          detail: {
+      useNotifications().notify({
             title: "Encounter loaded",
             body: this.groups
               .map((group) => `${group.monster.name} x${group.count}`)
               .join(", "),
-          },
-        })
-      );
+      });
     },
 
     deleteSaved(index) {
@@ -378,11 +372,7 @@ export const useEncounter = defineStore("encounter", {
         this.clear();
       }
       this.saved.splice(index, 1);
-      dispatchEvent(
-        new CustomEvent("notification", {
-          detail: { title: "Encounter deleted" },
-        })
-      );
+      useNotifications().notify({title: "Encounter deleted" });
     },
 
     clear() {
@@ -409,6 +399,10 @@ export const useEncounter = defineStore("encounter", {
       return this.getDifficultyFromExperience(this.adjustedExp);
     },
     difficultyFeel() {
+      if(!useParty().totalPlayersToGainXP) {
+        return "";
+      }
+
       if (this.adjustedExp === 0) return "";
 
       const levels = Object.entries(useParty().experience);

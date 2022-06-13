@@ -17,6 +17,11 @@ export const useParty = defineStore("party", {
     };
   },
   actions: {
+    ensureGroup() {
+      if (!this.totalPlayers) {
+        this.addGroup();
+      }
+    },
     addGroup() {
       const lastGroup = this.groups[this.groups.length - 1] ?? {
         id: 1,
@@ -103,6 +108,10 @@ export const useParty = defineStore("party", {
 
   getters: {
     experience() {
+      if (!this.totalPlayers) {
+        return false;
+      }
+
       const experience = this.groups.reduce(this.getGroupExperience, {});
       return this.activePlayers.reduce(this.getGroupExperience, experience);
     },
