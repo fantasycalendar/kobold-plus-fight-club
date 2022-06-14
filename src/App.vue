@@ -11,64 +11,49 @@ import EncounterModal from "./components/EncounterModal.vue";
 import NotificationArea from "./components/NotificationArea.vue";
 import { useMonsters } from "./stores/monsters";
 import { useSources } from "./stores/sources";
-import { onMounted } from "vue";
-import { useHotkeys } from "./stores/hotkeys";
 import { useModals } from "./stores/modals";
+import { onMounted, ref, watch } from "vue";
+import { useHotkeys } from "./stores/hotkeys";
 
 const monsters = useMonsters();
 const sources = useSources();
 const hotkeys = useHotkeys();
 const modals = useModals();
 
+const theme = ref(window.theme);
+
+function toggleTheme() {
+  theme.value = theme.value === "light" ? "dark" : "light";
+  document.documentElement.classList.toggle("dark", theme.value === "dark");
+}
+
 onMounted(async () => {
   await sources.fetch();
   await monsters.fetch();
-});
-</script>
 
-<script>
-export default {
-  data() {
-    return {
-      theme: window.theme,
-      sources: [],
-    };
-  },
+  watch(theme, (value) =>
+    document.documentElement.classList.toggle("dark", value === "dark")
+  );
 
-  mounted() {
-    this.$watch("theme", (value) =>
-      document.documentElement.classList.toggle("dark", value === "dark")
-    );
-  },
-
-  methods: {
-    toggleTheme() {
-      this.theme = this.theme === "light" ? "dark" : "light";
-      document.documentElement.classList.toggle("dark", this.theme === "dark");
+  hotkeys.register(
+    "ctrl+shift+\\",
+    "Toggles light/dark theme",
+    () => {
+      toggleTheme();
+      return false;
     },
-  },
+    30
+  );
 
-  created() {
-    this.hotkeys.register(
-      "ctrl+shift+\\",
-      "Toggles light/dark theme",
-      () => {
-        this.toggleTheme();
-        return false;
-      },
-      30
-    );
-
-    this.hotkeys.register(
-      "esc",
-      "Closes any open dialogs",
-      () => {
-        this.modals.closeAll();
-      },
-      90
-    );
-  },
-};
+  hotkeys.register(
+    "esc",
+    "Closes any open dialogs",
+    () => {
+      modals.closeAll();
+    },
+    90
+  );
+});
 </script>
 
 <template>
