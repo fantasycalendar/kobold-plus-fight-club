@@ -101,10 +101,8 @@ export const useMonsters = defineStore("monsters", {
       );
 
       this.instancedImports = this.imported
-        .map((monster) => this.includeMonster(monster))
+        .map((monster) => new Monster(monster))
         .filter(Boolean);
-
-      console.log(this.instancedImports);
     },
 
     filterBy(filters, filterCallback = () => true) {
