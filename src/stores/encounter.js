@@ -250,12 +250,14 @@ export const useEncounter = defineStore("encounter", {
     },
     getNewMonster(group) {
       const monsterList = useMonsters().filterBy(
-        useFilters().active,
+        useFilters().overriddenCopy({
+          maxCr: group.monster.cr.numeric,
+          minCr: group.monster.cr.numeric,
+        }),
         (monster) => {
           return !this.groups.some((group) => group.monster === monster);
         }
       );
-
       if (!monsterList.length) return;
       group.monster = helpers.randomArrayElement(monsterList);
       this.saveToHistory();
