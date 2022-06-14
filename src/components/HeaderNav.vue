@@ -27,7 +27,7 @@ const menu = ref(false);
             <a href="" class="flex items-center">
               <img
                 class="h-8 w-auto"
-                src="/src/assets/images/header_logo.png"
+                src="/images/header_logo.png"
                 alt="Kobold Plus Fight Club"
               />
               <span class="hidden md:inline pl-2 text-lg font-bold text-white"

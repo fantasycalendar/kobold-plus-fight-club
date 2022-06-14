@@ -266,8 +266,6 @@ export const useFilters = defineStore("filters", {
           .filter(Boolean)
       );
 
-      console.log(results);
-
       return Array.from(results)
         .sort()
         .map((item) => {

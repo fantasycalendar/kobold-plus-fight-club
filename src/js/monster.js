@@ -15,10 +15,6 @@ export default class Monster {
     this.isUnique = !!attributes["unique?"] || !!attributes["unique"];
     this.lair = !!attributes["lair"] || !!attributes["lair?"];
 
-    if(!this.cr) {
-      console.log(attributes);
-    }
-
     this.slug = helpers.slugify(
       attributes.name + "-" + attributes.sources + "-" + this.cr.string
     );

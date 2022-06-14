@@ -8,7 +8,7 @@
       <img
         class="mr-2 fill-white"
         style="height: 20px"
-        src="/src/assets/images/improved-initiative-logo.svg"
+        src="/images/improved-initiative-logo.svg"
         alt="II"
       />
       <slot></slot>
@@ -32,8 +32,6 @@ function sendToImprovedInitiative() {
   encounter.groups.forEach((group) => {
     const monster = group.monster;
     for (let i = 0; i < group.count; i++) {
-      console.log(monster);
-
       data.Combatants.push({
         Name: monster.name,
         HP: { Value: monster.hp },

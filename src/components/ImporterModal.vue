@@ -326,11 +326,6 @@ export default {
 
   created() {
     this.$watch("importerResourceLocator", (newValue) => {
-      console.log(
-        "Importer modal noticed change to resource locator:",
-        newValue
-      );
-
       if (!newValue) {
         this.canImport = false;
         this.importError = "";

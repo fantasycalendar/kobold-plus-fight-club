@@ -226,7 +226,6 @@ export default class Importer {
     static async _validateCSV(resourceLocators) {
 
         if(!resourceLocators[0] || !resourceLocators[1]){
-            console.log(resourceLocators, resourceLocators[0], resourceLocators[1]);
             return [false, 'Missing a file']
         }
 
@@ -306,7 +305,6 @@ export default class Importer {
                 });
 
                 this.$watch("importerSourcesFile", (newValue) => {
-                    console.log("Importer sources file update: ", newValue, this.importerResourceLocator);
                     this.importerResourceLocator = [
                         newValue,
                         this.importerMonstersFile,
@@ -314,13 +312,11 @@ export default class Importer {
 
                     // Only emit the model update if we also have a monsters file
                     if(this.importerMonstersFile && this.importerMonstersFile.length) {
-                        console.log("We have a monsters file, emitting", this.importerMonstersFile, this.importerMonstersFile.length);
                         this.$emit('update:modelValue', this.importerResourceLocator);
                     }
                 });
 
                 this.$watch("importerMonstersFile", (newValue) => {
-                    console.log("Importer monsters file update: ", newValue, this.importerResourceLocator);
                     this.importerResourceLocator = [
                         this.importerSourcesFile,
                         newValue,
@@ -328,7 +324,6 @@ export default class Importer {
 
                     // Only emit the model update if we also have a monsters file
                     if(this.importerSourcesFile && this.importerSourcesFile.length) {
-                        console.log("We have a sources file, emitting", this.importerSourcesFile, this.importerSourcesFile.length);
                         this.$emit('update:modelValue', this.importerResourceLocator);
                     }
                 });

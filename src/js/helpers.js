@@ -5,8 +5,6 @@ export function migrateLocalStorage(newKey, oldKey, defaultValue) {
   if (typeof oldValue !== "undefined" && oldValue) {
     oldValue = JSON.parse(oldValue);
 
-    console.log(oldKey, oldValue);
-
     if (oldValue && oldValue.length && oldValue.includes("any")) {
       oldValue.splice(oldValue.indexOf("any"), 1);
     }
