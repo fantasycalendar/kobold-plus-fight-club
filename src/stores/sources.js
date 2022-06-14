@@ -25,19 +25,19 @@ export const useSources = defineStore("sources", {
       ) {
         let fetched = [];
 
-        await fetch("/src/assets/json/se_sources.json")
+        await fetch("/json/se_sources.json")
           .then((res) => res.json())
           .then((data) => {
             fetched = fetched.concat(data);
           });
 
-        await fetch("/src/assets/json/se_third_party_sources.json")
+        await fetch("/json/se_third_party_sources.json")
           .then((res) => res.json())
           .then((data) => {
             fetched = fetched.concat(data);
           });
 
-        await fetch("/src/assets/json/se_community_sources.json")
+        await fetch("/json/se_community_sources.json")
           .then((res) => res.json())
           .then((data) => {
             fetched = fetched.concat(data);

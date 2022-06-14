@@ -31,19 +31,19 @@ export const useMonsters = defineStore("monsters", {
         versionCompare(this.version, this.storedVersion) !== 0
       ) {
         try {
-          await fetch("/src/assets/json/se_monsters.json")
+          await fetch("/json/se_monsters.json")
             .then((res) => res.json())
             .then((data) => {
               fetched = fetched.concat(data);
             });
 
-          await fetch("/src/assets/json/se_third_party_monsters.json")
+          await fetch("/json/se_third_party_monsters.json")
             .then((res) => res.json())
             .then((data) => {
               fetched = fetched.concat(data);
             });
 
-          await fetch("/src/assets/json/se_community_monsters.json")
+          await fetch("/json/se_community_monsters.json")
             .then((res) => res.json())
             .then((data) => {
               fetched = fetched.concat(data);
