@@ -40,16 +40,6 @@ const menu = ref(false);
           class="hidden lg:flex text-white lg:-my-px lg:ml-6 lg:space-x-8 items-center"
         >
           <a
-              @click="notifications.notify({
-                title:'A test notification',
-                body: 'With a body'
-              })"
-              href="javascript:"
-              class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
-          >
-            Test Notification
-          </a>
-          <a
             @click="modals.show('keyboard')"
             href="javascript:"
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
