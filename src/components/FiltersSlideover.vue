@@ -166,6 +166,8 @@ defineProps({
                     mode="tags"
                     placeholder="Any Environment"
                     v-model="filters.environment"
+                    valueProp="valueProp"
+                    label="label"
                     :options="filters.environmentOptions"
                   ></Multiselect>
                 </div>

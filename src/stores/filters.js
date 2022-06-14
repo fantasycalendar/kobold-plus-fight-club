@@ -1,4 +1,4 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { useMonsters } from "./monsters";
 import * as helpers from "../js/helpers.js";
@@ -23,7 +23,7 @@ export const useFilters = defineStore("filters", {
       alignment: {
         bits: 1023,
       },
-      size: helpers.migrateLocalStorage("filtersSize","size", []),
+      size: helpers.migrateLocalStorage("filtersSize", "size", []),
       sizeOptions: [
         { value: "tiny", label: "Tiny" },
         { value: "small", label: "Small" },
@@ -32,13 +32,17 @@ export const useFilters = defineStore("filters", {
         { value: "huge", label: "Huge" },
         { value: "gargantuan", label: "Gargantuan" },
       ],
-      legendary: helpers.migrateLocalStorage("filtersLegendary","legendary", []),
+      legendary: helpers.migrateLocalStorage(
+        "filtersLegendary",
+        "legendary",
+        []
+      ),
       legendaryOptions: [
         { value: "ordinary", label: "Ordinary" },
         { value: "legendary", label: "Legendary" },
         { value: "legendary_lair", label: "Legendary (in lair)" },
       ],
-      type: helpers.migrateLocalStorage("filtersType","type", []),
+      type: helpers.migrateLocalStorage("filtersType", "type", []),
       typeOptions: [
         { value: "aberration", label: "Aberration" },
         { value: "beast", label: "Beast" },
@@ -55,8 +59,12 @@ export const useFilters = defineStore("filters", {
         { value: "plant", label: "Plant" },
         { value: "undead", label: "Undead" },
       ],
-      environment: helpers.migrateLocalStorage("filtersEnvironment","environment", []),
-      cr: helpers.migrateLocalStorage("filtersCr","cr", {
+      environment: helpers.migrateLocalStorage(
+        "filtersEnvironment",
+        "environment",
+        []
+      ),
+      cr: helpers.migrateLocalStorage("filtersCr", "cr", {
         min: 0,
         max: 33,
       }),
@@ -97,12 +105,16 @@ export const useFilters = defineStore("filters", {
         { value: "30", label: "30" },
       ],
 
-      search: helpers.migrateLocalStorage("filtersSearch","search", ""),
+      search: helpers.migrateLocalStorage("filtersSearch", "search", ""),
       regexedSearch: "",
       regex: null,
       isValidRegex: false,
 
-      perPage: helpers.migrateLocalStorage("filtersMonstersPerPage","monstersPerPage", 10),
+      perPage: helpers.migrateLocalStorage(
+        "filtersMonstersPerPage",
+        "monstersPerPage",
+        10
+      ),
     };
   },
   actions: {
@@ -254,7 +266,16 @@ export const useFilters = defineStore("filters", {
           .filter(Boolean)
       );
 
-      return Array.from(results).sort();
+      console.log(results);
+
+      return Array.from(results)
+        .sort()
+        .map((item) => {
+          return {
+            valueProp: item.toLowerCase(),
+            label: item,
+          };
+        });
     },
   },
 });
