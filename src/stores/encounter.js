@@ -233,7 +233,7 @@ export const useEncounter = defineStore("encounter", {
       return multipliers[multiplierCategory];
     },
     getNewMonster(group) {
-      const monsterList = useMonsters().filterBy(useFilters(), (monster) => {
+      const monsterList = useMonsters().filterBy(useFilters().active, (monster) => {
         return !this.groups.some((group) => group.monster === monster);
       });
 
