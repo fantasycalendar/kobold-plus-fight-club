@@ -140,7 +140,7 @@ function generateNew() {
               </div>
               <div
                 class="items-center justify-center h-full cursor-pointer select-none hidden group-hover:flex text-red-700 dark:text-red-400 hover:text-red-900 dark:hover:text-red-600"
-                @click="encounter.deleteSaved(index)"
+                @click.stop="encounter.deleteSaved(index)"
               >
                 <i class="pr-1 fas fa-times"></i> Delete
               </div>
