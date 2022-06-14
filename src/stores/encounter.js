@@ -34,8 +34,16 @@ export const useEncounter = defineStore("encounter", {
         "difficulty",
         "medium"
       ),
-      type: useLocalStorage("encounterType", "random"),
-      history: useLocalStorage("encounterHistory", []),
+      type: helpers.migrateLocalStorage(
+        "encounterGenerateType",
+        "encounterType",
+        "random"
+      ),
+      history: helpers.migrateLocalStorage(
+        "encounterGenerateHistory",
+        "encounterHistory",
+        []
+      ),
       saved: helpers.migrateLocalStorage(
         "encounterSaved",
         "savedEncounters",

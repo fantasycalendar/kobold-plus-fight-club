@@ -23,7 +23,7 @@ export const useFilters = defineStore("filters", {
       alignment: {
         bits: 1023,
       },
-      size: useLocalStorage("size", []),
+      size: helpers.migrateLocalStorage("filtersSize","size", []),
       sizeOptions: [
         { value: "tiny", label: "Tiny" },
         { value: "small", label: "Small" },
@@ -32,13 +32,13 @@ export const useFilters = defineStore("filters", {
         { value: "huge", label: "Huge" },
         { value: "gargantuan", label: "Gargantuan" },
       ],
-      legendary: useLocalStorage("legendary", []),
+      legendary: helpers.migrateLocalStorage("filtersLegendary","legendary", []),
       legendaryOptions: [
         { value: "ordinary", label: "Ordinary" },
         { value: "legendary", label: "Legendary" },
         { value: "legendary_lair", label: "Legendary (in lair)" },
       ],
-      type: useLocalStorage("type", []),
+      type: helpers.migrateLocalStorage("filtersType","type", []),
       typeOptions: [
         { value: "aberration", label: "Aberration" },
         { value: "beast", label: "Beast" },
@@ -55,8 +55,8 @@ export const useFilters = defineStore("filters", {
         { value: "plant", label: "Plant" },
         { value: "undead", label: "Undead" },
       ],
-      environment: useLocalStorage("environment", []),
-      cr: useLocalStorage("cr", {
+      environment: helpers.migrateLocalStorage("filtersEnvironment","environment", []),
+      cr: helpers.migrateLocalStorage("filtersCr","cr", {
         min: 0,
         max: 33,
       }),
@@ -97,12 +97,12 @@ export const useFilters = defineStore("filters", {
         { value: "30", label: "30" },
       ],
 
-      search: useLocalStorage("search", ""),
+      search: helpers.migrateLocalStorage("filtersSearch","search", ""),
       regexedSearch: "",
       regex: null,
       isValidRegex: false,
 
-      perPage: useLocalStorage("monstersPerPage", 10),
+      perPage: helpers.migrateLocalStorage("filtersMonstersPerPage","monstersPerPage", 10),
     };
   },
   actions: {

@@ -1,16 +1,20 @@
 import { useLocalStorage } from "@vueuse/core/index";
 
 export function migrateLocalStorage(newKey, oldKey, defaultValue) {
-  let value = useLocalStorage(
-    newKey,
-    localStorage.getItem(oldKey) ?? defaultValue
-  );
+  let oldValue = localStorage.getItem(oldKey);
+  if (typeof oldValue !== "undefined" && oldValue) {
+    oldValue = JSON.parse(oldValue);
 
-  if (typeof localStorage.getItem(oldKey) !== "undefined") {
+    console.log(oldKey, oldValue);
+
+    if (oldValue && oldValue.length && oldValue.includes("any")) {
+      oldValue.splice(oldValue.indexOf("any"), 1);
+    }
+
     localStorage.removeItem(oldKey);
   }
 
-  return value;
+  return useLocalStorage(newKey, oldValue ?? defaultValue);
 }
 
 /**
