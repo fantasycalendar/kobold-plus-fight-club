@@ -11,7 +11,7 @@ import hotkeys from "hotkeys-js";
 export const useEncounter = defineStore("encounter", {
   state: () => {
     return {
-      groups: useLocalStorage("encounter_groups", []),
+      groups: useLocalStorage("encounterGroups", []),
       insaneDifficultyStrings: [
         "an incredibly bad idea",
         "suicide",
@@ -23,16 +23,24 @@ export const useEncounter = defineStore("encounter", {
         "rocks fall",
         "someone insulted the DM",
       ],
-      loadedIndex: useLocalStorage("encounter_loaded_index", null),
+      loadedIndex: helpers.migrateLocalStorage(
+        "encounterLoadedIndex",
+        "loadedEncounterIndex",
+        null
+      ),
       loadedLast: false,
       difficulty: helpers.migrateLocalStorage(
-        "encounter_difficulty",
+        "encounterDifficulty",
         "difficulty",
         "medium"
       ),
-      type: useLocalStorage("encounter_type", "random"),
-      history: useLocalStorage("encounter_history", []),
-      saved: useLocalStorage("encounter_saved", []),
+      type: useLocalStorage("encounterType", "random"),
+      history: useLocalStorage("encounterHistory", []),
+      saved: helpers.migrateLocalStorage(
+        "encounterSaved",
+        "savedEncounters",
+        []
+      ),
     };
   },
   actions: {
@@ -233,9 +241,12 @@ export const useEncounter = defineStore("encounter", {
       return multipliers[multiplierCategory];
     },
     getNewMonster(group) {
-      const monsterList = useMonsters().filterBy(useFilters().active, (monster) => {
-        return !this.groups.some((group) => group.monster === monster);
-      });
+      const monsterList = useMonsters().filterBy(
+        useFilters().active,
+        (monster) => {
+          return !this.groups.some((group) => group.monster === monster);
+        }
+      );
 
       if (!monsterList.length) return;
       group.monster = helpers.randomArrayElement(monsterList);
@@ -332,11 +343,11 @@ export const useEncounter = defineStore("encounter", {
       this.history.push(encounter);
       this.load(encounter);
       useNotifications().notify({
-          title: "Encounter loaded",
-          body: this.groups
-            .map((group) => `${group.monster.name} x${group.count}`)
-            .join(", "),
-        });
+        title: "Encounter loaded",
+        body: this.groups
+          .map((group) => `${group.monster.name} x${group.count}`)
+          .join(", "),
+      });
     },
 
     load(encounter) {
@@ -359,10 +370,10 @@ export const useEncounter = defineStore("encounter", {
       this.loadedIndex = index;
       this.load(this.saved[index]);
       useNotifications().notify({
-            title: "Encounter loaded",
-            body: this.groups
-              .map((group) => `${group.monster.name} x${group.count}`)
-              .join(", "),
+        title: "Encounter loaded",
+        body: this.groups
+          .map((group) => `${group.monster.name} x${group.count}`)
+          .join(", "),
       });
     },
 
@@ -372,7 +383,7 @@ export const useEncounter = defineStore("encounter", {
         this.clear();
       }
       this.saved.splice(index, 1);
-      useNotifications().notify({title: "Encounter deleted" });
+      useNotifications().notify({ title: "Encounter deleted" });
     },
 
     clear() {
@@ -399,7 +410,7 @@ export const useEncounter = defineStore("encounter", {
       return this.getDifficultyFromExperience(this.adjustedExp);
     },
     difficultyFeel() {
-      if(!useParty().totalPlayersToGainXP) {
+      if (!useParty().totalPlayersToGainXP) {
         return "";
       }
 
@@ -473,5 +484,5 @@ export const useEncounter = defineStore("encounter", {
 });
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useEncounter, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useEncounter, import.meta.hot));
 }

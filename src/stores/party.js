@@ -13,7 +13,7 @@ export const useParty = defineStore("party", {
           getsXP: true,
         },
       ]),
-      saved: useLocalStorage("saved_parties", []),
+      saved: useLocalStorage("savedParties", []),
     };
   },
   actions: {

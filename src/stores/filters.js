@@ -102,7 +102,7 @@ export const useFilters = defineStore("filters", {
       regex: null,
       isValidRegex: false,
 
-      perPage: useLocalStorage("per_page", 10),
+      perPage: useLocalStorage("monstersPerPage", 10),
     };
   },
   actions: {

@@ -1,16 +1,16 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { versionCompare } from "../js/helpers";
-import {useMonsters} from "./monsters";
+import { useMonsters } from "./monsters";
 
 export const useSources = defineStore("sources", {
   state: () => {
     return {
       version: "2.1.0",
-      storedVersion: useLocalStorage("stored_sources_version", "2.1.0"),
+      storedVersion: useLocalStorage("storedSourcesVersion", "2.1.0"),
 
       builtIn: useLocalStorage("sources", []),
-      imported: useLocalStorage("imported_sources", []),
+      imported: useLocalStorage("importedSources", []),
     };
   },
   actions: {
@@ -20,45 +20,43 @@ export const useSources = defineStore("sources", {
 
     async fetch() {
       if (
-        this.builtIn.length &&
-        versionCompare(this.version, this.storedVersion) === 0
+        !this.builtIn.length ||
+        versionCompare(this.version, this.storedVersion) !== 0
       ) {
-        return this.builtIn;
+        let fetched = [];
+
+        await fetch("/src/assets/json/se_sources.json")
+          .then((res) => res.json())
+          .then((data) => {
+            fetched = fetched.concat(data);
+          });
+
+        await fetch("/src/assets/json/se_third_party_sources.json")
+          .then((res) => res.json())
+          .then((data) => {
+            fetched = fetched.concat(data);
+          });
+
+        await fetch("/src/assets/json/se_community_sources.json")
+          .then((res) => res.json())
+          .then((data) => {
+            fetched = fetched.concat(data);
+          });
+
+        this.storedVersion = this.version;
+
+        this.builtIn = fetched.map((newSource) => {
+          const foundOldSource = this.builtIn.find((oldSource) => {
+            return newSource["name"] === oldSource["name"];
+          });
+
+          newSource.enabled = foundOldSource
+            ? foundOldSource.enabled
+            : !!newSource.default;
+
+          return newSource;
+        });
       }
-
-      // this.storedVersion = this.version;
-
-      let fetched = [];
-
-      await fetch("/src/assets/json/se_sources.json")
-        .then((res) => res.json())
-        .then((data) => {
-          fetched = fetched.concat(data);
-        });
-
-      await fetch("/src/assets/json/se_third_party_sources.json")
-        .then((res) => res.json())
-        .then((data) => {
-          fetched = fetched.concat(data);
-        });
-
-      await fetch("/src/assets/json/se_community_sources.json")
-        .then((res) => res.json())
-        .then((data) => {
-          fetched = fetched.concat(data);
-        });
-
-      this.builtIn = fetched.map((newSource) => {
-        const foundOldSource = this.builtIn.find((oldSource) => {
-          return newSource["name"] === oldSource["name"];
-        });
-
-        newSource.enabled = foundOldSource
-          ? foundOldSource.enabled
-          : !!newSource.default;
-
-        return newSource;
-      });
 
       return this.builtIn;
     },
@@ -67,7 +65,7 @@ export const useSources = defineStore("sources", {
 
       const found = this.imported.indexOf(source);
 
-      if(found > -1) {
+      if (found > -1) {
         this.imported.splice(found, 1);
       }
     },
@@ -96,7 +94,6 @@ export const useSources = defineStore("sources", {
         success: true,
         message: "Successfully imported sources",
       };
-
     },
   },
 

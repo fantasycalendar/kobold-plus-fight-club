@@ -1,17 +1,21 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
 import { useFilters } from "./filters";
 import CONST from "../js/constants";
 import { useLocalStorage } from "@vueuse/core/index";
 import Monster from "../js/monster";
+import { versionCompare } from "../js/helpers";
 
 const regexCache = {};
 
 export const useMonsters = defineStore("monsters", {
   state: () => {
     return {
+      version: "2.1.0",
+      storedVersion: useLocalStorage("storedMonstersVersion", "2.1.0"),
+
       lastRegex: "",
       builtIn: useLocalStorage("monsters", []),
-      imported: useLocalStorage("imported_monsters", []),
+      imported: useLocalStorage("importedMonsters", []),
       lookup: [], // useLocalStorage("monster_lookup", {}),
       instanced: [],
       instancedImports: [],
@@ -22,7 +26,10 @@ export const useMonsters = defineStore("monsters", {
     async fetch() {
       let fetched = [];
 
-      if (!this.builtIn.length) {
+      if (
+        !this.builtIn.length ||
+        versionCompare(this.version, this.storedVersion) !== 0
+      ) {
         try {
           await fetch("/src/assets/json/se_monsters.json")
             .then((res) => res.json())
@@ -47,6 +54,7 @@ export const useMonsters = defineStore("monsters", {
           return error;
         }
 
+        this.storedVersion = this.version;
         this.builtIn = fetched;
       }
 
