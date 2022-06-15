@@ -1,12 +1,10 @@
 <script setup>
 import { ref } from "vue";
-import { useNotifications } from "../stores/notifications.js";
 import { useModals } from "../stores/modals";
 
-const notifications = useNotifications();
 const modals = useModals();
 
-const props = defineProps({
+defineProps({
   theme: {
     type: String,
     default: "dark",
