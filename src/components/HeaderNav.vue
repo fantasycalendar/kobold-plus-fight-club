@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
-import {useNotifications} from "../stores/notifications.js";
-import {useModals} from "../stores/modals";
+import { useNotifications } from "../stores/notifications.js";
+import { useModals } from "../stores/modals";
 
 const notifications = useNotifications();
 const modals = useModals();
@@ -9,8 +9,8 @@ const modals = useModals();
 const props = defineProps({
   theme: {
     type: String,
-    default: 'dark',
-  }
+    default: "dark",
+  },
 });
 
 const menu = ref(false);
@@ -134,14 +134,15 @@ const menu = ref(false);
           >Fantasy Calendar</a
         >
         <a
-            @click="$emit('modal', { name: 'Importer' })"
-            href="javascript:"
-            class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
-        >Import Custom Monsters</a>
+          @click="$emit('modal', { name: 'Importer' })"
+          href="javascript:"
+          class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
+          >Import Custom Monsters</a
+        >
         <a
           href="javascript:"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
-          >
+        >
           About
         </a>
         <a
