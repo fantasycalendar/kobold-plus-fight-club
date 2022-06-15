@@ -24,7 +24,7 @@ const menu = ref(false);
       <div class="flex justify-between h-16 w-full">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <a href="" class="flex items-center">
+            <a href="/" class="flex items-center">
               <img
                 class="h-8 w-auto"
                 src="/images/header_logo.png"
