@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { RouterLink } from "vue-router";
 import { useModals } from "../stores/modals";
 
 const modals = useModals();
@@ -16,13 +17,13 @@ const menu = ref(false);
 
 <template>
   <nav
-    class="bg-emerald-700 border-b border-gray-200 dark:border-gray-900 shrink-0"
+    class="bg-emerald-700 shrink-0"
   >
     <div class="mx-auto px-4 sm:px-6 lg:px-6">
       <div class="flex justify-between h-16 w-full">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <a href="/" class="flex items-center">
+            <RouterLink :to="{ name: 'home' }" class="flex items-center">
               <img
                 class="h-8 w-auto"
                 src="/images/header_logo.png"
@@ -31,7 +32,7 @@ const menu = ref(false);
               <span class="hidden md:inline pl-2 text-lg font-bold text-white"
                 >Kobold+ Fight Club</span
               >
-            </a>
+            </RouterLink>
           </div>
         </div>
         <div
@@ -59,12 +60,7 @@ const menu = ref(false);
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
             >Donate</a
           >
-          <a
-            target="_blank"
-            href="https://fantasycomputer.works/"
-            class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
-            >About</a
-          >
+          <RouterLink to="about" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">About</RouterLink>
           <a
             title="Toggle light mode (ctrl+shift+\)"
             @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
