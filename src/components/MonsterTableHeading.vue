@@ -6,8 +6,12 @@
   >
     {{ label }}
     <span
-      class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible"
-      :class="{ invisible: sortBy !== sortsColumn }"
+      v-if="sortsColumn"
+      class="ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible px-1 hover:bg-gray-100 hover:dark:bg-gray-600"
+      :class="{
+        invisible: sortBy !== sortsColumn,
+        'bg-gray-100 dark:bg-gray-600': sortBy === sortsColumn,
+      }"
     >
       <i
         class="fa-solid"

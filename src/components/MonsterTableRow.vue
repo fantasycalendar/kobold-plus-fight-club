@@ -117,7 +117,7 @@ const encounter = useEncounter();
       v-text="monster.type"
     ></td>
     <td
-      class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32"
+      class="hidden px-3 pl-2 pr-4 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32 text-right"
       v-text="monster.alignment.string"
     ></td>
   </tr>

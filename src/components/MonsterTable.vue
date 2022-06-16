@@ -155,7 +155,6 @@ onBeforeMount(() => {
             />
             <MonsterTableHeading
               label="CR"
-              sorts-column="cr"
               :sort-by="sortBy"
               :sort-by-desc="sortByDesc"
               class="hidden sm:table-cell w-32"
@@ -171,8 +170,7 @@ onBeforeMount(() => {
             />
             <MonsterTableHeading
               label="Alignment"
-              sorts-column="alignment"
-              class="hidden lg:table-cell w-32"
+              class="hidden lg:table-cell w-32 text-right pr-4"
               :sort-by="sortBy"
               :sort-by-desc="sortByDesc"
             />
