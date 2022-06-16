@@ -16,9 +16,7 @@ const menu = ref(false);
 </script>
 
 <template>
-  <nav
-    class="bg-emerald-700 shrink-0"
-  >
+  <nav class="bg-emerald-700 shrink-0">
     <div class="mx-auto px-4 sm:px-6 lg:px-6">
       <div class="flex justify-between h-16 w-full">
         <div class="flex">
@@ -60,7 +58,11 @@ const menu = ref(false);
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
             >Donate</a
           >
-          <RouterLink to="about" class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full">About</RouterLink>
+          <RouterLink
+            to="about"
+            class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full"
+            >About</RouterLink
+          >
           <a
             title="Toggle light mode (ctrl+shift+\)"
             @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
@@ -128,17 +130,17 @@ const menu = ref(false);
           >Fantasy Calendar</a
         >
         <a
-          @click="$emit('modal', { name: 'Importer' })"
+          @click="() => {modals.show('importer'); menu = false;}"
           href="javascript:"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
           >Import Custom Monsters</a
         >
-        <a
-          href="javascript:"
+        <RouterLink
+            @click="menu = false"
+          to="about"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
+          >About</RouterLink
         >
-          About
-        </a>
         <a
           title="Toggle light mode (ctrl+shift+\)"
           @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
