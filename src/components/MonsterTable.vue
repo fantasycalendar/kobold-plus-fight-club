@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineEmits, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { useMonsters } from "../stores/monsters";
 import { useSources } from "../stores/sources";
 import { useFilters } from "../stores/filters";
