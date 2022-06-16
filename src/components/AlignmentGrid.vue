@@ -143,7 +143,7 @@
           'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border':
             (filters.alignment.bits & 1023) !== 1023,
         }"
-        class="select-none text-gray-900 col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white"
+        class="select-none col-span-6 cursor-pointer grid place-items-center h-8 dark:text-white"
       >
         Any
       </div>
@@ -155,7 +155,7 @@
           'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border':
             (filters.alignment.bits & 512) !== 512,
         }"
-        class="select-none text-gray-900 rounded-br-md col-span-6 cursor-pointer grid place-items-center h-8 bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border dark:text-white"
+        class="select-none rounded-br-md col-span-6 cursor-pointer grid place-items-center h-8 dark:text-white"
       >
         Unaligned
       </div>

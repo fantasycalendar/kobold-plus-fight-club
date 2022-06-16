@@ -54,7 +54,7 @@
             'text-white bg-emerald-600': modelValue === option.key,
             'text-gray-900 dark:text-gray-300': modelValue !== option.key,
           }"
-          class="group text-gray-900 hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9"
+          class="group hover:text-white hover:bg-emerald-600 cursor-default select-none relative py-2 pl-3 pr-9"
           role="option"
         >
           <span
