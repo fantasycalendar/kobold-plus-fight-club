@@ -1,3 +1,4 @@
+show
 <script setup></script>
 
 <script>
@@ -34,9 +35,16 @@ export default {
 
   data() {
     return {
-      showFilters: this.filtersTest(),
+      userWantsFilters: this.filtersTest(),
+      alwaysShowFilters: false,
       mobileEncounterTab: false,
     };
+  },
+
+  computed: {
+    shouldShowFilters() {
+      return this.alwaysShowFilters || this.userWantsFilters;
+    },
   },
 
   methods: {
@@ -55,7 +63,7 @@ export default {
     listenForResize() {
       window.addEventListener(
         "resize",
-        () => (this.showFilters = this.filtersTest())
+        () => (this.alwaysShowFilters = this.filtersTest())
       );
     },
 
@@ -64,7 +72,7 @@ export default {
         "ctrl+f",
         "Toggle the filters sidebar",
         () => {
-          this.showFilters = this.filtersTest();
+          this.userWantsFilters = this.filtersTest() ? true : !this.userWantsFilters;
 
           return false;
         },
@@ -95,7 +103,7 @@ export default {
         "esc",
         "(You shouldn't see this)",
         () => {
-          this.showFilters = this.filtersTest();
+          this.userWantsFilters = false;
         },
         0,
         true // Hidden
@@ -160,7 +168,7 @@ export default {
       :class="{ 'hidden md:block': !mobileEncounterTab }"
       class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar"
     >
-      <SearchBox @toggle-filters="showFilters = !showFilters" />
+      <SearchBox @toggle-filters="userWantsFilters = !userWantsFilters" />
       <MonsterTable @modal="$emit('modal', $event)"></MonsterTable>
     </div>
 
@@ -174,8 +182,8 @@ export default {
     </div>
 
     <FiltersSlideover
-      :show-filters="showFilters"
-      @close="showFilters = false"
+      :show-filters="shouldShowFilters"
+      @close="userWantsFilters = false"
     />
   </div>
 </template>
