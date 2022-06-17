@@ -158,7 +158,6 @@ onBeforeMount(() => {
               :sort-by="sortBy"
               :sort-by-desc="sortByDesc"
               class="hidden sm:table-cell w-32"
-              @sort="setSortBy($event)"
             />
             <MonsterTableHeading
               label="Type"
