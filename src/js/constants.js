@@ -1,5 +1,3 @@
-import * as helpers from "./helpers.js";
-
 const CONST = {
   EXP: {
     1: { daily: 300, easy: 25, medium: 50, hard: 75, deadly: 100 },

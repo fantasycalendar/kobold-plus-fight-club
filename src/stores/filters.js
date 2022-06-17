@@ -2,6 +2,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { useMonsters } from "./monsters";
 import * as helpers from "../js/helpers.js";
+import CONST from "../js/constants.js";
 
 export const useFilters = defineStore("filters", {
   state: () => {
@@ -241,10 +242,10 @@ export const useFilters = defineStore("filters", {
       return false;
     },
     minCr() {
-      return parseInt(this.crValues[this.cr.min].value);
+      return CONST.CR[this.crValues[this.cr.min].value].numeric;
     },
     maxCr() {
-      return parseInt(this.crValues[this.cr.max].value);
+      return CONST.CR[this.crValues[this.cr.max].value].numeric;
     },
     activeCount() {
       return this.getNonDefault().length;
