@@ -28,7 +28,7 @@ function setSortBy(sortColumn) {
   if (sortColumn === sortBy.value) {
     sortByDesc.value = !sortByDesc.value;
   } else {
-    sortByDesc.value = true;
+    sortByDesc.value = false;
   }
   sortBy.value = sortColumn;
 }
@@ -155,8 +155,10 @@ onBeforeMount(() => {
             />
             <MonsterTableHeading
               label="CR"
+              sorts-column="cr.numeric"
               :sort-by="sortBy"
               :sort-by-desc="sortByDesc"
+              @sort="setSortBy($event)"
               class="hidden sm:table-cell w-32"
             />
             <MonsterTableHeading
@@ -170,8 +172,6 @@ onBeforeMount(() => {
             <MonsterTableHeading
               label="Alignment"
               class="hidden lg:table-cell w-32 text-right pr-4"
-              :sort-by="sortBy"
-              :sort-by-desc="sortByDesc"
             />
           </tr>
         </thead>
@@ -179,11 +179,7 @@ onBeforeMount(() => {
           class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-900"
         >
           <MonsterTableRow
-            v-for="monster in monsters.paginated(currentPage, (a, b) => {
-              let direction = sortByDesc ? -1 : 1;
-
-              return a[sortBy].localeCompare(b[sortBy]) * direction;
-            })"
+            v-for="monster in monsters.paginated(currentPage, sortBy, sortByDesc)"
             :key="monster.slug"
             :monster="monster"
           ></MonsterTableRow>

@@ -128,14 +128,34 @@ export const useMonsters = defineStore("monsters", {
       return this.all.filter((monster) => monster.sourceEnabled);
     },
     paginated: (state) => {
-      return (page, sortFunction = null) => {
+      return (page, sortBy, sortByDesc) => {
         const filters = useFilters();
-        if (!sortFunction) {
-          sortFunction = (a, b) => a.name.localeCompare(b.name);
-        }
 
         return state.filtered
-          .sort(sortFunction)
+          .sort((a, b) => {
+            let direction = sortByDesc ? -1 : 1;
+            let result;
+
+            if (a === null) return 1;
+            if (b === null) return -1;
+            if (a === null && b === null) return 0;
+
+            // This just lets us pass in 'cr.string' or 'alignment.bits'
+            // as the part of the monster we're sorting by, and expands
+            // them out to an actual property within our monster object.
+            if (sortBy.includes(".")) {
+              a = sortBy.split(".").reduce((monster, i) => monster[i], a);
+              b = sortBy.split(".").reduce((monster, i) => monster[i], b);
+            }
+
+            result = a - b;
+
+            if (isNaN(result)) {
+              return a[sortBy].toString().localeCompare(b[sortBy]) * direction;
+            } else {
+              return result * direction;
+            }
+          })
           .slice((page - 1) * filters.perPage, page * filters.perPage);
       };
     },
