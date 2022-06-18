@@ -1,3 +1,5 @@
+*Effective date: 17th of June 2022*
+
 1. **Who are we?**
     1. We are Fantasy Computerworks Ltd. For privacy queries, you can contact us at privacy@fantasy-calendar.com. Other contact details are on our website.
 
