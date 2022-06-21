@@ -1,8 +1,15 @@
 import * as helpers from './helpers';
+import Papa from 'papaparse';
 
 export default class Importer {
+    static googleApiKey = 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM'
 
-    static key = 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM';
+    static types = [
+        { key: "google-sheets", label: "Google Sheets" },
+        { key: "json-raw", label: "Raw JSON" },
+        { key: "json-file", label: "JSON File" },
+        { key: "csv-file", label: "CSV Files" },
+    ]
 
     static loaders = {
         'google-sheets': this._importGoogleSheets,
@@ -60,6 +67,9 @@ export default class Importer {
     }
 
     static async _validateGoogleSheets(resourceLocator) {
+        if(resourceLocator.length < 40) {
+            return [false, "Sheets IDs aren't that short"];
+        }
 
         if(resourceLocator.toLowerCase().startsWith("https://docs.google.com/spreadsheets/d/")){
             const parts = resourceLocator.split('/');
@@ -71,7 +81,7 @@ export default class Importer {
         }
 
         const initialLoad = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}?` + new URLSearchParams({
-            key: this.key
+            key: this.googleApiKey
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
@@ -97,7 +107,7 @@ export default class Importer {
         }
 
         let monstersValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
-            key: this.key
+            key: this.googleApiKey
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
@@ -124,7 +134,7 @@ export default class Importer {
         }
 
         let sourcesValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Sources?` + new URLSearchParams({
-            key: this.key
+            key: this.googleApiKey
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
@@ -216,7 +226,7 @@ export default class Importer {
     static async _validateCSV(resourceLocators) {
 
         if(!resourceLocators[0] || !resourceLocators[1]){
-            return [false, '']
+            return [false, 'Missing a file']
         }
 
         if(resourceLocators[0].type !== 'text/csv' || resourceLocators[1].type !== 'text/csv') {
@@ -243,38 +253,92 @@ export default class Importer {
 
     }
 
-    static loadersHtml = {
-        'google-sheets': () => {
-            return `
-                <label class="mb-1" for="import_resource_locator">Insert a Google Sheet ID or link. To create your own, you can <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">refer to this example.</a></label>
-                <input name="import_resource_locator" id="import_resource_locator" type="text" x-model="importerResourceLocator">
-            `;
-        },
-        'json-raw': () => {
-            return `
-                <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="downloadExampleFile">download an example file to edit.</a></label>
-                <div class="mt-1">
-                    <textarea id="import_resource_locator" x-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
-                </div>
-            `;
-        },
-        'json-file': () => {
-            return `
-                <label class="mb-1 block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download an example file to edit.</a></label>                
-                <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
-            `;
-        },
-        'csv-file': () => {
-            return `
-                <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="downloadExampleFile">download example files to edit.</a></label>
-                <div class="grid grid-cols-2 gap-2 mt-2">                
-                    <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
-                    <label class="" id="file_input_label_1" for="import_resource_locator_file_2">Monsters CSV</label>                
-                    <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[0] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
-                    <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="if(!Array.isArray(importerResourceLocator)){ importerResourceLocator = [] }; importerResourceLocator[1] = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
-                </div>
-            `;
-        },
+    static importerTemplates = {
+        'google-sheets': `
+                            <label class="mb-1" for="import_resource_locator">Insert a Google Sheet ID or link. To create your own, you can <a class="primary-link" target="_blank" href="https://docs.google.com/spreadsheets/d/1WtUjr2DosRHlbraFKEbUfQ0QwWfPlBv6sgF605RMoKQ/edit?usp=sharing">refer to this example.</a></label>
+                            <input name="import_resource_locator" id="import_resource_locator" type="text" v-model="importerResourceLocator">
+                        `,
+        'json-raw': `
+                            <label class="mb-1" for="import_resource_locator">Input raw JSON or <a href="javascript:true" class="primary-link" @click="$emit('downloadExample')">download an example file to edit.</a></label>
+                            <div class="mt-1">
+                                <textarea id="import_resource_locator" v-model="importerResourceLocator" rows="4" name="comment" class="border-gray-300 focus:ring-emerald-500 focus:border-emerald-500 block w-full rounded-md lg:rounded-r-none sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600"></textarea>
+                            </div>
+                        `,
+        'json-file': `
+                            <label class="mb-1 block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:true" @click="$emit('downloadExample')">download an example file to edit.</a></label>                
+                            <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
+                        `,
+        'csv-file': `
+                            <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:true" @click="$emit('downloadExample')">download example files to edit.</a></label>
+                            <div class="grid grid-cols-2 gap-2 mt-2">                
+                                <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
+                                <label class="" id="file_input_label_2" for="import_resource_locator_file_2">Monsters CSV</label>                
+                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerSourcesFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
+                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerMonstersFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
+                            </div>
+                        `
+    }
+
+    static loadersHtml = (correctLoader) => {
+        return {
+            template: `
+                <div>${this.importerTemplates[correctLoader]}</div>
+            `,
+            props: {
+                modelValue: [String, Array],
+            },
+            methods: {
+                onFileUpdate(fileVar, fileList) {
+                    if(fileList.length) {
+                        this[fileVar] = fileList[0];
+                    }
+                }
+            },
+            created() {
+                this.$watch("importerResourceLocator", (newValue) => {
+                    if(correctLoader !== 'csv-file') {
+                        this.importerMonstersFile = null;
+                        this.importerSourcesFile = null;
+                    }
+
+                    this.$emit('update:modelValue', newValue);
+                });
+
+                this.$watch("importerSourcesFile", (newValue) => {
+                    this.importerResourceLocator = [
+                        newValue,
+                        this.importerMonstersFile,
+                    ]
+
+                    // Only emit the model update if we also have a monsters file
+                    if(this.importerMonstersFile && this.importerMonstersFile.length) {
+                        this.$emit('update:modelValue', this.importerResourceLocator);
+                    }
+                });
+
+                this.$watch("importerMonstersFile", (newValue) => {
+                    this.importerResourceLocator = [
+                        this.importerSourcesFile,
+                        newValue,
+                    ]
+
+                    // Only emit the model update if we also have a monsters file
+                    if(this.importerSourcesFile && this.importerSourcesFile.length) {
+                        this.$emit('update:modelValue', this.importerResourceLocator);
+                    }
+                });
+            },
+            mounted() {
+                this.importerResourceLocator = this.modelValue;
+            },
+            data() {
+                return {
+                    importerResourceLocator: "",
+                    importerSourcesFile: null,
+                    importerMonstersFile: null,
+                }
+            }
+        };
     }
 
     static async canImport(resourceLocator, type) {
@@ -301,7 +365,7 @@ export default class Importer {
         }
 
         let monsters = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
-            key: this.key
+            key: this.googleApiKey
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
@@ -329,7 +393,7 @@ export default class Importer {
             );
 
         let sources = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Sources?` + new URLSearchParams({
-            key: this.key
+            key: this.googleApiKey
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
@@ -360,6 +424,7 @@ export default class Importer {
             const data = JSON.parse(resourceLocator);
             for(let source of data.sources){
                 source.custom = true;
+                source.enabled = true;
             }
             return data;
         }catch (err) {
@@ -433,9 +498,6 @@ export default class Importer {
         if(!sources){
             return false;
         }
-        sources.forEach((source) => {
-            source.custom = true;
-        });
 
         const monsters = await this._loadFile(resourceLocators[1]);
         if(!monsters){
@@ -443,22 +505,14 @@ export default class Importer {
         }
 
         return {
-            sources: this._formatCSV(sources),
-            monsters: this._formatCSV(monsters)
+            sources: Papa.parse(sources, {
+                header: true,
+            }).data,
+            monsters: Papa.parse(monsters, {
+                header: true,
+            }).data,
         }
 
-    }
-
-    static _formatCSV(str){
-        const headers = str.slice(0, str.indexOf("\n")).split(',');
-        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-        return rows.map(row => {
-            const values = row.split(',');
-            return headers.reduce((obj, header, index) => {
-                obj[header] = values[index];
-                return obj;
-            }, {});
-        })
     }
 
     static _downloadExampleCSV(){
