@@ -44,24 +44,32 @@ export default class Monster {
 
     const sources = useSources();
     this.sources = this.attributes.sources.split(", ").map((str) => {
-      const [book, location] = str.split(": ");
-      let source = {};
-      source.actual_source = sources.find(book);
+      let book = str;
+      let location = "";
+      let hasPageNumber = false;
 
-      if (!isNaN(Number(location))) {
-        source.reference = source.actual_source;
-        source.page = location;
-      } else if (helpers.isValidHttpUrl(location)) {
-        source.reference = {
-          name: book,
-          shortname: book,
-          link: location,
-        };
+      if (str.includes(": ")) {
+        const colonIndex = str.lastIndexOf(": ");
+        const afterColon = str.slice(colonIndex + 2);
+
+        hasPageNumber = !isNaN(afterColon);
+
+        if (hasPageNumber || helpers.isValidHttpUrl(afterColon)) {
+          book = str.slice(0, colonIndex);
+          location = afterColon;
+        }
       }
 
-      source.fullText =
-        source.reference.name + (source.page ? " p." + source.page : "");
-      return source;
+      let reference = sources.find(book);
+
+      return {
+        actual_source: reference,
+        reference: {
+          ...reference,
+          ...(helpers.isValidHttpUrl(location) && { link: location }),
+        },
+        fullText: reference.name + (hasPageNumber ? " p." + location : ""),
+      };
     });
 
     this.sources.sort((a, b) =>
