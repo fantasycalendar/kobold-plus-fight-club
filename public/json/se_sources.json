@@ -106,5 +106,11 @@
     "shortname": "VGtM",
     "link": "https://www.dndbeyond.com/sources/vgtm",
     "default": true
+  },
+  {
+    "type": "Official",
+    "name": "Eberron Rising From the Last War",
+    "shortname": "Eberron",
+    "link": "https://www.dndbeyond.com/sources/erftlw"
   }
 ]
