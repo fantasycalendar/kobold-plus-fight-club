@@ -25,4 +25,4 @@ The build process uses Laravel Mix, just for convenience of setup and browser-sy
 
 ## Node Commands
 - npm ci - Install necessary dependencies
-- npm run watch - Start the build process, including a server and browsersync on port 3000
+- npm run dev - Start a local dev server on port 3000
