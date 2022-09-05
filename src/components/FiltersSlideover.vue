@@ -136,6 +136,7 @@ defineProps({
                     mode="tags"
                     placeholder="Any size"
                     v-model="filters.size"
+                    :groups="true"
                     :options="filters.sizeOptions"
                   ></Multiselect>
                 </div>
