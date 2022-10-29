@@ -127,6 +127,12 @@ export const useParty = defineStore("party", {
   },
 
   getters: {
+    difficultyThresholds(){
+      if(useEncounter().usingCR2){
+        return this.power;
+      }
+      return this.experience;
+    },
     experience() {
       if (!this.totalPlayers) {
         return false;

@@ -83,10 +83,81 @@ export const useEncounter = defineStore("encounter", {
 
       return "Oppressive";
     },
+
+    toggleCR2() {
+      this.usingCR2 = !this.usingCR2;
+      this.difficulty = this.usingCR2 ? "bruising" : "medium";
+    },
+
     generateRandom() {
       const party = useParty();
 
       party.ensureGroup();
+
+      if(this.usingCR2){
+        return this.generateRandomFromPower(party);
+      }
+
+      return this.generateRandomFromExperience(party);
+
+    },
+
+    generateRandomFromPower(party) {
+
+      const difficulties = Object.keys(party.power);
+
+      const index = difficulties.indexOf(this.difficulty);
+
+      const difficultyPower = Object.values(party.power)[index];
+      const nextDifficultyPower = Object.values(party.power)?.[index+1] ?? difficultyPower*2;
+      const totalPowerTarget = Math.floor((difficultyPower + nextDifficultyPower) / 2);
+
+      if (!totalPowerTarget) return;
+
+      let encounterTemplate = this.getEncounterTemplate();
+
+      let targetPower;
+      const newEncounter = [];
+      encounterTemplate.groups.reverse();
+
+      for (const group of encounterTemplate.groups) {
+        targetPower = encounterTemplate.subtractive
+          ? totalPowerTarget / encounterTemplate.groups.length
+          : totalPowerTarget * group.ratio;
+
+        targetPower /= group.count;
+
+        const monster = this.getBestMonsterByPower(
+          targetPower,
+          newEncounter,
+          group.count
+        );
+        if (!monster) {
+          useNotifications().notify({
+            title: "Failed to generate encounter!",
+            body: "Change the filters so that there are more monsters to sample from.",
+            icon: "fa-circle-xmark",
+            icon_color: "text-red-400",
+            sticky: true,
+          });
+          return false;
+        }
+
+        newEncounter.push({
+          monster,
+          count: group.count,
+        });
+      }
+
+      newEncounter.reverse();
+
+      this.groups = newEncounter;
+
+      this.saveToHistory(true);
+
+    },
+
+    generateRandomFromExperience(party) {
 
       const totalExperienceTarget = party.experience[this.difficulty];
 
@@ -109,7 +180,7 @@ export const useEncounter = defineStore("encounter", {
 
         targetExp /= group.count;
 
-        const monster = this.getBestMonster(
+        const monster = this.getBestMonsterByExperience(
           targetExp,
           newEncounter,
           group.count
@@ -137,7 +208,67 @@ export const useEncounter = defineStore("encounter", {
 
       this.saveToHistory(true);
     },
-    getBestMonster(targetExp, encounter, numMonsters) {
+    getBestMonsterByPower(targetPower, encounter, numMonsters) {
+      const monsters = useMonsters();
+
+      let monsterCRIndex;
+      for (let i = 0; i < CONST.CR.LIST.length; i++) {
+        const lowerBound = CONST.CR[CONST.CR.LIST[i]];
+        const upperBound = CONST.CR[CONST.CR.LIST[i + 1]];
+        if (upperBound.power > targetPower) {
+          monsterCRIndex =
+            targetPower - lowerBound.power < upperBound.power - targetPower ? i : i + 1;
+          break;
+        }
+      }
+
+      let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
+
+      let monsterList = monsters.filterBy(
+        useFilters().overriddenCopy({
+          minCr: monsterTargetCR.numeric,
+          maxCr: monsterTargetCR.numeric,
+        }),
+        (monster) => {
+          return (
+            !encounter.some((group) => group.monster === monster) &&
+            !(numMonsters > 1 && monster.isUnique)
+          );
+        }
+      );
+
+      let monsterCRNewIndex = monsterCRIndex;
+      let down = true;
+      while (!monsterList.length) {
+        if (down) {
+          monsterCRNewIndex--;
+          if (monsterCRNewIndex < 0) {
+            monsterCRNewIndex = monsterCRIndex;
+            down = false;
+          }
+        } else {
+          monsterCRNewIndex++;
+          if (monsterCRNewIndex === CONST.CR.LIST.length - 1) {
+            return false;
+          }
+        }
+
+        let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRNewIndex]];
+        monsterList = monsters.filterBy(
+          useFilters().overriddenCopy({
+            minCr: monsterTargetCR.numeric,
+            maxCr: monsterTargetCR.numeric,
+          }),
+          (monster) => {
+            return !encounter.some((group) => group.monster === monster);
+          }
+        );
+      }
+
+      return helpers.randomArrayElement(monsterList);
+
+    },
+    getBestMonsterByExperience(targetExp, encounter, numMonsters) {
       const monsters = useMonsters();
 
       let monsterCRIndex;
@@ -456,7 +587,7 @@ export const useEncounter = defineStore("encounter", {
         return "";
       }
 
-      if (this.adjustedExp === 0) return "";
+      if (!this.adjustedExp) return "";
 
       if(this.usingCR2){
         switch(this.actualDifficulty){
@@ -474,6 +605,7 @@ export const useEncounter = defineStore("encounter", {
         return "";
       }
 
+      let text = "Feels ";
       const levels = Object.entries(useParty().experience);
       for (let i = 1; i < levels.length; i++) {
         const [lowerKey, lowerValue] = levels[i - 1];
@@ -481,29 +613,29 @@ export const useEncounter = defineStore("encounter", {
         const ratio = helpers.ratio(lowerValue, upperValue, this.adjustedExp);
 
         if (ratio >= 10) {
-          return "... what.";
+          return text + "... what.";
         }
 
         if (upperKey === "daily" && ratio >= 0.0) {
           if (ratio >= 0.2) {
-            return ratio >= 1.0
+            return text + (ratio >= 1.0
               ? "like " +
                   helpers.randomArrayElement(this.insaneDifficultyStrings)
               : ratio >= 0.6
               ? "extremely deadly"
-              : "really deadly";
+              : "really deadly");
           }
-          return lowerKey;
+          return text + lowerKey;
         } else if (ratio >= 0.0 && ratio <= 1.0) {
           if (ratio > 0.7) {
-            return upperKey;
+            return text + upperKey;
           }
-          return lowerKey;
+          return text + lowerKey;
         }
       }
 
       const ratio = helpers.ratio(0, levels[0][1], this.adjustedExp);
-      return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
+      return text + (ratio > 0.5 ? "like a nuisance" : "like a minor nuisance");
     },
     threat() {
       const totalPlayers = useParty().totalPlayers;

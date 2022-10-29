@@ -133,10 +133,10 @@ const modals = useModals();
               class="block text-gray-500 dark:text-gray-400 text-sm"
               v-show="
                 encounter.difficultyFeel &&
-                encounter.actualDifficulty.toLowerCase() !==
+                ('feels ' + encounter.actualDifficulty.toLowerCase()) !==
                   encounter.difficultyFeel.toLowerCase()
               "
-              v-text="'Feels ' + encounter.difficultyFeel"
+              v-text="encounter.difficultyFeel"
             ></span>
           </dd>
         </div>
@@ -204,6 +204,10 @@ const modals = useModals();
         >
           <i class="fa fa-save"></i>
         </button>
+      </div>
+
+      <div class="mt-4 flex space-x-2">
+        <button type="button" class="button-primary-md shrink-0" @click="encounter.toggleCR2" v-text="encounter.usingCR2 ? 'Use Normal Encounters' : 'Use CR 2.0'"></button>
       </div>
     </div>
   </div>

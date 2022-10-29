@@ -137,25 +137,24 @@ const modals = useModals();
       <div class="grid text-sm text-right">
         <div
           class="hidden md:block mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400"
-        >
-          XP Goals
-        </div>
+          v-text="encounter.usingCR2 ? 'Power Thresholds' : 'XP Goals'"
+        ></div>
         <div
-          v-for="difficulty in Object.keys(party.power)"
+          v-for="[difficulty, amount] in Object.entries(party.difficultyThresholds)"
           :key="difficulty"
           class="contents"
           :class="{
-            'font-semibold': encounter.actualDifficulty === difficulty,
+            'font-semibold': encounter.actualDifficulty.toLowerCase() === difficulty,
           }"
         >
           <span>{{ capitalizeFirstLetter(difficulty) }}</span>
           <span>{{
-            formatNumber(party.power[difficulty])
+            formatNumber(amount)
           }}</span>
         </div>
 
-        <div class="mt-4">Daily budget</div>
-        <div class="mt-4" v-text="formatNumber(party.experience.daily)"></div>
+        <div class="mt-4" v-show="!encounter.usingCR2">Daily budget</div>
+        <div class="mt-4" v-show="!encounter.usingCR2" v-text="formatNumber(party.experience.daily)"></div>
       </div>
     </div>
 
