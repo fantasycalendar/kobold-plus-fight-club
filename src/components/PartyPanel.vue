@@ -3,7 +3,7 @@ import { useParty } from "../stores/party";
 import { useEncounter } from "../stores/encounter";
 import { useModals } from "../stores/modals";
 
-import { formatNumber } from "../js/helpers.js";
+import { formatNumber, capitalizeFirstLetter } from "../js/helpers.js";
 
 const party = useParty();
 const encounter = useEncounter();
@@ -141,16 +141,16 @@ const modals = useModals();
           XP Goals
         </div>
         <div
-          v-for="difficulty in ['Easy', 'Medium', 'Hard', 'Deadly']"
+          v-for="difficulty in Object.keys(party.power)"
           :key="difficulty"
           class="contents"
           :class="{
             'font-semibold': encounter.actualDifficulty === difficulty,
           }"
         >
-          <span>{{ difficulty }}</span>
+          <span>{{ capitalizeFirstLetter(difficulty) }}</span>
           <span>{{
-            formatNumber(party.experience[difficulty.toLowerCase()])
+            formatNumber(party.power[difficulty])
           }}</span>
         </div>
 

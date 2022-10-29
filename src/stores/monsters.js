@@ -5,8 +5,6 @@ import { useLocalStorage } from "@vueuse/core/index";
 import Monster from "../js/monster";
 import { versionCompare } from "../js/helpers";
 
-const regexCache = {};
-
 export const useMonsters = defineStore("monsters", {
   state: () => {
     return {

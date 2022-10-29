@@ -2,6 +2,7 @@ import { defineStore,acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import CONST from "../js/constants.js";
 import {useEncounter} from "./encounter";
+import { formatNumber } from "../js/helpers.js";
 
 export const useParty = defineStore("party", {
   state: () => {
@@ -35,14 +36,33 @@ export const useParty = defineStore("party", {
     removeGroup(index) {
       this.groups.splice(index, 1);
     },
+
+    getTextForDifficulty(difficulty){
+      if(useEncounter().usingCR2){
+        return formatNumber(this.power[difficulty]) + " power";
+      }
+      return formatNumber(this.experience[difficulty]) + " xp";
+    },
+
     getGroupExperience(acc, group) {
-      const groupExp = CONST.EXP[group.level];
+      const groupExp = CONST.PLAYER[group.level].exp;
       return {
         easy: (acc?.easy ?? 0) + groupExp.easy * (group?.players ?? 1),
         medium: (acc?.medium ?? 0) + groupExp.medium * (group?.players ?? 1),
         hard: (acc?.hard ?? 0) + groupExp.hard * (group?.players ?? 1),
         deadly: (acc?.deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
         daily: (acc?.daily ?? 0) + groupExp.daily * (group?.players ?? 1),
+      };
+    },
+
+    getGroupPower(acc, group) {
+      const groupPower = (acc?.oppressive ?? 0) + CONST.PLAYER[group.level].power * (group?.players ?? 1);
+      return {
+        mild: Math.floor(groupPower * 0.4),
+        bruising: Math.floor(groupPower * 0.6),
+        bloody: Math.floor(groupPower * 0.75),
+        brutal: Math.floor(groupPower * 0.9),
+        oppressive: groupPower
       };
     },
 
@@ -114,6 +134,14 @@ export const useParty = defineStore("party", {
 
       const experience = this.groups.reduce(this.getGroupExperience, {});
       return this.activePlayers.reduce(this.getGroupExperience, experience);
+    },
+    power() {
+      if (!this.totalPlayers) {
+        return false;
+      }
+
+      const power = this.groups.reduce(this.getGroupPower, {});
+      return this.activePlayers.reduce(this.getGroupPower, power);
     },
     totalPlayersToGainXP() {
       return (

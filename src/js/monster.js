@@ -6,6 +6,7 @@ export default class Monster {
   constructor(attributes) {
     this.attributes = attributes;
     this.cr = CONST.CR[attributes.cr];
+    this.power = CONST.CR[attributes.cr].power;
 
     this.name = attributes.name;
     this.type = attributes.type;

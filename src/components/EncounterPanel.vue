@@ -38,20 +38,18 @@ const modals = useModals();
             <SelectInput
               v-model="encounter.difficulty"
               :label="
-                encounter.difficulty.slice(0, 1).toUpperCase() +
-                encounter.difficulty.slice(1)
+                helpers.capitalizeFirstLetter(encounter.difficulty)
               "
               :options="
-                ['easy', 'medium', 'hard', 'deadly'].map((option) => {
+                encounter.difficulties.map((option) => {
                   return {
                     key: option,
-                    label: option.slice(0, 1).toUpperCase() + option.slice(1),
+                    label: helpers.capitalizeFirstLetter(option)
                   };
                 })
               "
               :option-subtext="
-                (option) =>
-                  helpers.formatNumber(party.experience[option.key]) + 'xp'
+                (option) => party.getTextForDifficulty(option.key)
               "
             ></SelectInput>
           </div>
@@ -143,6 +141,16 @@ const modals = useModals();
           </dd>
         </div>
 
+        <div class="flex items-center justify-between" v-show="encounter.usingCR2">
+          <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
+            Total Encounter Power
+          </dt>
+          <dd
+            class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+            v-text="encounter.totalPower"
+          ></dd>
+        </div>
+
         <div class="flex items-center justify-between">
           <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
             Total XP
@@ -162,7 +170,7 @@ const modals = useModals();
           ></dd>
         </div>
 
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between" v-show="!encounter.usingCR2">
           <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
             Adjusted XP
           </dt>

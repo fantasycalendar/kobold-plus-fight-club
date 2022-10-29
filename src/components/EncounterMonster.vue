@@ -1,3 +1,7 @@
+<script setup>
+import { useEncounter } from "../stores/encounter";
+</script>
+
 <template>
   <div>
     <div class="flex flex-row w-full mb-4 relative">
@@ -27,6 +31,12 @@
           <span
             class="text-base ml-4"
             v-text="'XP: ' + formatNumber(group.monster.cr.exp)"
+            v-show="!useEncounter().usingCR2"
+          ></span>
+          <span
+            class="text-base ml-4"
+            v-text="'Power: ' + formatNumber(group.monster.cr.power)"
+            v-show="useEncounter().usingCR2"
           ></span>
           <div
             class="overflow-hidden whitespace-nowrap overflow-ellipsis pr-40"

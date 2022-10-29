@@ -49,6 +49,7 @@ export const useEncounter = defineStore("encounter", {
         "savedEncounters",
         []
       ),
+      usingCR2: useLocalStorage("usingCR2", false),
     };
   },
   actions: {
@@ -66,6 +67,21 @@ export const useEncounter = defineStore("encounter", {
       if (exp < levels.deadly) return "Hard";
 
       return "Deadly";
+    },
+    getDifficultyFromPower(power){
+      const partyPower = useParty().power;
+
+      if (!partyPower) {
+        return "N/A";
+      }
+
+      if (power < partyPower.mild) return "Trivial";
+      if (power < partyPower.bruising) return "Mild";
+      if (power < partyPower.bloody) return "Bruising";
+      if (power < partyPower.brutal) return "Bloody";
+      if (power < partyPower.oppressive) return "Brutal";
+
+      return "Oppressive";
     },
     generateRandom() {
       const party = useParty();
@@ -403,9 +419,21 @@ export const useEncounter = defineStore("encounter", {
     },
   },
   getters: {
+    difficulties() {
+      if(this.usingCR2){
+        return ["mild", "bruising", "bloody", "brutal", "oppressive"]
+      }
+      return ["easy", "medium", "hard", "deadly"]
+    },
     totalExp() {
       return this.groups.reduce(
         (acc, group) => acc + group.monster.cr.exp * group.count,
+        0
+      );
+    },
+    totalPower(){
+      return this.groups.reduce(
+        (acc, group) => acc + group.monster.cr.power * group.count,
         0
       );
     },
@@ -417,14 +445,34 @@ export const useEncounter = defineStore("encounter", {
       return Math.floor(this.totalExp * multiplier);
     },
     actualDifficulty() {
+      if(this.usingCR2){
+        return this.getDifficultyFromPower(this.totalPower);
+      }
       return this.getDifficultyFromExperience(this.adjustedExp);
     },
     difficultyFeel() {
+
       if (!useParty().totalPlayersToGainXP) {
         return "";
       }
 
       if (this.adjustedExp === 0) return "";
+
+      if(this.usingCR2){
+        switch(this.actualDifficulty){
+          case "Mild":
+            return "The PCs will win without a scratch.";
+          case "Bruising":
+            return "The PCs will win with minor injuries.";
+          case "Bloody":
+            return "The PCs will win with major injuries.";
+          case "Brutal":
+            return "The PCs will win, but some may fall unconscious.";
+          case "Oppressive":
+            return "The PCs can only win with a little luck or skill.";
+        }
+        return "";
+      }
 
       const levels = Object.entries(useParty().experience);
       for (let i = 1; i < levels.length; i++) {
