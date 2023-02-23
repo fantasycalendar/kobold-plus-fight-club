@@ -6,8 +6,8 @@ import { useMonsters } from "./monsters";
 export const useSources = defineStore("sources", {
   state: () => {
     return {
-      version: "2.1.0",
-      storedVersion: useLocalStorage("storedSourcesVersion", "2.1.0"),
+      version: "2.2.2",
+      storedVersion: useLocalStorage("storedSourcesVersion", "2.2.2"),
 
       builtIn: useLocalStorage("sources", []),
       imported: useLocalStorage("importedSources", []),
