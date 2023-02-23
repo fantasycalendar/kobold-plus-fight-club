@@ -63,7 +63,7 @@ function sendToImprovedInitiative() {
   form.setAttribute("method", "POST");
   form.setAttribute(
     "action",
-    "https://www.improved-initiative.com/launchencounter/"
+    "https://improvedinitiative.app/launchencounter/"
   );
 
   Object.entries(data).forEach((entry) => {
