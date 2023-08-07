@@ -29,6 +29,10 @@ class LocalValetDriver extends ValetDriver
             return $staticFilePath;
         }
 
+        if (file_exists($staticFilePath = $sitePath.'/public/'.$uri)) {
+            return $staticFilePath;
+        }
+
         return false;
     }
 
@@ -42,6 +46,8 @@ class LocalValetDriver extends ValetDriver
      */
     public function frontControllerPath($sitePath, $siteName, $uri)
     {
-        return $sitePath.'/dist/index.html';
+        return file_exists($sitePath.'/dist/index.html')
+            ? $sitePath.'/dist/index.html'
+            : $sitePath.'/build_needed.html';
     }
 }
