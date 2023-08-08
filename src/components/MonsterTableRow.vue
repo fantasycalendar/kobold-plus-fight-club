@@ -41,6 +41,7 @@ const encounter = useEncounter();
               (index < monster.sources.length - 1 ? ', ' : '')
             "
           ></span>
+          <span v-text="monster.tags?.length ? ' - ' + monster.tags.join(', ') : ''"></span>
         </dd>
         <dt class="sr-only sm:hidden">Type</dt>
         <dd
