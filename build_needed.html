@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Kobold Plus Fight Club - The first rule of Kobold Fight Club is 'Yip Yip!'
+    </title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/images/logo.png" sizes="600x600" />
+    <link rel="icon" href="/images/logo.png" sizes="600x600" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        background-color: #323232;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #323232;
+      }
+      .logo {
+        width: 200px;
+        height: 200px;
+        margin-bottom: 1rem;
+      }
+      .logo img {
+        width: 100%;
+        height: 100%;
+      }
+      .message {
+        font-family: "Inter", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1.25;
+        color: #fff;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      .message > code {
+        font-family: "SFMono-Regular", Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.25;
+        color: #fff;
+        background-color: #1a202c;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+      }
+      .message a {
+        color: #2f855a;
+        text-decoration: none;
+      }
+    </style>
+    <script>
+      function tryConnection() {
+        // Attempt a connection to localhost:3000. If it fails, show the build_needed page.
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:3000", true);
+        // If it succeeds, redirect to the root page, on the same domain we've loaded this page from,
+        // but port 3000.
+        xhr.onload = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            window.location.href =
+              "http://" + window.location.hostname + ":3000";
+          }
+        };
+        xhr.send(null);
+      }
+
+      tryConnection();
+
+      // Try again, once every 5 seconds.
+      setInterval(tryConnection, 1000);
+    </script>
+  </head>
+  <body>
+    <div class="logo">
+      <img src="/images/logo.png" alt="Kobold+ Fight Club" />
+    </div>
+
+    <div class="message">
+      It looks like you're trying to load Kobold+ Fight Club without building
+      it.<br />
+      Try again with <code>npm run dev</code>.
+    </div>
+
+    <div class="message">
+      If you're trying to use the hosted version, you can find it at
+      <a href="https://koboldplus.club">koboldplus.club</a>.
+    </div>
+  </body>
+</html>
