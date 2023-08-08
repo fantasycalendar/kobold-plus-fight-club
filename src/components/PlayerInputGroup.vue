@@ -99,7 +99,7 @@ defineProps({
     </div>
 
     <div
-      class="order-4 md:order-6"
+      class="order-3 md:order-6"
     ><button
         @click="$emit('delete')"
         v-if="editing"
