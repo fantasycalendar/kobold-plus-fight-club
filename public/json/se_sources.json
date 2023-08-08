@@ -108,9 +108,33 @@
     "default": true
   },
   {
-    "type": "Official",
+    "type": "Official Adventure",
     "name": "Eberron Rising From the Last War",
     "shortname": "Eberron",
     "link": "https://www.dndbeyond.com/sources/erftlw"
+  },
+  {
+    "type": "Official Adventure",
+    "name": "Mythic Odysseys of Theros",
+    "shortname": "MOoT",
+    "link": "https://www.dndbeyond.com/sources/moot"
+  },
+  {
+    "type": "Official",
+    "name": "Van Richten's Guide to Ravenloft",
+    "shortname": "VRGtR",
+    "link": "https://www.dndbeyond.com/sources/vrgtr"
+  },
+  {
+    "type": "Official Adventure",
+    "name": "Rime of the Frostmaiden",
+    "shortname": "RotFM",
+    "link": "https://www.dndbeyond.com/sources/idrotf"
+  },
+  {
+    "type": "Official",
+    "name": "Mordekainen Presents: Monsters of the Multiverse",
+    "shortname": "MPMM",
+    "link": "https://www.dndbeyond.com/sources/motm"
   }
 ]

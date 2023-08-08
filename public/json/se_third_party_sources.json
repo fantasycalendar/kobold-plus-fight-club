@@ -1,6 +1,36 @@
 [
   {
     "type": "Third-Party",
+    "name": "Flee Mortals",
+    "shortname": "FM",
+    "link": "https://shop.mcdmproductions.com/collections/in-stock/products/flee-mortals-the-mcdm-monster-book-pdf"
+  },
+  {
+    "type": "Third-Party",
+    "name": "Tome of Beasts (2023)",
+    "shortname": "ToB23",
+    "link": "https://koboldpress.com/kpstore/product/tome-of-beasts-1-2023-edition/"
+  },
+  {
+    "type": "Third-Party",
+    "name": "Tome of Beasts",
+    "shortname": "ToB",
+    "link": "https://koboldpress.com/kpstore/product/tome-of-beasts-for-5th-edition/"
+  },
+  {
+    "type": "Third-Party",
+    "name": "Tome of Beasts 2",
+    "shortname": "ToB2",
+    "link": "https://koboldpress.com/tome-of-beasts-2/"
+  },
+  {
+    "type": "Third-Party",
+    "name": "Tome of Beasts 3",
+    "shortname": "ToB3",
+    "link": "https://koboldpress.com/tome-of-beasts-3/"
+  },
+  {
+    "type": "Third-Party",
     "name": "Demon Cults & Secret Societies",
     "shortname": "DCSS",
     "link": "https://koboldpress.com/kpstore/product/demon-cults-secret-societies-5e-dnd/"
@@ -34,12 +64,6 @@
     "name": "Quests of Doom Volume 2",
     "shortname": "QoDv2",
     "link": "https://www.froggodgames.com/quests-doom-5e-volume-2"
-  },
-  {
-    "type": "Third-Party",
-    "name": "Tome of Beasts",
-    "shortname": "ToB",
-    "link": "https://koboldpress.com/kpstore/product/tome-of-beasts-for-5th-edition/"
   },
   {
     "type": "Third-Party",
