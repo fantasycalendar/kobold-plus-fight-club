@@ -8,16 +8,15 @@ defineProps({
   player: Object,
   playerIndex: Number,
   partyIndex: Number,
+  editing: Boolean,
 });
 </script>
 
 <template>
   <div
-    class="grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]"
+    class="grid gap-2 grid-cols-[1fr_1fr_60px] md:grid-cols-[1fr_50px_75px_150px_60px]"
   >
-    <ToggleInput v-model="player.active"></ToggleInput>
-
-    <div class="order-2">
+    <div class="order-1">
       <input
         type="text"
         :id="'name_' + playerIndex"
@@ -25,7 +24,7 @@ defineProps({
         class="px-1 py-1 !mb-0 block w-full sm:text-sm rounded-md dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
       />
     </div>
-    <div class="order-3">
+    <div class="order-2">
       <input
         type="number"
         :id="'level_' + playerIndex"
@@ -34,7 +33,7 @@ defineProps({
       />
     </div>
 
-    <div class="relative order-5 md:order-4 mb-2 md:mb-0">
+    <div class="relative order-4 md:order-3 mb-2 md:mb-0">
       <input
         type="number"
         :id="'initiativeMod_' + playerIndex"
@@ -72,7 +71,7 @@ defineProps({
     </div>
 
     <div
-      class="order-6 md:order-5 justify-center md:justify-start flex -space-x-px mb-2 md:mb-0"
+      class="order-5 md:order-4 justify-center md:justify-start flex -space-x-px mb-2 md:mb-0"
     >
       <div class="w-1/2 flex-1 min-w-0">
         <input
@@ -100,12 +99,23 @@ defineProps({
     </div>
 
     <div
-      @click="$emit('delete')"
-      class="order-4 md:order-6 group cursor-pointer grid place-items-center mb-2 md:mb-0"
-    >
-      <i
-        class="fa fa-times text-red-500 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-700"
-      ></i>
+      class="order-4 md:order-6"
+    ><button
+        @click="$emit('delete')"
+        v-if="editing"
+        class="button-danger-outline-md self-stretch w-full flex justify-center items-center -mb-1"
+      >
+        <i
+          class="fa fa-user-xmark text-red-500 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-700"
+        ></i>
+      </button>
+
+      <ToggleInput
+        class="pt-[2px]"
+        v-if="!editing"
+        v-model="player.active"
+        end="true"
+      ></ToggleInput>
     </div>
   </div>
 </template>

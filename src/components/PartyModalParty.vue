@@ -1,90 +1,118 @@
 <script setup>
 import { useParty } from "../stores/party";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import PlayerInputGroup from "./PlayerInputGroup.vue";
+import ToggleInput from "./ToggleInput.vue";
 
 const parties = useParty();
 
-defineProps({
+const props = defineProps({
   party: Object,
   index: Number,
 });
 
+const active = ref(
+  props.party.players.filter((player) => player.active).length
+);
+
+watch(
+  () => active.value,
+  (value) => {
+    if (value) {
+      parties.activateParty(props.index);
+    } else {
+      parties.deactivateParty(props.index);
+    }
+  }
+);
+
 const editing = ref(false);
+const editingMembership = ref(false);
 </script>
 
 <template>
   <div
-    class="flex px-4 py-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600"
+    class=""
     :class="{
+      'flex px-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600': true,
       'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': editing,
+      'py-4': !editing,
     }"
     :title="party.name"
     :key="index"
     @click="editing = !editing"
   >
     <div
-      class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis"
+      class="grow flex justify-between mr-2 truncate overflow-ellipsis items-center"
     >
-      <span v-text="party.name"></span>
-    </div>
-    <div
-      class="shrink-0 grid grid-cols-[30px_1fr] place-items-center h-full absolute inset-y-0 right-0"
-    >
-      <div
-        class="w-full h-full bg-gradient-to-l from-gray-50 dark:from-gray-700 group-hover:from-gray-100 dark:group-hover:from-gray-600 to-transparent"
-      ></div>
-      <div
-        class="px-3 bg-gray-50 group-hover:bg-gray-100 dark:bg-gray-700 dark:group-hover:bg-gray-600 min-w-4 h-full grid place-items-center"
-      >
-        <div
-          @click.stop="parties.activateParty(index)"
-          v-show="!party.players.filter((player) => player.active).length"
-          class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100"
-        >
-          <div>Make all active <i class="fa fa-users"></i></div>
-        </div>
-        <div
-          @click.stop="parties.deactivateParty(index)"
-          v-show="party.players.filter((player) => player.active).length"
-          class="h-full hidden place-items-center group-hover:grid text-gray-900 dark:text-gray-100"
-        >
-          <div>Deactivate all <i class="fa fa-users-slash"></i></div>
-        </div>
+      <div>
+        <span v-text="party.name"></span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span
+          v-text="
+            `${party.players.filter((player) => player.active).length} / ${
+              party.players.length
+            }`
+          "
+        ></span>
+        <i :class="{ 'fa fa-users': active, 'fa fa-users-slash': !active }"></i>
+        <ToggleInput
+          v-model="active"
+          @click.stop
+          darker="true"
+          class="p-1"
+        ></ToggleInput>
       </div>
     </div>
   </div>
 
   <div
     v-show="editing"
-    class="border-x border-gray-50 dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-x-1 gap-y-2 px-6 py-3"
+    class="border border-gray-50 dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-y-2 gap-x-1 px-6 py-3 m-px rounded-b"
   >
     <div class="flex items-center">
-      <input v-model="party.name" type="text" class="!mb-0 py-0.5 text-xl" />
-      <div class="w-[30px] ml-2 flex justify-center">
-        <i
+      <input v-show="editingMembership" v-model="party.name" type="text" class="!mb-0 py-0.5 text-xl" />
+      <div class="flex space-x-1 flex-grow self-stretch text-2xl" v-show="!editingMembership" v-text="party.name"></div>
+      <div class="ml-2 flex space-x-1 justify-center self-stretch">
+        <button
           @click.stop="parties.deleteParty(index)"
+          v-if="editingMembership"
           :title="'Delete ' + party.name"
-          class="fa fa-trash hover:text-red-400 dark:hover:text-red-600 cursor-pointer"
-        ></i>
+          type="button"
+          class="button-danger-outline-md"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+        <button
+          @click.stop="editingMembership = !editingMembership"
+          :title="'Edit membership of ' + party.name"
+          class="button-muted-outline-md"
+        >
+          <i class="fa fa-pencil"></i>
+        </button>
       </div>
     </div>
 
     <div
-      class="text-gray-600 dark:text-gray-300 grid gap-2 grid-cols-[60px_1fr_1fr] md:grid-cols-[60px_1fr_50px_75px_150px_30px]"
+      class="grid gap-2 grid-cols-[1fr_1fr_60px] md:grid-cols-[1fr_50px_75px_150px_60px] -mb-1 mt-2"
     >
-      <div>Active</div>
       <div>Name<span class="md:hidden">/Init.</span></div>
       <div>Level<span class="md:hidden">/HP</span></div>
       <div class="hidden md:block md:order-6"></div>
       <div class="hidden md:block">Initiative</div>
       <div class="hidden md:block">HP</div>
+      <div
+        class="text-end"
+        v-text="editingMembership ? 'Delete' : 'Active'"
+      ></div>
     </div>
 
     <PlayerInputGroup
       v-for="(player, playerIndex) of party.players"
       :player="player"
       :key="playerIndex"
+      :editing="editingMembership"
       @delete="parties.deletePlayer(index, playerIndex)"
     ></PlayerInputGroup>
 

@@ -16,7 +16,7 @@ const modals = useModals();
       >
         <div
           v-show="parties.saved.length"
-          class="bg-gray-50 dark:bg-gray-700 rounded shadow overflow-hidden border-b dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-800"
+          class="bg-gray-50 dark:bg-gray-700 rounded shadow overflow-hidden dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-800"
         >
           <PartyModalParty
             v-for="(party, partyIndex) of parties.saved"
