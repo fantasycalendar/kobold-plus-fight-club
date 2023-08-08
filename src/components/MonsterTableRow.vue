@@ -1,6 +1,7 @@
 <script setup>
 import {useEncounter} from "../stores/encounter";
 import Monster from "../js/monster";
+import Badge from "./Badge.vue";
 
 const props = defineProps({
   monster: {
@@ -29,6 +30,11 @@ const encounter = useEncounter();
       class="w-full max-w-0 py-2 px-3 text-sm font-medium text-gray-900 dark:text-gray-100 w-64 max-w-64 truncate"
     >
       <span class="truncate" v-text="monster.name"></span>
+      <span v-show="monster.tags.length" class="inline-flex space-x-1 ml-2">
+        <Badge v-for="tag in monster.tags">
+          {{ tag.toLowerCase() }}
+        </Badge>
+      </span>
       <dl class="font-normal">
         <dt class="sr-only">Sources</dt>
         <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">

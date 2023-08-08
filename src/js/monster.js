@@ -21,8 +21,8 @@ export default class Monster {
     );
 
     this.tags = attributes.tags
-      ? attributes.tags.split(/\s*,\s*/).sort()
-      : null;
+      ? attributes.tags.split(/\s*,\s*/)
+      : [];
 
     this.special = !!attributes.special;
     this.legendary = !!attributes.legendary;
