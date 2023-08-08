@@ -13,8 +13,8 @@ const modals = useModals();
 <template>
   <div class="grid grid-cols-3 md:pr-2 md:grid-cols-5 pb-4 flex-col w-full">
     <div class="col-span-3 space-y-2">
-      <div class="flex justify-between items-end">
-        <div class="mb-1 text-gray-600 dark:text-gray-400">Party</div>
+      <div class="flex justify-between items-end items-center">
+        <div class="text-gray-600 dark:text-gray-400">Party</div>
 
         <a
           class="primary-link text-sm"
