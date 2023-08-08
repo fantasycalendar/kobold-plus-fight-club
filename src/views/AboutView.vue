@@ -33,8 +33,8 @@ import { RouterLink } from "vue-router";
 
         <h3>Who is Fantasy Computerworks?</h3>
         <p>
-          <a class="primary-link" href="https://fantasycalendar.github.io/"
-            >Fantasy Computerworks</a
+          <a class="primary-link" href="https://fantasycomputer.works"
+          >Fantasy Computerworks</a
           >
           is a team of two developers, Axel and Adam, who like keeping small
           slices of the internet running.
@@ -48,7 +48,9 @@ import { RouterLink } from "vue-router";
         <h3>Do you have a privacy policy?</h3>
         <p>
           We sure do! You can read it
-          <RouterLink class="primary-link" :to="{ name: 'privacy' }">here</RouterLink>.
+          <RouterLink class="primary-link" :to="{ name: 'privacy' }"
+          >here</RouterLink
+          >.
           <br />
           The short answer is: We don't use cookies or
           <del>disgusting parasites</del> third party analytics tools to track
@@ -62,7 +64,7 @@ import { RouterLink } from "vue-router";
           href="https://github.com/fantasycalendar/kobold-plus-fight-club"
           class="primary-link"
           target="_blank"
-          >Check the README on Github!</a
+        >Check the README on Github!</a
         >
 
         <h3>Via Discord</h3>
@@ -70,7 +72,7 @@ import { RouterLink } from "vue-router";
           href="https://app.fantasy-calendar.com/discord"
           target="_blank"
           class="primary-link"
-          >Fantasy Computerworks Official Discord</a
+        >Fantasy Computerworks Official Discord</a
         >
       </div>
 
@@ -84,7 +86,7 @@ import { RouterLink } from "vue-router";
             <a
               class="primary-link font-semibold"
               href="https://app.fantasy-calendar.com/"
-              >Fantasy Calendar</a
+            >Fantasy Calendar</a
             >
             - The best tool for RPG calendar creation on the Internet. (We're
             not biased, we're just the creators. Promise!)
@@ -93,7 +95,7 @@ import { RouterLink } from "vue-router";
             <a
               class="primary-link font-semibold"
               href="http://dungeon-generator.fantasy-calendar.com/"
-              >Dungeon Generator</a
+            >Dungeon Generator</a
             >
             - A random dungeon generator using beautiful tiles by
             <a href="https://www.patreon.com/csp_kris">Kristian Richards</a>
@@ -102,7 +104,7 @@ import { RouterLink } from "vue-router";
             <a
               class="primary-link font-semibold"
               href="https://github.com/fantasycalendar/FoundryVTT-Sequencer"
-              >FoundryVTT Sequencer</a
+            >FoundryVTT Sequencer</a
             >
             - A FoundryVTT module that implements a basic pipeline for managing
             the flow of a set of functions, effects, sounds, and macros.
@@ -121,12 +123,12 @@ import { RouterLink } from "vue-router";
           href="http://reddit.com/u/Asmor"
           class="primary-link"
           target="_blank"
-          >/u/Asmor</a
+        >/u/Asmor</a
         >) and Joe Barzilai (<a
           href="http://reddit.com/u/jabber3"
           class="primary-link"
           target="_blank"
-          >/u/jabber3</a
+        >/u/jabber3</a
         >)
       </p>
     </div>
