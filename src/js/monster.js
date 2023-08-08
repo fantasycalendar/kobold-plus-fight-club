@@ -1,6 +1,7 @@
 import CONST from "./constants.js";
 import * as helpers from "./helpers.js";
 import { useSources } from "../stores/sources";
+import { useMonsters } from "../stores/monsters.js";
 
 export default class Monster {
   constructor(attributes) {
@@ -61,7 +62,6 @@ export default class Monster {
       }
 
       let reference = sources.find(book);
-
       return {
         actual_source: reference,
         reference: {
@@ -75,6 +75,15 @@ export default class Monster {
     this.sources.sort((a, b) =>
       a.fullText.localeCompare(b.fullText, "en", { sensitivity: "base" })
     );
+  }
+
+  static make(attributes) {
+    const cr = CONST.CR[attributes.cr];
+    const slug = helpers.slugify(
+      attributes.name + "-" + attributes.sources + "-" + cr.string
+    );
+    if(useMonsters().lookup[slug]) return false;
+    return new Monster(attributes);
   }
 
   get sourceEnabled() {
