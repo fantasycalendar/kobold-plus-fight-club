@@ -16,8 +16,8 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+      "category": "Entertainment",
+      "copyright": "Fantasy Computerworks",
       "deb": {
         "depends": []
       },
@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "works.fantasycomputer.kpfc",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "width": 1366,
+        "height": 768,
         "resizable": true,
-        "title": "Kobold+ Fight Club - Yip Yip!",
-        "width": 800
+        "title": "Kobold+ Fight Club - Yip Yip!"
       }
     ]
   }
