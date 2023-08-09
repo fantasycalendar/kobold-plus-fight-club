@@ -5,7 +5,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5050",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "tauri-dev": "tauri dev",
+    "tauri": "tauri"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.1",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
+    "@tauri-apps/cli": "^1.4.0",
     "@vitejs/plugin-vue": "^2.3.1",
     "@vue/eslint-config-prettier": "^7.0.0",
     "autoprefixer": "10.4.5",
