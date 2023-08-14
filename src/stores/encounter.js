@@ -1,12 +1,11 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useParty } from "./party";
 import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
-import CONST from "../js/constants";
 import { useMonsters } from "./monsters";
 import { useFilters } from "./filters";
 import { useLocalStorage } from "@vueuse/core/index";
-import hotkeys from "hotkeys-js";
+import generators from "../js/generators.js";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
@@ -49,6 +48,8 @@ export const useEncounter = defineStore("encounter", {
         "savedEncounters",
         []
       ),
+      availableGenerators: generators,
+      generator: useLocalStorage("generator", "k+fc"),
     };
   },
   actions: {
@@ -67,201 +68,28 @@ export const useEncounter = defineStore("encounter", {
 
       return "Deadly";
     },
+
     generateRandom() {
-      const party = useParty();
 
-      party.ensureGroup();
+      useParty().ensureGroup();
 
-      const totalExperienceTarget = party.experience[this.difficulty];
+      const newEncounter = this.encounterGenerator.generateEncounter(this.difficulty, this.type);
 
-      if (!totalExperienceTarget) return;
-
-      let fudgeFactor = 1.1; // The algorithm is conservative in spending exp; so this tries to get it closer to the actual medium value
-      let baseExpBudget = totalExperienceTarget * fudgeFactor;
-      let encounterTemplate = this.getEncounterTemplate();
-      let totalAvailableXP =
-        baseExpBudget / this.getMultiplier(encounterTemplate.total);
-
-      let targetExp;
-      const newEncounter = [];
-      encounterTemplate.groups.reverse();
-
-      for (const group of encounterTemplate.groups) {
-        targetExp = encounterTemplate.subtractive
-          ? totalAvailableXP / encounterTemplate.groups.length
-          : totalAvailableXP * group.ratio;
-
-        targetExp /= group.count;
-
-        const monster = this.getBestMonster(
-          targetExp,
-          newEncounter,
-          group.count
-        );
-        if (!monster) {
-          useNotifications().notify({
-            title: "Failed to generate encounter!",
-            body: "Change the filters so that there are more monsters to sample from.",
-            icon: "fa-circle-xmark",
-            icon_color: "text-red-400",
-            sticky: true,
-          });
-          return false;
-        }
-
-        newEncounter.push({
-          monster,
-          count: group.count,
-        });
-      }
-
-      newEncounter.reverse();
+      if(!newEncounter) return;
 
       this.groups = newEncounter;
 
       this.saveToHistory(true);
     },
-    getBestMonster(targetExp, encounter, numMonsters) {
-      const monsters = useMonsters();
 
-      let monsterCRIndex;
-      for (let i = 0; i < CONST.CR.LIST.length; i++) {
-        const lowerBound = CONST.CR[CONST.CR.LIST[i]];
-        const upperBound = CONST.CR[CONST.CR.LIST[i + 1]];
-        if (upperBound.exp > targetExp) {
-          monsterCRIndex =
-            targetExp - lowerBound.exp < upperBound.exp - targetExp ? i : i + 1;
-          break;
-        }
-      }
-
-      let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
-
-      let monsterList = monsters.filterBy(
-        useFilters().overriddenCopy({
-          minCr: monsterTargetCR.numeric,
-          maxCr: monsterTargetCR.numeric,
-        }),
-        (monster) => {
-          return (
-            !encounter.some((group) => group.monster === monster) &&
-            !(numMonsters > 1 && monster.isUnique)
-          );
-        }
-      );
-
-      let monsterCRNewIndex = monsterCRIndex;
-      let down = true;
-      while (!monsterList.length) {
-        if (down) {
-          monsterCRNewIndex--;
-          if (monsterCRNewIndex < 0) {
-            monsterCRNewIndex = monsterCRIndex;
-            down = false;
-          }
-        } else {
-          monsterCRNewIndex++;
-          if (monsterCRNewIndex === CONST.CR.LIST.length - 1) {
-            return false;
-          }
-        }
-
-        let monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRNewIndex]];
-        monsterList = monsters.filterBy(
-          useFilters().overriddenCopy({
-            minCr: monsterTargetCR.numeric,
-            maxCr: monsterTargetCR.numeric,
-          }),
-          (monster) => {
-            return !encounter.some((group) => group.monster === monster);
-          }
-        );
-      }
-
-      return helpers.randomArrayElement(monsterList);
-    },
-    getEncounterTemplate() {
-      let template = helpers.clone(CONST.ENCOUNTER_TYPES[this.type]);
-
-      template = helpers.randomArrayElement(template.samples);
-      if (this.type === "random") {
-        template = {
-          subtractive: true,
-          groups: template.map((num) => {
-            return { count: num };
-          }),
-        };
-      }
-
-      const players = Number(useParty().totalPlayers);
-      template.groups = template.groups.map((group) => {
-        if (typeof group.count === "string") {
-          const parts = group.count.split("-").map((part) => {
-            part = part.replaceAll("players", players);
-            return eval(part);
-          });
-          group.count =
-            parts.length > 1 ? helpers.randomIntBetween(...parts) : parts[0];
-        }
-        return group;
-      });
-
-      template.total = template.groups.reduce(
-        (acc, group) => acc + group.count,
-        0
-      );
-
-      if (this.type === "random") {
-        template.overallRatio = template.groups.reduce(
-          (acc, group) => acc + (group.ratio || 1),
-          0
-        );
-        template.groups.forEach((group) => {
-          group.ratio = (group.ratio || 1) / template.overallRatio;
-        });
-      }
-
-      return template;
-    },
-    getMultiplier(numMonsters) {
-      let multiplierCategory;
-      const multipliers = [0.5, 1, 1.5, 2, 2.5, 3, 4, 5];
-      const party = useParty();
-
-      if (numMonsters <= 3) {
-        multiplierCategory = Math.max(1, numMonsters);
-      } else if (numMonsters < 7) {
-        multiplierCategory = 3;
-      } else if (numMonsters < 11) {
-        multiplierCategory = 4;
-      } else if (numMonsters < 15) {
-        multiplierCategory = 5;
-      } else {
-        multiplierCategory = 6;
-      }
-
-      if (party.totalPlayers < 3) {
-        multiplierCategory++;
-      } else if (party.totalPlayers > 5) {
-        multiplierCategory--;
-      }
-
-      return multipliers[multiplierCategory];
-    },
     getNewMonster(group) {
-      const monsterList = useMonsters().filterBy(
-        useFilters().overriddenCopy({
-          maxCr: group.monster.cr.numeric,
-          minCr: group.monster.cr.numeric,
-        }),
-        (monster) => {
-          return !this.groups.some((group) => group.monster === monster);
-        }
-      );
-      if (!monsterList.length) return;
-      group.monster = helpers.randomArrayElement(monsterList);
+      const newMonster = this.encounterGenerator.getNewMonster(group, this.groups);
+      if (!newMonster) return;
+      group.monster = newMonster;
+      console.log(group.monster, newMonster)
       this.saveToHistory();
     },
+
     addMonster(monster) {
       if (!useParty().totalPlayers) {
         useParty().addPlayerGroup();
@@ -405,45 +233,36 @@ export const useEncounter = defineStore("encounter", {
   getters: {
     totalExp() {
       return this.groups.reduce(
-        (acc, group) => acc + group.monster.cr.exp * group.count,
+        (acc, group) => acc + group.monster.experience * group.count,
         0
       );
     },
-    totalMonsters() {
-      return this.groups.reduce((acc, group) => acc + group.count, 0);
-    },
-    adjustedExp() {
-      const multiplier = this.getMultiplier(this.totalMonsters);
-      return Math.floor(this.totalExp * multiplier);
-    },
-    actualDifficulty() {
-      return this.getDifficultyFromExperience(this.adjustedExp);
-    },
-    difficultyFeel() {
-      if (!useParty().totalPlayersToGainXP) {
+
+    difficultyFeel(party) {
+      if (!party.totalPlayersToGainXP) {
         return "";
       }
 
       if (this.adjustedExp === 0) return "";
 
-      const levels = Object.entries(useParty().experience);
+      const levels = Object.entries(party.experience);
       for (let i = 1; i < levels.length; i++) {
         const [lowerKey, lowerValue] = levels[i - 1];
         const [upperKey, upperValue] = levels[i];
         const ratio = helpers.ratio(lowerValue, upperValue, this.adjustedExp);
 
         if (ratio >= 10) {
-          return "... what.";
+          return "... insane?";
         }
 
         if (upperKey === "daily" && ratio >= 0.0) {
           if (ratio >= 0.2) {
             return ratio >= 1.0
               ? "like " +
-                  helpers.randomArrayElement(this.insaneDifficultyStrings)
+              helpers.randomArrayElement(this.insaneDifficultyStrings)
               : ratio >= 0.6
-              ? "extremely deadly"
-              : "really deadly";
+                ? "extremely deadly"
+                : "really deadly";
           }
           return lowerKey;
         } else if (ratio >= 0.0 && ratio <= 1.0) {
@@ -456,40 +275,34 @@ export const useEncounter = defineStore("encounter", {
 
       const ratio = helpers.ratio(0, levels[0][1], this.adjustedExp);
       return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
-    },
-    threat() {
-      const totalPlayers = useParty().totalPlayers;
-      const experience = useParty().experience;
-      const mediumExp = experience.medium;
-      let singleMultiplier = 1;
-      let pairMultiplier = 1.5;
-      let groupMultiplier = 2;
-      let trivialMultiplier = 2.5;
 
-      if (totalPlayers < 3) {
-        // For small groups, increase multiplier
-        singleMultiplier = 1.5;
-        pairMultiplier = 2;
-        groupMultiplier = 2.5;
-        trivialMultiplier = 3;
-      } else if (totalPlayers > 5) {
-        // For large groups, reduce multiplier
-        singleMultiplier = 0.5;
-        pairMultiplier = 1;
-        groupMultiplier = 1.5;
-        trivialMultiplier = 2;
+    },
+
+    adjustedExp() {
+      const multiplier = this.encounterGenerator.getMultiplier(this.groups);
+      console.log("multiplier", multiplier)
+      return Math.floor(this.totalExp * multiplier);
+    },
+
+    actualDifficulty() {
+      const levels = useParty().experience;
+
+      if (!levels) {
+        return "N/A";
       }
 
-      return {
-        deadly: Math.floor(experience.deadly / singleMultiplier),
-        hard: Math.floor(experience.hard / singleMultiplier),
-        medium: Math.floor(mediumExp / singleMultiplier),
-        easy: Math.floor(experience.easy / singleMultiplier),
-        pair: Math.floor(mediumExp / (2 * pairMultiplier)),
-        group: Math.floor(mediumExp / (4 * groupMultiplier)),
-        trivial: Math.floor(mediumExp / (8 * trivialMultiplier)),
-      };
+      if (this.adjustedExp === 0) return "None";
+      if (this.adjustedExp < levels.easy) return "Trivial";
+      if (this.adjustedExp < levels.medium) return "Easy";
+      if (this.adjustedExp < levels.hard) return "Medium";
+      if (this.adjustedExp < levels.deadly) return "Hard";
+
+      return "Deadly";
     },
+
+    encounterGenerator() {
+      return this.availableGenerators[this.generator];
+    }
   },
 });
 

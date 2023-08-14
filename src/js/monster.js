@@ -4,6 +4,7 @@ import { useSources } from "../stores/sources";
 import { useMonsters } from "../stores/monsters.js";
 
 export default class Monster {
+
   constructor(attributes) {
     this.attributes = attributes;
     this.cr = CONST.CR[attributes.cr];
@@ -23,6 +24,8 @@ export default class Monster {
     this.tags = attributes.tags
       ? attributes.tags.split(/\s*,\s*/)
       : [];
+
+    this.experience = this.isMinion ? this.cr.minionExp : this.cr.exp;
 
     this.special = !!attributes.special;
     this.legendary = !!attributes.legendary;
@@ -86,8 +89,24 @@ export default class Monster {
     return new Monster(attributes);
   }
 
+  copy() {
+    return new Monster(this.attributes);
+  }
+
   get sourceEnabled() {
     return this.sources.find((source) => source.actual_source.enabled);
+  }
+
+  get isMinion() {
+    return !!this.attributes.minion || this.tags.some(tag => tag.toLowerCase().includes('minion'));
+  }
+
+  get isSolo() {
+    return !!this.attributes.solo || this.tags.some(tag => tag.toLowerCase().includes('solo'));
+  }
+
+  get isLeader() {
+    return !!this.attributes.solo || this.tags.some(tag => tag.toLowerCase().includes('solo'));
   }
 
   static parseAlignment(str = "") {

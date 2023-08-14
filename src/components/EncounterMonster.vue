@@ -26,7 +26,7 @@
           ></span>
           <span
             class="text-base ml-4"
-            v-text="'XP: ' + formatNumber(group.monster.cr.exp)"
+            v-text="'XP: ' + formatNumber(group.monster.experience)"
           ></span>
           <div
             class="overflow-hidden whitespace-nowrap overflow-ellipsis pr-40"

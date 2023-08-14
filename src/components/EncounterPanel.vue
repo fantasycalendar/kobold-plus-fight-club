@@ -83,6 +83,19 @@ const modals = useModals();
             </span>
           </button>
         </div>
+
+        <div
+          class="w-full md:w-auto shrink mt-3 md:mt-0"
+        >
+          <button
+            @click="modals.show('generator')"
+            class="button-primary-md w-full md:w-auto"
+          >
+            <span class="inline">
+              <i class="fa fa-cog"></i>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -162,7 +175,7 @@ const modals = useModals();
           ></dd>
         </div>
 
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between" v-show="encounter.adjustedExp > 0">
           <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
             Adjusted XP
           </dt>
