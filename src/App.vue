@@ -5,7 +5,7 @@ import HeaderNav from "./components/HeaderNav.vue";
 import ImporterModal from "./components/ImporterModal.vue";
 import KeyboardModal from "./components/KeyboardModal.vue";
 import SourcesModal from "./components/SourcesModal.vue";
-import GeneratorModal from "./components/GeneratorModal.vue";
+import StrategyModal from "./components/StrategyModal.vue";
 import PartyModal from "./components/PartyModal.vue";
 import EncounterModal from "./components/EncounterModal.vue";
 
@@ -67,7 +67,7 @@ onMounted(async () => {
 
     <ImporterModal />
     <KeyboardModal />
-    <GeneratorModal />
+    <StrategyModal />
     <SourcesModal />
     <PartyModal />
     <EncounterModal />

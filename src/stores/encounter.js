@@ -5,7 +5,7 @@ import { useNotifications } from "./notifications";
 import { useMonsters } from "./monsters";
 import { useFilters } from "./filters";
 import { useLocalStorage } from "@vueuse/core/index";
-import generators from "../js/generators.js";
+import strategies from "../js/strategy.js";
 
 export const useEncounter = defineStore("encounter", {
   state: () => {
@@ -48,8 +48,8 @@ export const useEncounter = defineStore("encounter", {
         "savedEncounters",
         []
       ),
-      availableGenerators: generators,
-      generator: useLocalStorage("generator", "k+fc"),
+      availableStrategies: strategies,
+      strategy: useLocalStorage("strategy", "k+fc"),
     };
   },
   actions: {
@@ -73,7 +73,7 @@ export const useEncounter = defineStore("encounter", {
 
       useParty().ensureGroup();
 
-      const newEncounter = this.encounterGenerator.generateEncounter(this.difficulty, this.type);
+      const newEncounter = this.encounterStrategy.generateEncounter(this.difficulty, this.type);
 
       if(!newEncounter) return;
 
@@ -83,7 +83,7 @@ export const useEncounter = defineStore("encounter", {
     },
 
     getNewMonster(group) {
-      const newMonster = this.encounterGenerator.getNewMonster(group, this.groups);
+      const newMonster = this.encounterStrategy.getNewMonster(group, this.groups);
       if (!newMonster) return;
       group.monster = newMonster;
       console.log(group.monster, newMonster)
@@ -279,7 +279,7 @@ export const useEncounter = defineStore("encounter", {
     },
 
     adjustedExp() {
-      const multiplier = this.encounterGenerator.getMultiplier(this.groups);
+      const multiplier = this.encounterStrategy.getMultiplier(this.groups);
       console.log("multiplier", multiplier)
       return Math.floor(this.totalExp * multiplier);
     },
@@ -300,8 +300,8 @@ export const useEncounter = defineStore("encounter", {
       return "Deadly";
     },
 
-    encounterGenerator() {
-      return this.availableGenerators[this.generator];
+    encounterStrategy() {
+      return this.availableStrategies[this.strategy];
     }
   },
 });

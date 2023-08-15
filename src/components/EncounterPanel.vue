@@ -88,7 +88,7 @@ const modals = useModals();
           class="w-full md:w-auto shrink mt-3 md:mt-0"
         >
           <button
-            @click="modals.show('generator')"
+            @click="modals.show('strategy')"
             class="button-primary-md w-full md:w-auto"
           >
             <span class="inline">

@@ -8,6 +8,7 @@ import { formatNumber } from "../js/helpers.js";
 const party = useParty();
 const encounter = useEncounter();
 const modals = useModals();
+
 </script>
 
 <template>
@@ -137,25 +138,22 @@ const modals = useModals();
       <div class="grid text-sm text-right">
         <div
           class="hidden md:block mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400"
+          v-text="encounter.encounterStrategy.tableHeader"
         >
-          XP Goals
         </div>
         <div
-          v-for="difficulty in ['Easy', 'Medium', 'Hard', 'Deadly']"
-          :key="difficulty"
+          v-for="([label, budget], index) in Object.entries(encounter.encounterStrategy.getBudget())"
+          :key="label"
           class="contents"
           :class="{
-            'font-semibold': encounter.actualDifficulty === difficulty,
+            'font-semibold': encounter.actualDifficulty === label,
           }"
         >
-          <span>{{ difficulty }}</span>
-          <span>{{
-            formatNumber(party.experience[difficulty.toLowerCase()])
-          }}</span>
-        </div>
 
-        <div class="mt-4">Daily budget</div>
-        <div class="mt-4" v-text="formatNumber(party.experience.daily)"></div>
+          <div v-if="index === Object.keys(encounter.encounterStrategy.getBudget()).length - 1" class="mt-4 col-span-2"></div>
+          <span>{{ label }}</span>
+          <span v-html="formatNumber(budget)"></span>
+        </div>
       </div>
     </div>
 

@@ -169,5 +169,27 @@ export function downloadFile(fileName, data, type) {
 
 export function formatNumber(num) {
   if (!num) return 0;
-  return new Intl.NumberFormat("en-US").format(num);
+  let fraction = "";
+  if (num % 1 !== 0) {
+    fraction += " <sup>" + decimalToFraction(num % 1).display + "</sup>";
+  }
+  return new Intl.NumberFormat("en-US").format(Math.floor(num)) + fraction;
 }
+
+function gcd(a, b) {
+  return (b) ? gcd(b, a % b) : a;
+}
+
+function decimalToFraction(_decimal) {
+  let top        = _decimal.toString().replace(/\d+[.]/, '');
+  let bottom    = Math.pow(10, top.length);
+  if (_decimal > 1) {
+    top    = +top + Math.floor(_decimal) * bottom;
+  }
+  let x = gcd(top, bottom);
+  return {
+    top        : (top / x),
+    bottom    : (bottom / x),
+    display    : (top / x) + '/' + (bottom / x)
+  };
+};

@@ -5,7 +5,7 @@ import { useFilters } from "../stores/filters.js";
 import * as helpers from "./helpers.js";
 import { useParty } from "../stores/party.js";
 
-class EncounterGenerator {
+class EncounterStrategy {
 
   static getEncounterTemplate(encounterType) {
     let template = helpers.clone(CONST.ENCOUNTER_TYPES[encounterType]);
@@ -128,12 +128,33 @@ class EncounterGenerator {
 
 }
 
-class KFC extends EncounterGenerator {
+class KFC extends EncounterStrategy {
 
   static key = "k+fc"
   static label = "Classic Kobold+ Fight Club Generator"
-  static difficulties = ["None", "Trivial", "Easy", "Medium", "Hard", "Deadly"]
+  static difficulties = ["Easy", "Medium", "Hard", "Deadly"]
   static displayExperience = true
+
+  static tableHeader = "XP Goals"
+
+  static #getGroupBudget(acc, group){
+    const groupExp = CONST.EXP[group.level];
+    return {
+      "Easy": (acc?.["Easy"] ?? 0) + groupExp.easy * (group?.players ?? 1),
+      "Medium": (acc?.["Medium"] ?? 0) + groupExp.medium * (group?.players ?? 1),
+      "Hard": (acc?.["Hard"] ?? 0) + groupExp.hard * (group?.players ?? 1),
+      "Deadly": (acc?.["Deadly"] ?? 0) + groupExp.deadly * (group?.players ?? 1),
+      "Daily budget": (acc?.["Daily budget"] ?? 0) + groupExp.daily * (group?.players ?? 1),
+    };
+  }
+
+  static getBudget() {
+    if (!useParty().totalPlayers) {
+      return {};
+    }
+    const experience = useParty().groups.reduce(this.#getGroupBudget, {});
+    return useParty().activePlayers.reduce(this.#getGroupBudget, experience);
+  }
 
   static generateEncounter(difficulty, encounterType) {
 
@@ -232,13 +253,39 @@ class KFC extends EncounterGenerator {
 
 }
 
-class MCDM extends EncounterGenerator {
+class MCDM extends EncounterStrategy {
 
   static key = "mcdm"
   static label = "Flee, Mortals! generator"
   static difficulties = ["Easy", "Standard", "Hard"]
   static difficultyPoints = [0, 1, 2, 4, 8]
   static displayExperience = false
+
+  static tableHeader = "CR Budget"
+
+  static #getGroupBudget(acc, group){
+    const crGroupBudget = this.encounterCrPerCharacter[group.level];
+    return {
+      "Easy": (acc?.["Easy"] ?? 0) + crGroupBudget.easy * (group?.players ?? 1),
+      "Standard": (acc?.["Standard"] ?? 0) + crGroupBudget.standard * (group?.players ?? 1),
+      "Hard": (acc?.["Hard"] ?? 0) + crGroupBudget.hard * (group?.players ?? 1)
+    };
+  }
+
+  static getBudget() {
+    if (!useParty().totalPlayers) {
+      return {};
+    }
+    const groupBudget = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
+    const totalBudget = useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), groupBudget);
+
+    const totalLevels = useParty().groups.reduce((acc, group) => acc + (group.level * group.players), 0) + useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
+    const averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
+
+    totalBudget["Monster CR Cap"] = this.encounterCrPerCharacter[averageLevel].cap;
+
+    return totalBudget;
+  }
 
   static encounterCrPerCharacter = {
     1:  { easy: 0.125, standard: 0.125, hard: 0.25, cap: 1 },

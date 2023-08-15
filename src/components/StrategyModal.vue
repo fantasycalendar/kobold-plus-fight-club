@@ -11,19 +11,19 @@ const encounter = useEncounter();
 
 <template>
 
-  <Modal v-model:show="modals.generator" title="Select encounter generator">
+  <Modal v-model:show="modals.strategy" title="Select encounter strategy">
 
     <div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
       <div class="w-full col-span-1 sm:col-span-3">
         <SelectInput
-            v-model="encounter.generator"
-            :label="encounter.availableGenerators[encounter.generator].label"
-            :options="Object.entries(encounter.availableGenerators).map(generator => ({
-              key: generator[0],
-              label: generator[1].label
+            v-model="encounter.strategy"
+            :label="encounter.availableStrategies[encounter.strategy].label"
+            :options="Object.entries(encounter.availableStrategies).map(strategy => ({
+              key: strategy[0],
+              label: strategy[1].label
             }))"
-            name="encounter_generator"
-            id="encounter_generator"
+            name="encounter_strategy"
+            id="encounter_strategy"
         >
         </SelectInput>
       </div>
@@ -31,7 +31,7 @@ const encounter = useEncounter();
 
     <template #footer>
       <button
-          @click="modals.hide('generator')"
+          @click="modals.hide('strategy')"
           type="button"
           class="button-primary-md"
       >
