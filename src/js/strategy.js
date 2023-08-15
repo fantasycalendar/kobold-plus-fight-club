@@ -152,8 +152,8 @@ class KFC extends EncounterStrategy {
     if (!useParty().totalPlayers) {
       return {};
     }
-    const experience = useParty().groups.reduce(this.#getGroupBudget, {});
-    return useParty().activePlayers.reduce(this.#getGroupBudget, experience);
+    const experience = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
+    return useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), experience);
   }
 
   static generateEncounter(difficulty, encounterType) {
@@ -276,11 +276,11 @@ class MCDM extends EncounterStrategy {
     if (!useParty().totalPlayers) {
       return {};
     }
-    const groupBudget = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
-    const totalBudget = useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), groupBudget);
+    let groupBudget = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
+    let totalBudget = useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), groupBudget);
 
-    const totalLevels = useParty().groups.reduce((acc, group) => acc + (group.level * group.players), 0) + useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
-    const averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
+    let totalLevels = useParty().groups.reduce((acc, group) => acc + (group.level * group.players), 0) + useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
+    let averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
 
     totalBudget["Monster CR Cap"] = this.encounterCrPerCharacter[averageLevel].cap;
 

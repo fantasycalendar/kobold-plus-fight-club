@@ -169,11 +169,15 @@ export function downloadFile(fileName, data, type) {
 
 export function formatNumber(num) {
   if (!num) return 0;
+  let number = Math.floor(num);
   let fraction = "";
+  const numberString = number ? new Intl.NumberFormat("en-US").format(number) : ""
   if (num % 1 !== 0) {
-    fraction += " <sup>" + decimalToFraction(num % 1).display + "</sup>";
+    if(numberString) fraction += " <sup>"
+    fraction += decimalToFraction(num % 1).display;
+    if(numberString) fraction += "</sup>"
   }
-  return new Intl.NumberFormat("en-US").format(Math.floor(num)) + fraction;
+  return numberString + fraction;
 }
 
 function gcd(a, b) {
