@@ -103,7 +103,7 @@ const modals = useModals();
         @count="group.count = $event"
       ></EncounterMonster>
 
-      <div v-show="encounter.groups.length" class="-mt-2 text-center pb-4">
+      <div v-show="encounter.groups.length" class="text-center pb-4">
         <a
           @click="encounter.clear()"
           class="select-none text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"

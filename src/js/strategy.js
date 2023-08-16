@@ -85,8 +85,6 @@ class EncounterStrategy {
 
     const monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
 
-    console.log(monsterTargetCR);
-
     const monsters = useMonsters();
 
     let monsterList = monsters.filterBy(
@@ -96,8 +94,6 @@ class EncounterStrategy {
       }),
       (monster) => this.monsterFilter(monster, groupTemplate, encounter, encounterType)
     );
-
-    console.log(monsterList)
 
     let monsterCRNewIndex = monsterCRIndex;
     let down = true;
@@ -157,6 +153,7 @@ class KFC extends EncounterStrategy {
     { key: "hard", label: "Hard" },
     { key: "deadly", label: "Deadly" },
   ]
+  static defaultDifficulty = "medium"
   static tableHeader = "XP Goals"
 
   static #getGroupBudget(acc, group) {
@@ -274,7 +271,7 @@ class KFC extends EncounterStrategy {
     let baseExpBudget = totalExperienceTarget * fudgeFactor;
     let encounterTemplate = this.getEncounterTemplate(encounterType);
     let totalAvailableXP =
-      baseExpBudget / this.getMultiplier(encounterTemplate);
+      baseExpBudget / this.getMultiplier(encounterTemplate.groups);
 
     const newEncounter = [];
     encounterTemplate.groups.reverse();
@@ -370,6 +367,7 @@ class MCDM extends EncounterStrategy {
     { key: "standard", label: "Standard", },
     { key: "hard", label: "Hard" },
   ]
+  static defaultDifficulty = "standard"
 
   static tableHeader = "CR Budget"
 

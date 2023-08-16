@@ -42,6 +42,10 @@ export const useEncounter = defineStore("encounter", {
     };
   },
   actions: {
+    setStrategy(strategy) {
+      this.strategy = strategy;
+      this.difficulty = strategies[strategy].defaultDifficulty;
+    },
     getDifficultyFromExperience(exp) {
       const levels = useParty().experience;
 
