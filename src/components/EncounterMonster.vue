@@ -1,42 +1,55 @@
 <template>
   <div>
-    <div class="flex flex-row w-full mb-4 relative">
+    <div class="flex flex-row w-full relative py-2">
       <div class="grow pb-2 min-w-0">
-        <div class="grid grid-cols-[1fr_20px]">
-          <span
-            :title="group.monster.name"
-            data-tippy-placement="top-start"
-            data-tippy-delay="1000"
-            class="text-lg pr-3 font-semibold max-w-full overflow-ellipsis truncate"
-            v-text="group.monster.name"
-          ></span>
-          <div
-            title="Shuffle monster"
-            @click="$emit('shuffle')"
-            class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"
-          >
-            <i class="fas fa-random"></i>
-          </div>
-        </div>
+        <span
+          :title="group.monster.name"
+          data-tippy-placement="top-start"
+          data-tippy-delay="1000"
+          class="pr-1 font-semibold max-w-full overflow-ellipsis truncate"
+          v-text="group.monster.name"
+        ></span>
+        <button class="button-primary-sm text-sm ml-0.5" @click="showSources = !showSources">
+          <i class="fa fa-book-bookmark"></i>
+        </button>
 
-        <div class="mb-2">
-          <Badge v-for="tag in group.monster.tags">
-            {{ tag.toLowerCase() }}
-          </Badge>
-        </div>
 
         <div>
           <span
-            class="text-base"
+            class="text-sm"
             v-text="'CR: ' + group.monster.cr.string"
           ></span>
+          <span class="text-sm px-1">&bull;</span>
           <span
-            class="text-base ml-4"
             v-text="'XP: ' + formatNumber(group.monster.experience)"
+            class="text-sm"
           ></span>
+        </div>
+        <div class="space-x-1">
+          <Badge v-for="tag in [group.monster.type, ...group.monster.tags]">
+            {{ tag.toLowerCase() }}
+          </Badge>
+        </div>
+        <div
+          class="absolute inset-x-2 top-0 bg-gray-700 rounded shadow px-2 py-1 z-10"
+          v-if="showSources"
+        >
           <div
-            class="overflow-hidden whitespace-nowrap overflow-ellipsis pr-40"
+            class="overflow-hidden whitespace-nowrap overflow-ellipsis"
           >
+            <div
+              class="absolute top-1 right-2"
+              @click="showSources = false"
+              title="Dismiss"
+            >
+              <i class="fa fa-times text-gray-500 cursor-pointer text-xl"></i>
+            </div>
+
+            <div class="pb-1">
+              <strong class="pr-1 text-sm" v-text="group.monster.name"></strong>
+              <span class="text-sm">Sources:</span>
+            </div>
+
             <ul class="list-none text-s italic max-w-full">
               <li
                 v-for="source in group.monster.sources"
@@ -45,7 +58,7 @@
                 data-tippy-delay="1000"
                 v-html="
                   source.reference.link
-                    ? `<a class='primary-link' href='${source.reference.link}' target='_blank'>${source.fullText}</a>`
+                    ? `<a class='primary-link text-sm leading-6' href='${source.reference.link}' target='_blank'>${source.fullText}</a>`
                     : source.fullText
                 "
               ></li>
@@ -53,7 +66,7 @@
           </div>
         </div>
       </div>
-      <div class="absolute bottom-3 right-0 flex shrink-0 items-center">
+      <div class="flex shrink-0 items-center mr-3">
         <div class="flex rounded-md shadow-sm">
           <button
             @click="$emit('add')"
@@ -66,7 +79,7 @@
             id="monster-number"
             type="number"
             min="1"
-            class="flex-1 min-w-0 block w-16 px-3 py-2 rounded-none dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300"
+            class="flex-1 min-w-0 block w-12 px-1 py-1.5 rounded-none dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm border-gray-300"
             :value="group.count"
             @input="$emit('count', Math.max(0, $event.target.value))"
           />
@@ -90,6 +103,13 @@
           </button>
         </div>
       </div>
+      <div
+        title="Shuffle monster"
+        @click="$emit('shuffle')"
+        class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"
+      >
+        <i class="fas fa-random"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -100,7 +120,14 @@ import Badge from "./Badge.vue";
 
 export default {
   name: "EncounterMonster",
-  components: { Badge },
+  components: {
+    Badge,
+  },
+  data() {
+    return {
+      showSources: false,
+    };
+  },
   props: {
     group: Object,
   },
