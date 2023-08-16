@@ -10,7 +10,7 @@
     >
       <span
         class="block truncate"
-        v-text="label ?? modelValue"
+        v-html="label ?? modelValue"
       ></span>
       <span
         class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
@@ -69,7 +69,7 @@
             }"
             class="text-xs group-hover:text-gray-200"
             v-if="hasOptionSubtext"
-            v-text="optionSubtext(option)"
+            v-html="optionSubtext(option)"
           ></span>
 
           <span

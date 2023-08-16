@@ -126,9 +126,6 @@ export const useParty = defineStore("party", {
     totalExperiencePerPlayer() {
       return Math.round(useEncounter().totalExp / this.totalPlayersToGainXP);
     },
-    totalAdjustedExperiencePerPlayer() {
-      return Math.round(useEncounter().adjustedXP / this.totalPlayersToGainXP);
-    },
     totalPlayers() {
       return (
         this.groups.reduce((acc, group) => {

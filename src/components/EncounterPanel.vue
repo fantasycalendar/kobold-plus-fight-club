@@ -34,24 +34,17 @@ const modals = useModals();
       >
         <div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
           <div class="w-full col-span-1 sm:col-span-3">
-            <label id="difficulty-label" class="sr-only"> Difficulty </label>
+            <label id="difficulty-label" class="sr-only">Difficulty</label>
             <SelectInput
               v-model="encounter.difficulty"
               :label="
                 encounter.difficulty.slice(0, 1).toUpperCase() +
                 encounter.difficulty.slice(1)
               "
-              :options="
-                ['easy', 'medium', 'hard', 'deadly'].map((option) => {
-                  return {
-                    key: option,
-                    label: option.slice(0, 1).toUpperCase() + option.slice(1),
-                  };
-                })
-              "
+              :options="encounter.encounterStrategy.difficulties"
               :option-subtext="
                 (option) =>
-                  helpers.formatNumber(party.experience[option.key]) + 'xp'
+                  helpers.formatNumber(encounter.budget[option.label]) + ' ' + encounter.encounterStrategy.measurementUnit
               "
             ></SelectInput>
           </div>
@@ -85,7 +78,7 @@ const modals = useModals();
         </div>
 
         <div
-          class="w-full md:w-auto shrink mt-3 md:mt-0"
+          class="w-auto md:w-auto shrink mt-3 md:mt-0"
         >
           <button
             @click="modals.show('strategy')"
@@ -104,7 +97,7 @@ const modals = useModals();
       v-show="encounter.groups.length"
     >
       <EncounterMonster
-        v-for="(group, index) in encounter.groups"
+        v-for="(group, index) in encounter.monsterGroups"
         :key="group.monster.slug"
         :group="group"
         @shuffle="encounter.getNewMonster(group)"
@@ -175,24 +168,12 @@ const modals = useModals();
           ></dd>
         </div>
 
-        <div class="flex items-center justify-between" v-show="encounter.adjustedExp > 0">
-          <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
-            Adjusted XP
+        <div class="flex items-center justify-between" v-for="secondaryMeasurement in encounter.secondaryMeasurements">
+          <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200" v-html="secondaryMeasurement.label">
           </dt>
           <dd
             class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300"
-            v-text="
-              encounter.adjustedExp > 0
-                ? helpers.formatNumber(encounter.adjustedExp) +
-                  ' (' +
-                  helpers.formatNumber(
-                    Math.round(
-                      encounter.adjustedExp / party.totalPlayersToGainXP
-                    )
-                  ) +
-                  '/player)'
-                : 'N/A'
-            "
+            v-html="secondaryMeasurement.value"
           ></dd>
         </div>
       </dl>

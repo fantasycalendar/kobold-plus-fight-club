@@ -4,8 +4,27 @@ import CONST from "./constants.js";
 import { useFilters } from "../stores/filters.js";
 import * as helpers from "./helpers.js";
 import { useParty } from "../stores/party.js";
+import { useEncounter } from "../stores/encounter.js";
 
 class EncounterStrategy {
+
+  static insaneDifficultyStrings = [
+    "an incredibly bad idea",
+    "suicide",
+    "/r/rpghorrorstories",
+    "an angry table",
+    "the BBEG wrote this encounter",
+    "the party's final session",
+    "someone forgot to bring snacks",
+    "rocks fall",
+    "someone insulted the DM",
+  ]
+
+  static getTotalExp() {
+    return useEncounter().monsterGroups.reduce((acc, group) => {
+      return acc + (group.monster.experience * group.count)
+    }, 0);
+  }
 
   static getEncounterTemplate(encounterType) {
     let template = helpers.clone(CONST.ENCOUNTER_TYPES[encounterType]);
@@ -17,7 +36,7 @@ class EncounterStrategy {
           return { count: num };
         }),
       };
-    }else{
+    } else {
       template = helpers.clone(CONST.ENCOUNTER_TYPES[encounterType]);
       template = helpers.randomArrayElement(template.samples);
     }
@@ -53,16 +72,16 @@ class EncounterStrategy {
 
   }
 
-  static monsterFilter(monster, groupTemplate, encounter){
+  static monsterFilter(monster, groupTemplate, encounter) {
     return !encounter.some((group) => group.monster.slug === monster.slug) &&
-           !(groupTemplate.count > 1 && monster.isUnique);
+      !(groupTemplate.count > 1 && monster.isUnique);
   }
 
-  static pickRandomMonster(monsterList){
+  static pickRandomMonster(monsterList) {
     return helpers.randomArrayElement(monsterList);
   }
 
-  static getMonstersFromCR(monsterCRIndex, encounter, groupTemplate, encounterType){
+  static getMonstersFromCR(monsterCRIndex, encounter, groupTemplate, encounterType) {
 
     const monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
 
@@ -110,7 +129,7 @@ class EncounterStrategy {
 
   }
 
-  static getNewMonster(monsterGroup, encounter){
+  static getNewMonster(monsterGroup, encounter) {
 
     const monsterList = useMonsters().filterBy(
       useFilters().overriddenCopy({
@@ -132,12 +151,15 @@ class KFC extends EncounterStrategy {
 
   static key = "k+fc"
   static label = "Classic Kobold+ Fight Club Generator"
-  static difficulties = ["Easy", "Medium", "Hard", "Deadly"]
-  static displayExperience = true
-
+  static difficulties = [
+    { key: "easy", label: "Easy" },
+    { key: "medium", label: "medium", },
+    { key: "hard", label: "Hard" },
+    { key: "deadly", label: "Deadly" },
+  ]
   static tableHeader = "XP Goals"
 
-  static #getGroupBudget(acc, group){
+  static #getGroupBudget(acc, group) {
     const groupExp = CONST.EXP[group.level];
     return {
       "Easy": (acc?.["Easy"] ?? 0) + groupExp.easy * (group?.players ?? 1),
@@ -154,6 +176,92 @@ class KFC extends EncounterStrategy {
     }
     const experience = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
     return useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), experience);
+  }
+
+  static getDifficultyFeel() {
+
+    if (!useParty().totalPlayersToGainXP) {
+      return "";
+    }
+
+    const adjustedExp = this.getAdjustedExp();
+
+    if (adjustedExp === 0) return "";
+
+    const levels = Object.entries(useParty().experience);
+    for (let i = 1; i < levels.length; i++) {
+      const [lowerKey, lowerValue] = levels[i - 1];
+      const [upperKey, upperValue] = levels[i];
+      const ratio = helpers.ratio(lowerValue, upperValue, adjustedExp);
+
+      if (ratio >= 10) {
+        return "... insane?";
+      }
+
+      if (upperKey === "daily" && ratio >= 0.0) {
+        if (ratio >= 0.2) {
+          return ratio >= 1.0
+            ? "like " +
+            helpers.randomArrayElement(this.insaneDifficultyStrings)
+            : ratio >= 0.6
+              ? "extremely deadly"
+              : "really deadly";
+        }
+        return lowerKey;
+      } else if (ratio >= 0.0 && ratio <= 1.0) {
+        if (ratio > 0.7) {
+          return upperKey;
+        }
+        return lowerKey;
+      }
+    }
+
+    const ratio = helpers.ratio(0, levels[0][1], adjustedExp);
+    return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
+
+  }
+
+  static getAdjustedExp() {
+    const multiplier = this.getMultiplier(useEncounter().groups);
+    return Math.floor(this.getTotalExp() * multiplier);
+  }
+
+  static getSecondaryMeasurements() {
+    const adjustedExp = this.getAdjustedExp();
+    return [
+      {
+        label: "Adjusted XP",
+        rawValue: adjustedExp,
+        value: helpers.formatNumber(adjustedExp) +
+          ' (' +
+          helpers.formatNumber(
+            Math.round(
+              adjustedExp / useParty().totalPlayersToGainXP
+            )
+          ) +
+          '/player)'
+      }
+    ].filter(x => x.rawValue > 0);
+  }
+
+  static getActualDifficulty() {
+
+    const budget = this.getBudget();
+
+    if (!budget) {
+      return "N/A";
+    }
+
+    const adjustedExp = this.getAdjustedExp();
+
+    if (adjustedExp === 0) return "None";
+    if (adjustedExp < budget["Easy"]) return "Trivial";
+    if (adjustedExp < budget["Medium"]) return "Easy";
+    if (adjustedExp < budget["Hard"]) return "Medium";
+    if (adjustedExp < budget["Deadly"]) return "Hard";
+
+    return "Deadly";
+
   }
 
   static generateEncounter(difficulty, encounterType) {
@@ -257,46 +365,24 @@ class MCDM extends EncounterStrategy {
 
   static key = "mcdm"
   static label = "Flee, Mortals! generator"
-  static difficulties = ["Easy", "Standard", "Hard"]
-  static difficultyPoints = [0, 1, 2, 4, 8]
-  static displayExperience = false
+  static difficulties = [
+    { key: "easy", label: "Easy" },
+    { key: "standard", label: "Standard", },
+    { key: "hard", label: "Hard" },
+  ]
 
   static tableHeader = "CR Budget"
 
-  static #getGroupBudget(acc, group){
-    const crGroupBudget = this.encounterCrPerCharacter[group.level];
-    return {
-      "Easy": (acc?.["Easy"] ?? 0) + crGroupBudget.easy * (group?.players ?? 1),
-      "Standard": (acc?.["Standard"] ?? 0) + crGroupBudget.standard * (group?.players ?? 1),
-      "Hard": (acc?.["Hard"] ?? 0) + crGroupBudget.hard * (group?.players ?? 1)
-    };
-  }
-
-  static getBudget() {
-    if (!useParty().totalPlayers) {
-      return {};
-    }
-    let groupBudget = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
-    let totalBudget = useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), groupBudget);
-
-    let totalLevels = useParty().groups.reduce((acc, group) => acc + (group.level * group.players), 0) + useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
-    let averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
-
-    totalBudget["One Monster Cap"] = this.encounterCrPerCharacter[averageLevel].cap;
-
-    return totalBudget;
-  }
-
   static encounterCrPerCharacter = {
-    1:  { easy: 0.125, standard: 0.125, hard: 0.25, cap: 1 },
-    2:  { easy: 0.125, standard: 0.25, hard: 0.5, cap: 3 },
-    3:  { easy: 0.25, standard: 0.5, hard: 0.75, cap: 4 },
-    4:  { easy: 0.5, standard: 0.75, hard: 1, cap: 6 },
-    5:  { easy: 1, standard: 1.5, hard: 2.5, cap: 8 },
-    6:  { easy: 1.5, standard: 2, hard: 3, cap: 9 },
-    7:  { easy: 2, standard: 2.5, hard: 3.5, cap: 10 },
-    8:  { easy: 2.5, standard: 3, hard: 4, cap: 12 },
-    9:  { easy: 3, standard: 3.5, hard: 4.5, cap: 13 },
+    1: { easy: 0.125, standard: 0.125, hard: 0.25, cap: 1 },
+    2: { easy: 0.125, standard: 0.25, hard: 0.5, cap: 3 },
+    3: { easy: 0.25, standard: 0.5, hard: 0.75, cap: 4 },
+    4: { easy: 0.5, standard: 0.75, hard: 1, cap: 6 },
+    5: { easy: 1, standard: 1.5, hard: 2.5, cap: 8 },
+    6: { easy: 1.5, standard: 2, hard: 3, cap: 9 },
+    7: { easy: 2, standard: 2.5, hard: 3.5, cap: 10 },
+    8: { easy: 2.5, standard: 3, hard: 4, cap: 12 },
+    9: { easy: 3, standard: 3.5, hard: 4.5, cap: 13 },
     10: { easy: 3.5, standard: 4, hard: 5, cap: 15 },
     11: { easy: 4, standard: 4.5, hard: 5.5, cap: 16 },
     12: { easy: 4.5, standard: 5, hard: 6, cap: 17 },
@@ -315,11 +401,156 @@ class MCDM extends EncounterStrategy {
     { easy: "4-5", standard: "2-3", hard: "0-1" }
   ]
 
+  static difficultyPoints = [0, 1, 2, 4, 8]
+
+  static #getGroupBudget(acc, group) {
+    const crGroupBudget = this.encounterCrPerCharacter[group.level];
+    return {
+      "Easy": (acc?.["Easy"] ?? 0) + crGroupBudget.easy * (group?.players ?? 1),
+      "Standard": (acc?.["Standard"] ?? 0) + crGroupBudget.standard * (group?.players ?? 1),
+      "Hard": (acc?.["Hard"] ?? 0) + crGroupBudget.hard * (group?.players ?? 1)
+    };
+  }
+
+  static getBudget() {
+    if (!useParty().totalPlayers) {
+      return {};
+    }
+    let groupBudget = useParty().groups.reduce(this.#getGroupBudget.bind(this), {});
+    let totalBudget = useParty().activePlayers.reduce(this.#getGroupBudget.bind(this), groupBudget);
+
+    let totalLevels = useParty().groups.reduce((acc, group) => acc + (group.level * group.players), 0)
+      + useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
+    let averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
+
+    totalBudget["One Monster Cap"] = this.encounterCrPerCharacter[averageLevel].cap;
+
+    return totalBudget;
+  }
+
+  static getBudgetSpend() {
+    return useEncounter().monsterGroups.reduce((acc, group) => {
+      let count = group.count;
+      if (group.monster.isMinion) {
+        count = Math.round(Math.max(1, count / group.monster.cr.minionNum));
+      }
+      return acc + (group.monster.cr.numeric * count);
+    }, 0);
+  }
+
+  static getSecondaryMeasurements() {
+    const budgetSpend = this.getBudgetSpend();
+    const encounterDailyPoints = this.getEncounterDailyPoints();
+    return [
+      {
+        label: "CR Spent",
+        rawValue: budgetSpend,
+        value: helpers.formatNumber(budgetSpend) +
+          ' (' +
+          helpers.formatNumber(
+            Math.round(
+              budgetSpend / useParty().totalPlayersToGainXP
+            )
+          ) +
+          '/player)',
+      },
+      {
+        label: "Daily Encounter Points Cost",
+        rawValue: encounterDailyPoints,
+        value: encounterDailyPoints
+      }
+    ].filter(x => x.rawValue > 0);
+  }
+
+  static getDifficultyFeel() {
+
+    if (!useParty().totalPlayersToGainXP) {
+      return "";
+    }
+
+    const budgetSpend = this.getBudgetSpend();
+
+    const levels = Object.entries(this.getBudget());
+    levels.pop();
+
+    for (let i = 1; i < levels.length; i++) {
+      const [lowerKey, lowerValue] = levels[i - 1];
+      const [upperKey, upperValue] = levels[i];
+      const ratio = helpers.ratio(lowerValue, upperValue, budgetSpend);
+
+      if (ratio >= 10) {
+        return "... insane?";
+      }
+
+      if (upperKey === "Hard" && ratio > 1.0) {
+        if (ratio >= 1.5) {
+          return ratio >= 3.0
+            ? "like " +
+            helpers.randomArrayElement(this.insaneDifficultyStrings)
+            : ratio >= 2.0
+              ? "really deadly"
+              : "deadly";
+        }
+        return upperKey;
+      } else if (ratio >= 0.0 && ratio <= 1.0) {
+        if (ratio > 0.7) {
+          return upperKey;
+        }
+        return lowerKey;
+      }
+    }
+
+    const ratio = helpers.ratio(0, levels[0][1], budgetSpend);
+    return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
+
+  }
+
+  static getEncounterDailyPoints() {
+
+    const budget = this.getBudget();
+
+    if (!budget) {
+      return 0;
+    }
+
+    const budgetSpend = this.getBudgetSpend();
+
+    if (budgetSpend === 0 || budgetSpend < budget["Easy"]) return 0;
+    if (budgetSpend <= budget["Standard"]) return 1;
+    if (budgetSpend < budget["Hard"]) return 2;
+
+    const ratio = helpers.ratio(budget["Standard"], budget["Hard"], budgetSpend);
+
+    if (budgetSpend >= budget["Hard"] && ratio < 2.0) return 4;
+
+    return 8;
+
+  }
+
+  static getActualDifficulty() {
+
+    const budget = this.getBudget();
+
+    if (!budget) {
+      return "N/A";
+    }
+
+    const budgetSpend = this.getBudgetSpend();
+
+    if (budgetSpend === 0) return "None";
+    if (budgetSpend < budget["Easy"]) return "Trivial";
+    if (budgetSpend < budget["Standard"]) return "Easy";
+    if (budgetSpend < budget["Hard"]) return "Standard";
+
+    return "Hard";
+
+  }
+
   static generateEncounter(difficulty, encounterType) {
 
     let crCaps = [];
     let totalCrBudget = 0;
-    for(const group of useParty().groups){
+    for (const group of useParty().groups) {
       const groupCrTable = this.encounterCrPerCharacter[group.level];
       crCaps.push(groupCrTable.cap);
       totalCrBudget += group.players * groupCrTable[difficulty];
@@ -329,20 +560,20 @@ class MCDM extends EncounterStrategy {
     const totalPlayers = useParty().totalPlayers;
 
     // If this is a boss encounter, prioritize solo monsters, and adjust the CR target
-    if(encounterType === CONST.ENCOUNTER_TYPES.boss.key){
+    if (encounterType === CONST.ENCOUNTER_TYPES.boss.key) {
       const isLargeGroup = Number(totalPlayers >= 6);
       const bossEncounterCrModifier = this.bossEncounterCrModifiers[isLargeGroup][difficulty];
       totalCrBudget = crCap - helpers.randomIntBetween(...bossEncounterCrModifier.split("-"));
     }
 
     const maxNumberMinions =
-      helpers.randomIntBetween(Math.max(3, totalPlayers-1)*3, Math.max(4, totalPlayers+1)*3);
+      helpers.randomIntBetween(Math.max(3, totalPlayers - 1) * 3, Math.max(4, totalPlayers + 1) * 3);
 
     let encounterTemplate = this.getEncounterTemplate(encounterType);
     encounterTemplate.groups.reverse();
 
     const newEncounter = [];
-    for(const groupTemplate of encounterTemplate.groups) {
+    for (const groupTemplate of encounterTemplate.groups) {
 
       let targetCr = encounterTemplate.subtractive
         ? totalCrBudget / encounterTemplate.groups.length
@@ -368,7 +599,7 @@ class MCDM extends EncounterStrategy {
       const monster = foundMonster.copy();
 
       let count = groupTemplate.count;
-      if(monster.isMinion){
+      if (monster.isMinion) {
         monster.name += " (Minion)"
         count = Math.min(monster.cr.minionNum * count, maxNumberMinions);
       }
@@ -390,21 +621,21 @@ class MCDM extends EncounterStrategy {
       CONST.ENCOUNTER_TYPES.horde.key
     ].includes(encounterType);
     return super.monsterFilter(monster, groupTemplate, encounter, encounterType) &&
-           (allowMinions ? true : !monster.isMinion) &&
-           (encounterType === CONST.ENCOUNTER_TYPES.boss.key ? monster.isSolo : true)
+      (allowMinions ? true : !monster.isMinion) &&
+      (encounterType === CONST.ENCOUNTER_TYPES.boss.key ? monster.isSolo : true)
   }
 
-  static pickRandomMonster(monsterList, groupTemplate, encounterType){
-    if(encounterType === CONST.ENCOUNTER_TYPES.boss_minions.key && groupTemplate?.leader){
+  static pickRandomMonster(monsterList, groupTemplate, encounterType) {
+    if (encounterType === CONST.ENCOUNTER_TYPES.boss_minions.key && groupTemplate?.leader) {
       return super.pickRandomMonster(monsterList);
     }
-    const numMonsters = monsterList.length+1;
+    const numMonsters = monsterList.length + 1;
     const weightedMonsters = monsterList.map((monster, index) => {
       return { monster, weight: (index / numMonsters) + ((monster.isLeader ? 2 : 1) / numMonsters) }
     });
     const randomFloat = Math.random();
-    for(const weightedMonster of weightedMonsters){
-      if(weightedMonster.weight >= randomFloat){
+    for (const weightedMonster of weightedMonsters) {
+      if (weightedMonster.weight >= randomFloat) {
         return weightedMonster.monster;
       }
     }
@@ -432,7 +663,7 @@ class MCDM extends EncounterStrategy {
     const numMonsters = encounter.reduce((acc, group) => {
       let count = group.count;
       // Divide the CR cost of a minion by the number of minions
-      if(group.monster.isMinion){
+      if (group.monster.isMinion) {
         count /= group.monster.cr.minionNum;
       }
       return acc + count;
@@ -462,7 +693,7 @@ class MCDM extends EncounterStrategy {
     return multipliers[multiplierCategory];
   }
 
-  static getNewMonster(monsterGroup, encounter){
+  static getNewMonster(monsterGroup, encounter) {
     const monsterList = useMonsters().filterBy(
       useFilters().overriddenCopy({
         maxCr: monsterGroup.monster.cr.numeric,
@@ -474,9 +705,9 @@ class MCDM extends EncounterStrategy {
     );
     if (!monsterList.length) return;
     const newMonster = helpers.randomArrayElement(monsterList);
-    if(!newMonster) return;
+    if (!newMonster) return;
     const monster = newMonster.copy();
-    if(monster.isMinion){
+    if (monster.isMinion) {
       monster.name += " (Minion)"
     }
     return monster;

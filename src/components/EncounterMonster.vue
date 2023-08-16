@@ -2,7 +2,7 @@
   <div>
     <div class="flex flex-row w-full mb-4 relative">
       <div class="grow pb-2 min-w-0">
-        <div class="grid grid-cols-[1fr_20px] mb-2">
+        <div class="grid grid-cols-[1fr_20px]">
           <span
             :title="group.monster.name"
             data-tippy-placement="top-start"
@@ -17,6 +17,12 @@
           >
             <i class="fas fa-random"></i>
           </div>
+        </div>
+
+        <div class="mb-2">
+          <Badge v-for="tag in group.monster.tags">
+            {{ tag.toLowerCase() }}
+          </Badge>
         </div>
 
         <div>
@@ -90,9 +96,11 @@
 
 <script>
 import * as helpers from "../js/helpers";
+import Badge from "./Badge.vue";
 
 export default {
   name: "EncounterMonster",
+  components: { Badge },
   props: {
     group: Object,
   },

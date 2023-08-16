@@ -11,17 +11,6 @@ export const useEncounter = defineStore("encounter", {
   state: () => {
     return {
       groups: useLocalStorage("encounterGroups", []),
-      insaneDifficultyStrings: [
-        "an incredibly bad idea",
-        "suicide",
-        "/r/rpghorrorstories",
-        "an angry table",
-        "the BBEG wrote this encounter",
-        "the party's final session",
-        "someone forgot to bring snacks",
-        "rocks fall",
-        "someone insulted the DM",
-      ],
       loadedIndex: helpers.migrateLocalStorage(
         "encounterLoadedIndex",
         "loadedEncounterIndex",
@@ -231,11 +220,21 @@ export const useEncounter = defineStore("encounter", {
     },
   },
   getters: {
+
+    monsterGroups() {
+      return this.groups.map(group => {
+        const monster = useMonsters().lookup[group.monster.slug];
+        if(!monster) return false;
+        return { monster, count: group.count }
+      }).filter(Boolean);
+    },
+
     totalExp() {
-      return this.groups.reduce(
-        (acc, group) => acc + group.monster.experience * group.count,
-        0
-      );
+      return this.encounterStrategy.getTotalExp();
+    },
+
+    secondaryMeasurements() {
+      return this.encounterStrategy.getSecondaryMeasurements();
     },
 
     budget() {
@@ -250,66 +249,12 @@ export const useEncounter = defineStore("encounter", {
       }
     },
 
-    difficultyFeel(party) {
-      if (!party.totalPlayersToGainXP) {
-        return "";
-      }
-
-      if (this.adjustedExp === 0) return "";
-
-      const levels = Object.entries(party.experience);
-      for (let i = 1; i < levels.length; i++) {
-        const [lowerKey, lowerValue] = levels[i - 1];
-        const [upperKey, upperValue] = levels[i];
-        const ratio = helpers.ratio(lowerValue, upperValue, this.adjustedExp);
-
-        if (ratio >= 10) {
-          return "... insane?";
-        }
-
-        if (upperKey === "daily" && ratio >= 0.0) {
-          if (ratio >= 0.2) {
-            return ratio >= 1.0
-              ? "like " +
-              helpers.randomArrayElement(this.insaneDifficultyStrings)
-              : ratio >= 0.6
-                ? "extremely deadly"
-                : "really deadly";
-          }
-          return lowerKey;
-        } else if (ratio >= 0.0 && ratio <= 1.0) {
-          if (ratio > 0.7) {
-            return upperKey;
-          }
-          return lowerKey;
-        }
-      }
-
-      const ratio = helpers.ratio(0, levels[0][1], this.adjustedExp);
-      return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
-
-    },
-
-    adjustedExp() {
-      const multiplier = this.encounterStrategy.getMultiplier(this.groups);
-      console.log("multiplier", multiplier)
-      return Math.floor(this.totalExp * multiplier);
+    difficultyFeel() {
+      return this.encounterStrategy.getDifficultyFeel();
     },
 
     actualDifficulty() {
-      const levels = useParty().experience;
-
-      if (!levels) {
-        return "N/A";
-      }
-
-      if (this.adjustedExp === 0) return "None";
-      if (this.adjustedExp < levels.easy) return "Trivial";
-      if (this.adjustedExp < levels.medium) return "Easy";
-      if (this.adjustedExp < levels.hard) return "Medium";
-      if (this.adjustedExp < levels.deadly) return "Hard";
-
-      return "Deadly";
+      return this.encounterStrategy.getActualDifficulty();
     },
 
     encounterStrategy() {

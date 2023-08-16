@@ -85,7 +85,7 @@ export default class Monster {
     const slug = helpers.slugify(
       attributes.name + "-" + attributes.sources + "-" + cr.string
     );
-    if(useMonsters().lookup[slug]) return false;
+    if(useMonsters().lookup[slug]) return useMonsters().lookup[slug];
     return new Monster(attributes);
   }
 
