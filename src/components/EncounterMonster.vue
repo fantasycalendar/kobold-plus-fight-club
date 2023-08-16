@@ -1,18 +1,31 @@
 <template>
   <div>
     <div class="flex flex-row w-full relative py-2">
-      <div class="grow pb-2 min-w-0">
-        <span
-          :title="group.monster.name"
-          data-tippy-placement="top-start"
-          data-tippy-delay="1000"
-          class="pr-1 font-semibold max-w-full overflow-ellipsis truncate"
-          v-text="group.monster.name"
-        ></span>
-        <button class="button-primary-sm text-sm ml-0.5" @click="showSources = !showSources">
-          <i class="fa fa-book-bookmark"></i>
-        </button>
-
+      <div class="grow min-w-0">
+        <div class="flex flex-row justify-between">
+          <div>
+            <span
+              :title="group.monster.name"
+              data-tippy-placement="top-start"
+              data-tippy-delay="1000"
+              class="pr-1 font-semibold max-w-full overflow-ellipsis truncate"
+              v-text="group.monster.name"
+            ></span>
+            <button
+              class="button-primary-sm text-sm ml-0.5"
+              @click="showSources = !showSources"
+            >
+              <i class="fa fa-book-bookmark"></i>
+            </button>
+          </div>
+          <div
+            title="Shuffle monster"
+            @click="$emit('shuffle')"
+            class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"
+          >
+            <i class="fas fa-random"></i>
+          </div>
+        </div>
 
         <div>
           <span
@@ -25,8 +38,11 @@
             class="text-sm"
           ></span>
         </div>
-        <div class="space-x-1">
-          <Badge v-for="tag in [group.monster.type, ...group.monster.tags]">
+        <div class="pr-40">
+          <Badge
+            class="mr-1"
+            v-for="tag in [group.monster.type, ...group.monster.tags]"
+          >
             {{ tag.toLowerCase() }}
           </Badge>
         </div>
@@ -34,9 +50,7 @@
           class="absolute inset-x-2 top-0 bg-gray-700 rounded shadow px-2 py-1 z-10"
           v-if="showSources"
         >
-          <div
-            class="overflow-hidden whitespace-nowrap overflow-ellipsis"
-          >
+          <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
             <div
               class="absolute top-1 right-2"
               @click="showSources = false"
@@ -66,7 +80,7 @@
           </div>
         </div>
       </div>
-      <div class="flex shrink-0 items-center mr-3">
+      <div class="flex shrink-0 items-center absolute right-0 bottom-2">
         <div class="flex rounded-md shadow-sm">
           <button
             @click="$emit('add')"
@@ -102,13 +116,6 @@
             ></i>
           </button>
         </div>
-      </div>
-      <div
-        title="Shuffle monster"
-        @click="$emit('shuffle')"
-        class="grid place-items-center text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer"
-      >
-        <i class="fas fa-random"></i>
       </div>
     </div>
   </div>
