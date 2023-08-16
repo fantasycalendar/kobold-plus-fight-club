@@ -238,6 +238,18 @@ export const useEncounter = defineStore("encounter", {
       );
     },
 
+    budget() {
+      return this.encounterStrategy.getBudget();
+    },
+
+    lastBudget() {
+      const encounterBudget = this.budget;
+      return {
+        label: Object.keys(encounterBudget)[Object.keys(encounterBudget).length-1],
+        value: Object.values(encounterBudget)[Object.keys(encounterBudget).length-1],
+      }
+    },
+
     difficultyFeel(party) {
       if (!party.totalPlayersToGainXP) {
         return "";

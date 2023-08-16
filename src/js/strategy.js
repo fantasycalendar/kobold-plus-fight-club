@@ -282,7 +282,7 @@ class MCDM extends EncounterStrategy {
     let totalLevels = useParty().groups.reduce((acc, group) => acc + (group.level * group.players), 0) + useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
     let averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
 
-    totalBudget["Monster CR Cap"] = this.encounterCrPerCharacter[averageLevel].cap;
+    totalBudget["One Monster Cap"] = this.encounterCrPerCharacter[averageLevel].cap;
 
     return totalBudget;
   }

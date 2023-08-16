@@ -142,7 +142,7 @@ const modals = useModals();
         >
         </div>
         <div
-          v-for="([label, budget], index) in Object.entries(encounter.encounterStrategy.getBudget())"
+          v-for="([label, budget], index) in Object.entries(encounter.budget)"
           :key="label"
           class="contents"
           :class="{
@@ -150,7 +150,7 @@ const modals = useModals();
           }"
         >
 
-          <div v-if="index === Object.keys(encounter.encounterStrategy.getBudget()).length - 1" class="mt-4 col-span-2"></div>
+          <div v-if="index === Object.keys(encounter.budget).length - 1" class="mt-4 col-span-2"></div>
           <span>{{ label }}</span>
           <span v-html="formatNumber(budget)"></span>
         </div>
@@ -158,19 +158,20 @@ const modals = useModals();
     </div>
 
     <div class="md:hidden col-span-3 pt-4" v-show="party.experience.daily">
-      <div class="mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400">
-        XP Goal
-      </div>
+      <div class="mb-1 col-span-2 text-gray-600 text-base dark:text-gray-400"
+           v-text="encounter.encounterStrategy.tableHeader"
+      ></div>
       <div class="flex justify-between">
         <div>
-          Daily budget
-          <span v-text="formatNumber(party.experience.daily)"></span>
+          <span
+              v-text="encounter.lastBudget.label + ' ' + formatNumber(encounter.lastBudget.value)"
+          ></span>
         </div>
         <div>
           <span
             class="font-semibold"
             v-show="
-              ['Easy', 'Medium', 'Hard', 'Deadly'].includes(
+              Object.keys(encounter.budget).includes(
                 encounter.actualDifficulty
               )
             "
@@ -178,7 +179,7 @@ const modals = useModals();
               encounter.actualDifficulty +
               ' ' +
               formatNumber(
-                party.experience[encounter.actualDifficulty.toLowerCase()]
+                encounter.budget[encounter.actualDifficulty]
               )
             "
           ></span>
