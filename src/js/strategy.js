@@ -150,7 +150,7 @@ class EncounterStrategy {
 class KFC extends EncounterStrategy {
 
   static key = "k+fc"
-  static label = "Classic Kobold+ Fight Club Generator"
+  static label = "Classic Kobold+ Fight Club"
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "medium", label: "medium", },
@@ -364,7 +364,7 @@ class KFC extends EncounterStrategy {
 class MCDM extends EncounterStrategy {
 
   static key = "mcdm"
-  static label = "Flee, Mortals! generator"
+  static label = "MCDM's Flee, Mortals!"
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "standard", label: "Standard", },
