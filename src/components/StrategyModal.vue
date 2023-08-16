@@ -6,39 +6,56 @@ import SelectInput from "./SelectInput.vue";
 
 const modals = useModals();
 const encounter = useEncounter();
-
 </script>
 
 <template>
-
   <Modal v-model:show="modals.strategy" title="Select encounter strategy">
+    <div class="grid gap-2 w-full place-items-end grid-cols-2 grow items-stretch">
+      <div
+        v-for="[key, strategy] in Object.entries(encounter.availableStrategies)"
+        :key="key"
+        @click="encounter.strategy = key"
+        class="bg-white dark:bg-gray-700 shadow sm:rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer border-2 hover:border-emerald-500"
+        :class="{
+          'border-emerald-500': encounter.strategy === key,
+          'border-transparent': encounter.strategy !== key,
+        }"
+      >
+        <div class="px-4 py-5 sm:p-6">
+          <div class="flex justify-between items-center">
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-200"
+            >
+              {{ strategy.label }}
+            </h3>
 
-    <div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
-      <div class="w-full col-span-1 sm:col-span-3">
-        <SelectInput
-            v-model="encounter.strategy"
-            :label="encounter.availableStrategies[encounter.strategy].label"
-            :options="Object.entries(encounter.availableStrategies).map(strategy => ({
-              key: strategy[0],
-              label: strategy[1].label
-            }))"
-            name="encounter_strategy"
-            id="encounter_strategy"
-        >
-        </SelectInput>
+            <span
+              v-if="encounter.strategy === key"
+              :class="{
+                'text-green-500': encounter.strategy === key,
+              }"
+            >
+              <i class="fas fa-check"></i>
+            </span>
+          </div>
+          <div class="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-400">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Recusandae voluptatibus corrupti atque repudiandae nam.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
     <template #footer>
       <button
-          @click="modals.hide('strategy')"
-          type="button"
-          class="button-primary-md"
+        @click="modals.hide('strategy')"
+        type="button"
+        class="button-primary-md"
       >
         Done
       </button>
     </template>
-
   </Modal>
-
 </template>

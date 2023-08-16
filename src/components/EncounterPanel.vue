@@ -21,12 +21,20 @@ const modals = useModals();
       <div class="flex pt-4 justify-between items-center mb-1">
         <span class="text-gray-600 dark:text-gray-400">Encounter</span>
 
-        <a
-          href="javascript:"
-          class="primary-link text-sm"
-          @click="modals.show('encounter')"
+        <div class="space-x-3">
+          <a
+            href="javascript:"
+            class="primary-link text-sm"
+            @click="modals.show('encounter')"
           >History</a
-        >
+          >
+          <a
+            href="javascript:"
+            class="primary-link text-sm"
+            @click="modals.show('strategy')"
+          >Settings</a
+          >
+        </div>
       </div>
 
       <div
@@ -44,7 +52,9 @@ const modals = useModals();
               :options="encounter.encounterStrategy.difficulties"
               :option-subtext="
                 (option) =>
-                  helpers.formatNumber(encounter.budget[option.label]) + ' ' + encounter.encounterStrategy.measurementUnit
+                  helpers.formatNumber(encounter.budget[option.label]) +
+                  ' ' +
+                  encounter.encounterStrategy.measurementUnit
               "
             ></SelectInput>
           </div>
@@ -73,19 +83,6 @@ const modals = useModals();
             <span class="md:hidden w-full text-center"> Generate </span>
             <span class="hidden md:inline">
               <i class="fa fa-refresh"></i>
-            </span>
-          </button>
-        </div>
-
-        <div
-          class="w-auto md:w-auto shrink mt-3 md:mt-0"
-        >
-          <button
-            @click="modals.show('strategy')"
-            class="button-primary-md w-full md:w-auto"
-          >
-            <span class="inline">
-              <i class="fa fa-cog"></i>
             </span>
           </button>
         </div>
@@ -168,9 +165,14 @@ const modals = useModals();
           ></dd>
         </div>
 
-        <div class="flex items-center justify-between" v-for="secondaryMeasurement in encounter.secondaryMeasurements">
-          <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200" v-html="secondaryMeasurement.label">
-          </dt>
+        <div
+          class="flex items-center justify-between"
+          v-for="secondaryMeasurement in encounter.secondaryMeasurements"
+        >
+          <dt
+            class="mt-1 text-sm text-gray-600 dark:text-gray-200"
+            v-html="secondaryMeasurement.label"
+          ></dt>
           <dd
             class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300"
             v-html="secondaryMeasurement.value"
