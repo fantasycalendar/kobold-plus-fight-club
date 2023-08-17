@@ -220,7 +220,7 @@ class KFC extends EncounterStrategy {
   }
 
   static getAdjustedExp() {
-    const multiplier = this.getMultiplier(useEncounter().encounterGroups);
+    const multiplier = this.getMultiplier(useEncounter().monsterGroups);
     return Math.floor(this.getTotalExp() * multiplier);
   }
 
