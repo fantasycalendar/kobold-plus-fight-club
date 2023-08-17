@@ -1,7 +1,7 @@
 <template>
   <div class="grid w-full py-2 grid-cols-[1fr_130px] relative">
     <div class="flex flex-row justify-between col-span-2">
-      <div>
+      <div class="flex items-center">
         <span
           :title="group.monster.name"
           data-tippy-placement="top-start"

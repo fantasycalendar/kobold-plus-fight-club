@@ -154,15 +154,15 @@ const CONST = {
       samples: [
         {
           groups: [
-            { count: 1, ratio: 0.6, leader: true },
-            { count: "players-players*2", ratio: 0.4 },
+            { count: 1, ratio: "0.5-0.6", leader: true },
+            { count: "players-players*2" },
           ],
         },
         {
           groups: [
-            { count: 1, ratio: 0.6, leader: true },
+            { count: 1, ratio: "0.5-0.6", leader: true },
             { count: "1-3", ratio: 0.25 },
-            { count: "players-players*2", ratio: 0.15 },
+            { count: "players-players*2" },
           ],
         },
       ],
@@ -218,15 +218,15 @@ const CONST = {
       samples: [
         {
           groups: [
-            { count: "2-4", ratio: 0.5 },
+            { count: "2-4", ratio: "0.25-0.35" },
             { count: "players+3-players*3", ratio: 0.2 },
-            { count: "players+3-players*3", ratio: 0.3 },
+            { count: "players+3-players*3" },
           ],
         },
         {
           groups: [
-            { count: "1-players", ratio: 0.6 },
-            { count: "players+4-players*3", ratio: 0.4 },
+            { count: "2-players", ratio: "0.4-0.6" },
+            { count: "players+4-players*3" },
           ],
         },
         {

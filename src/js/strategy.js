@@ -275,21 +275,29 @@ class KFC extends EncounterStrategy {
     let totalAvailableXP =
       baseExpBudget / this.getMultiplier(encounterTemplate.groups);
 
-    const newEncounter = [];
     encounterTemplate.groups.reverse();
 
+    let totalRatioSoFar = 0;
+    const newEncounter = [];
     for (const groupTemplate of encounterTemplate.groups) {
+
+      let groupRatio = typeof groupTemplate.ratio === "string"
+        ? helpers.randomFloatBetween(...groupTemplate.ratio.split("-"))
+        : groupTemplate?.ratio;
+
+      if(!groupRatio){
+        groupRatio = 1.0 - totalRatioSoFar;
+      }
+
+      totalRatioSoFar += groupRatio;
+
       let targetExp = encounterTemplate.subtractive
         ? totalAvailableXP / encounterTemplate.groups.length
-        : totalAvailableXP * groupTemplate.ratio;
+        : totalAvailableXP * groupRatio;
 
       targetExp /= groupTemplate.count;
 
-      const monster = this.getBestMonster(
-        targetExp,
-        newEncounter,
-        groupTemplate
-      );
+      const monster = this.getBestMonster(targetExp, newEncounter, groupTemplate);
       if (!monster) {
         useNotifications().notify({
           title: "Failed to generate encounter!",
@@ -308,6 +316,12 @@ class KFC extends EncounterStrategy {
     }
 
     newEncounter.sort((a, b) => {
+      if(a.monster.unique && !b.monster.unique){
+        return -1;
+      }
+      if(!a.monster.unique && b.monster.unique){
+        return 1;
+      }
       return b.monster.cr.numeric - a.monster.cr.numeric;
     });
 
@@ -449,14 +463,7 @@ class MCDM extends EncounterStrategy {
       {
         label: "CR Spent",
         rawValue: budgetSpend,
-        value: helpers.formatNumber(budgetSpend) +
-          ' (' +
-          helpers.formatNumber(
-            Math.round(
-              budgetSpend / useParty().totalPlayersToGainXP
-            )
-          ) +
-          '/player)',
+        value: helpers.formatNumber(budgetSpend),
       },
       {
         label: "Daily Encounter Points Cost",
@@ -498,12 +505,14 @@ class MCDM extends EncounterStrategy {
               ? "really deadly"
               : "deadly";
         }
-        return upperKey;
+        return upperKey.toLowerCase();
       } else if (ratio >= 0.0 && ratio <= 1.0) {
-        if (ratio > 0.6) {
-          return upperKey;
+        if (ratio >= 0.75) {
+          return upperKey.toLowerCase();
+        }else if (ratio >= 0.5) {
+          return "slightly " + upperKey.toLowerCase();
         }
-        return lowerKey;
+        return lowerKey.toLowerCase();
       }
     }
 
@@ -579,12 +588,24 @@ class MCDM extends EncounterStrategy {
     let encounterTemplate = this.getEncounterTemplate(encounterType);
     encounterTemplate.groups.reverse();
 
+    let totalRatioSoFar = 0;
+
     const newEncounter = [];
     for (const groupTemplate of encounterTemplate.groups) {
 
+      let groupRatio = typeof groupTemplate.ratio === "string"
+        ? helpers.randomFloatBetween(...groupTemplate.ratio.split("-"))
+        : groupTemplate?.ratio;
+
+      if(!groupRatio){
+        groupRatio = 1.0 - totalRatioSoFar;
+      }
+
+      totalRatioSoFar += groupRatio;
+
       let targetCr = encounterTemplate.subtractive
         ? totalCrBudget / encounterTemplate.groups.length
-        : totalCrBudget * groupTemplate.ratio;
+        : totalCrBudget * groupRatio;
 
       targetCr /= groupTemplate.count;
 
@@ -626,7 +647,7 @@ class MCDM extends EncounterStrategy {
 
     // If we have any leftover budget, we add a monster to pad it out
     const totalGeneratedCr = newEncounter.reduce((acc, group) => acc + group.crContributed, 0);
-    if(totalGeneratedCr < totalCrBudget){
+    if((totalGeneratedCr * 0.9) < totalCrBudget){
       let foundMonster;
       let attempts = 0;
       while(!foundMonster && attempts < 10) {
@@ -651,6 +672,12 @@ class MCDM extends EncounterStrategy {
     }
 
     newEncounter.sort((a, b) => {
+      if(a.monster.unique && !b.monster.unique){
+        return -1;
+      }
+      if(!a.monster.unique && b.monster.unique){
+        return 1;
+      }
       return b.monster.cr.numeric - a.monster.cr.numeric;
     });
 
