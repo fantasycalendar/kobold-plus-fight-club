@@ -39,10 +39,7 @@ const encounter = useEncounter();
             </span>
           </div>
           <div class="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-400">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Recusandae voluptatibus corrupti atque repudiandae nam.
-            </p>
+            <p v-html="strategy.description"></p>
           </div>
         </div>
       </div>

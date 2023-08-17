@@ -147,6 +147,7 @@ class KFC extends EncounterStrategy {
 
   static key = "k+fc"
   static label = "Classic Kobold+ Fight Club"
+  static description = "The encounter generation strategy algorithm that you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters."
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "medium", label: "medium", },
@@ -365,6 +366,7 @@ class MCDM extends EncounterStrategy {
 
   static key = "mcdm"
   static label = "MCDM's Flee, Mortals!"
+  static description = `MCDM's new book, <strong>Flee, Mortals!</strong> contains a set of rules for generating encounters for their new monsters. It works similar to the classic K+FC strategy, but each character and their level contribute to a total CR budget, instead of relying on XP. You can read more about this on page 16 in the book.`
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "standard", label: "Standard", },
