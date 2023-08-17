@@ -366,7 +366,7 @@ class MCDM extends EncounterStrategy {
 
   static key = "mcdm"
   static label = "MCDM's Flee, Mortals!"
-  static description = `MCDM's book, <strong>Flee, Mortals!</strong> contains a set of rules for generating encounters for their new monsters. It works similar to the classic K+FC strategy, but each character and their level contribute to a total CR budget, instead of relying on XP. You can read more about this on page 16 in the book.`
+  static description = `MCDM's book, <strong>Flee, Mortals!</strong> contains a set of rules for generating encounters, specialized towards the book's monsters. It works similar to the classic K+FC strategy, but each character and their level contribute to a total CR budget, instead of relying on XP. You can read more about this on page 16 in the book.`
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "standard", label: "Standard", },
