@@ -97,7 +97,7 @@ const modals = useModals();
         v-for="(group, index) in encounter.monsterGroups"
         :key="group.monster.slug"
         :group="group"
-        @shuffle="encounter.getNewMonster(group)"
+        @shuffle="encounter.getNewMonster(index)"
         @add="encounter.addCount(index)"
         @subtract="encounter.subtractCount(index)"
         @count="group.count = $event"

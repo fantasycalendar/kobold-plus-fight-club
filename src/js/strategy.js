@@ -81,7 +81,7 @@ class EncounterStrategy {
     return helpers.randomArrayElement(monsterList);
   }
 
-  static getMonstersFromCR(monsterCRIndex, encounter, groupTemplate, encounterType) {
+  static getMonstersFromCR(monsterCRIndex, encounter, groupTemplate, encounterType, additionalFilters = () => true) {
 
     const monsterTargetCR = CONST.CR[CONST.CR.LIST[monsterCRIndex]];
 
@@ -92,7 +92,7 @@ class EncounterStrategy {
         minCr: monsterTargetCR.numeric,
         maxCr: monsterTargetCR.numeric,
       }),
-      (monster) => this.monsterFilter(monster, groupTemplate, encounter, encounterType)
+      (monster) => this.monsterFilter(monster, groupTemplate, encounter, encounterType) && additionalFilters(monster)
     );
 
     let monsterCRNewIndex = monsterCRIndex;
@@ -117,7 +117,7 @@ class EncounterStrategy {
           minCr: monsterTargetCR.numeric,
           maxCr: monsterTargetCR.numeric,
         }),
-        (monster) => this.monsterFilter(monster, groupTemplate, encounter, encounterType)
+        (monster) => this.monsterFilter(monster, groupTemplate, encounter, encounterType) && additionalFilters(monster)
       );
     }
 
@@ -155,6 +155,7 @@ class KFC extends EncounterStrategy {
   ]
   static defaultDifficulty = "medium"
   static tableHeader = "XP Goals"
+  static measurementUnit = "XP"
 
   static #getGroupBudget(acc, group) {
     const groupExp = CONST.EXP[group.level];
@@ -219,7 +220,7 @@ class KFC extends EncounterStrategy {
   }
 
   static getAdjustedExp() {
-    const multiplier = this.getMultiplier(useEncounter().groups);
+    const multiplier = this.getMultiplier(useEncounter().encounterGroups);
     return Math.floor(this.getTotalExp() * multiplier);
   }
 
@@ -305,7 +306,9 @@ class KFC extends EncounterStrategy {
       });
     }
 
-    newEncounter.reverse();
+    newEncounter.sort((a, b) => {
+      return b.monster.cr.numeric - a.monster.cr.numeric;
+    });
 
     return newEncounter;
 
@@ -368,6 +371,7 @@ class MCDM extends EncounterStrategy {
     { key: "hard", label: "Hard" },
   ]
   static defaultDifficulty = "standard"
+  static measurementUnit = "CR"
 
   static tableHeader = "CR Budget"
 
@@ -468,6 +472,8 @@ class MCDM extends EncounterStrategy {
 
     const budgetSpend = this.getBudgetSpend();
 
+    if(!budgetSpend) return false;
+
     const levels = Object.entries(this.getBudget());
     levels.pop();
 
@@ -491,7 +497,7 @@ class MCDM extends EncounterStrategy {
         }
         return upperKey;
       } else if (ratio >= 0.0 && ratio <= 1.0) {
-        if (ratio > 0.7) {
+        if (ratio > 0.6) {
           return upperKey;
         }
         return lowerKey;
@@ -544,7 +550,7 @@ class MCDM extends EncounterStrategy {
 
   }
 
-  static generateEncounter(difficulty, encounterType) {
+  static generateEncounter(difficulty, encounterType, retrying = false) {
 
     let crCaps = [];
     let totalCrBudget = 0;
@@ -584,29 +590,66 @@ class MCDM extends EncounterStrategy {
       const foundMonster = this.getBestMonster(targetCr, newEncounter, groupTemplate, encounterType);
 
       if (!foundMonster) {
-        useNotifications().notify({
-          title: "Failed to generate encounter!",
-          body: "Change the filters so that there are more monsters to sample from.",
-          icon: "fa-circle-xmark",
-          icon_color: "text-red-400",
-          sticky: true,
-        });
+        // If we failed to find a monster, perhaps we need to try a different encounter template, hopefully working eventually
+        if(!retrying) {
+          let retriedEncounter = false;
+          let attempts = 0;
+          while (!retriedEncounter && attempts < 10) {
+            attempts++;
+            retriedEncounter = this.generateEncounter(difficulty, encounterType, true);
+            if (retriedEncounter) return retriedEncounter;
+          }
+          useNotifications().notify({
+            title: "Failed to generate encounter!",
+            body: "Change the filters so that there are more monsters to sample from.",
+            icon: "fa-circle-xmark",
+            icon_color: "text-red-400",
+            sticky: true,
+          });
+        }
         return false;
       }
 
       const monster = foundMonster.copy();
-
       let count = groupTemplate.count;
+      const crContributed = count * monster.cr.numeric;
       if (monster.isMinion) {
         monster.name += " (Minion)"
         count = Math.min(monster.cr.minionNum * count, maxNumberMinions);
       }
-
-      newEncounter.push({ monster, count });
+      newEncounter.push({ monster, count, crContributed });
 
     }
 
-    newEncounter.reverse();
+    // If we have any leftover budget, we add a monster to pad it out
+    const totalGeneratedCr = newEncounter.reduce((acc, group) => acc + group.crContributed, 0);
+    if(totalGeneratedCr < totalCrBudget){
+      let foundMonster;
+      let attempts = 0;
+      while(!foundMonster && attempts < 10) {
+        attempts++;
+        const leftOverCr = totalCrBudget - totalGeneratedCr;
+        const totalMonsters = helpers.randomIntBetween(1, leftOverCr);
+        const crPerMonster = leftOverCr / totalMonsters;
+        foundMonster = this.getBestMonster(crPerMonster, newEncounter, { count: totalMonsters }, encounterType, (monster) => {
+          return !monster.isMinion
+        });
+        if(foundMonster){
+          const monster = foundMonster.copy();
+          let count = totalMonsters;
+          if (monster.isMinion) {
+            monster.name += " (Minion)"
+            count = Math.min(monster.cr.minionNum * count, maxNumberMinions);
+          }
+          newEncounter.push({ monster, count });
+          break;
+        }
+      }
+    }
+
+    newEncounter.sort((a, b) => {
+      return b.monster.cr.numeric - a.monster.cr.numeric;
+    });
 
     return newEncounter;
 
@@ -624,7 +667,7 @@ class MCDM extends EncounterStrategy {
   }
 
   static pickRandomMonster(monsterList, groupTemplate, encounterType) {
-    if (encounterType === CONST.ENCOUNTER_TYPES.boss_minions.key && groupTemplate?.leader) {
+    if (encounterType === CONST.ENCOUNTER_TYPES.boss_minions.key && !groupTemplate?.leader) {
       return super.pickRandomMonster(monsterList);
     }
     const numMonsters = monsterList.length + 1;
@@ -639,7 +682,7 @@ class MCDM extends EncounterStrategy {
     }
   }
 
-  static getBestMonster(targetCr, encounter, groupTemplate, encounterType) {
+  static getBestMonster(targetCr, encounter, groupTemplate, encounterType, additionalFilters) {
 
     let monsterCRIndex;
     for (let i = 0; i < CONST.CR.LIST.length; i++) {
@@ -652,43 +695,8 @@ class MCDM extends EncounterStrategy {
       }
     }
 
-    return this.getMonstersFromCR(monsterCRIndex, encounter, groupTemplate, encounterType);
+    return this.getMonstersFromCR(monsterCRIndex, encounter, groupTemplate, encounterType, additionalFilters);
 
-  }
-
-  static getMultiplier(encounter) {
-
-    const numMonsters = encounter.reduce((acc, group) => {
-      let count = group.count;
-      // Divide the CR cost of a minion by the number of minions
-      if (group.monster.isMinion) {
-        count /= group.monster.cr.minionNum;
-      }
-      return acc + count;
-    }, 0);
-
-    let multiplierCategory;
-    const multipliers = [0.2, 0.4, 0.8, 1, 1.2, 1.4, 1.7, 2];
-
-    if (numMonsters <= 3) {
-      multiplierCategory = Math.max(1, numMonsters);
-    } else if (numMonsters < 7) {
-      multiplierCategory = 3;
-    } else if (numMonsters < 11) {
-      multiplierCategory = 4;
-    } else if (numMonsters < 15) {
-      multiplierCategory = 5;
-    } else {
-      multiplierCategory = 6;
-    }
-
-    if (useParty().totalPlayers < 3) {
-      multiplierCategory++;
-    } else if (useParty().totalPlayers > 5) {
-      multiplierCategory--;
-    }
-
-    return multipliers[multiplierCategory];
   }
 
   static getNewMonster(monsterGroup, encounter) {

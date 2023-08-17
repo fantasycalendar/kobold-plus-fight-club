@@ -63,23 +63,18 @@ export const useEncounter = defineStore("encounter", {
     },
 
     generateRandom() {
-
       useParty().ensureGroup();
-
       const newEncounter = this.encounterStrategy.generateEncounter(this.difficulty, this.type);
-
       if(!newEncounter) return;
-
       this.groups = newEncounter;
-
       this.saveToHistory(true);
     },
 
-    getNewMonster(group) {
+    getNewMonster(groupIndex) {
+      const group = this.groups[groupIndex];
       const newMonster = this.encounterStrategy.getNewMonster(group, this.groups);
       if (!newMonster) return;
-      group.monster = newMonster;
-      console.log(group.monster, newMonster)
+      this.groups[groupIndex].monster = newMonster;
       this.saveToHistory();
     },
 
