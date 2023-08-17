@@ -419,8 +419,6 @@ class MCDM extends EncounterStrategy {
     { easy: "4-5", standard: "2-3", hard: "0-1" }
   ]
 
-  static difficultyPoints = [0, 1, 2, 4, 8]
-
   static #getGroupBudget(acc, group) {
     const crGroupBudget = this.encounterCrPerCharacter[group.level];
     return {
@@ -647,7 +645,7 @@ class MCDM extends EncounterStrategy {
 
     // If we have any leftover budget, we add a monster to pad it out
     const totalGeneratedCr = newEncounter.reduce((acc, group) => acc + group.crContributed, 0);
-    if((totalGeneratedCr * 0.9) < totalCrBudget){
+    if(totalCrBudget > (totalGeneratedCr * 1.1)){
       let foundMonster;
       let attempts = 0;
       while(!foundMonster && attempts < 10) {
