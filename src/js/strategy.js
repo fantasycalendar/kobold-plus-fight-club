@@ -483,6 +483,7 @@ class MCDM extends EncounterStrategy {
       const [lowerKey, lowerValue] = levels[i - 1];
       const [upperKey, upperValue] = levels[i];
       const ratio = helpers.ratio(lowerValue, upperValue, budgetSpend);
+      if(lowerValue === upperValue) continue;
 
       if (ratio >= 10) {
         return "... insane?";
@@ -631,7 +632,7 @@ class MCDM extends EncounterStrategy {
       while(!foundMonster && attempts < 10) {
         attempts++;
         const leftOverCr = totalCrBudget - totalGeneratedCr;
-        const totalMonsters = helpers.randomIntBetween(1, leftOverCr);
+        const totalMonsters = helpers.randomIntBetween(1, Math.max(1, leftOverCr));
         const crPerMonster = leftOverCr / totalMonsters;
         foundMonster = this.getBestMonster(crPerMonster, newEncounter, { count: totalMonsters }, encounterType, (monster) => {
           return !monster.isMinion
@@ -688,11 +689,10 @@ class MCDM extends EncounterStrategy {
 
     let monsterCRIndex;
     for (let i = 0; i < CONST.CR.LIST.length; i++) {
-      const lowerBound = CONST.CR[CONST.CR.LIST[i]];
-      const upperBound = CONST.CR[CONST.CR.LIST[i + 1]];
-      if (upperBound.numeric > targetCr) {
-        monsterCRIndex =
-          (targetCr - lowerBound.numeric) < (upperBound.numeric - targetCr) ? i : i + 1;
+      const lowerBound = CONST.CR[CONST.CR.LIST[i]].numeric;
+      const upperBound = CONST.CR[CONST.CR.LIST[i + 1]].numeric;
+      if (upperBound > targetCr) {
+        monsterCRIndex = Math.max(0, (targetCr - lowerBound)) < (upperBound - targetCr) ? i : i + 1;
         break;
       }
     }
