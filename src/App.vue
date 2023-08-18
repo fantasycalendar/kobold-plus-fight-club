@@ -15,11 +15,13 @@ import { useSources } from "./stores/sources";
 import { useModals } from "./stores/modals";
 import { onMounted, ref, watch } from "vue";
 import { useHotkeys } from "./stores/hotkeys";
+import { useNotifications } from "./stores/notifications.js";
 
 const monsters = useMonsters();
 const sources = useSources();
 const hotkeys = useHotkeys();
 const modals = useModals();
+const notifications = useNotifications();
 
 const theme = ref(window.theme);
 
@@ -54,6 +56,8 @@ onMounted(async () => {
     },
     90
   );
+
+  notifications.displayMCDM();
 });
 </script>
 

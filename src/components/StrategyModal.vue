@@ -2,14 +2,13 @@
 import Modal from "./Modal.vue";
 import { useModals } from "../stores/modals.js";
 import { useEncounter } from "../stores/encounter.js";
-import SelectInput from "./SelectInput.vue";
 
 const modals = useModals();
 const encounter = useEncounter();
 </script>
 
 <template>
-  <Modal v-model:show="modals.strategy" title="Select encounter strategy">
+  <Modal v-model:show="modals.strategy" title="Select encounter generation strategy">
     <div class="grid gap-2 w-full place-items-end grid-cols-2 grow items-stretch">
       <div
         v-for="[key, strategy] in Object.entries(encounter.availableStrategies)"
@@ -27,6 +26,9 @@ const encounter = useEncounter();
               class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-200"
             >
               {{ strategy.label }}
+              <a class="underline text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-400" v-if="strategy.url" :href="strategy.url" @click.stop target="_blank">
+                <i class="fas fa-link"></i>
+              </a>
             </h3>
 
             <span

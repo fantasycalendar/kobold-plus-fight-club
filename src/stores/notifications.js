@@ -1,4 +1,8 @@
 import { defineStore,acceptHMRUpdate } from "pinia";
+import { useLocalStorage } from "@vueuse/core/index";
+import { shallowRef } from "vue";
+
+import MCDM from "../components/Notifications/MCDM.vue";
 
 export const useNotifications = defineStore("notifications", {
   state: () => {
@@ -6,12 +10,28 @@ export const useNotifications = defineStore("notifications", {
       entries: [],
       idIncrement: 1,
       timeouts: [],
+      dismissedMCDM: useLocalStorage("dismissedMCDM", false),
     };
   },
   actions: {
+
+    displayMCDM() {
+      if(this.dismissedMCDM) return;
+      this.notify({
+        title: "Kobold+ Fight Club & Flee, Mortals!",
+        component: shallowRef(MCDM),
+        sticky: true,
+        icon: "fas fa-heart",
+        callback: () => {
+          this.dismissedMCDM = true;
+        }
+      })
+    },
+
     getId() {
       return this.idIncrement++;
     },
+
     dismiss(dismissId) {
       const index = this.entries.findIndex(
         (notification) => notification.id === dismissId
@@ -30,11 +50,13 @@ export const useNotifications = defineStore("notifications", {
 
       this.entries.splice(index, 1);
     },
+
     notify(notification, body = null) {
       if (typeof notification === "string") {
         notification = {
           title: notification,
           body: body,
+          component: false,
           sticky: false,
           callback: null,
           icon_color: false,
