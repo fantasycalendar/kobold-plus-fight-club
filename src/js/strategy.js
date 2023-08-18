@@ -147,7 +147,7 @@ class KFC extends EncounterStrategy {
 
   static key = "k+fc"
   static label = "Classic Kobold+ Fight Club"
-  static description = "The encounter generation strategy algorithm that you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters."
+  static description = "The encounter generation strategy you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters."
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "medium", label: "medium", },
@@ -381,6 +381,7 @@ class MCDM extends EncounterStrategy {
   static key = "mcdm"
   static label = "MCDM's Flee, Mortals!"
   static description = `MCDM's book, <strong>Flee, Mortals!</strong> contains a set of rules for generating encounters, specialized for the book's monsters. It works similar to the classic K+FC strategy, but each character and their level contribute to a total CR budget, instead of relying on XP. You can read more about this on page 16 in the book.`
+  static url = "https://shop.mcdmproductions.com/collections/flee-mortals-the-mcdm-monster-book"
   static difficulties = [
     { key: "easy", label: "Easy" },
     { key: "standard", label: "Standard", },
@@ -444,8 +445,8 @@ class MCDM extends EncounterStrategy {
     return totalBudget;
   }
 
-  static getBudgetSpend() {
-    return useEncounter().monsterGroups.reduce((acc, group) => {
+  static getBudgetSpend(encounter) {
+    return encounter.reduce((acc, group) => {
       let count = group.count;
       if (group.monster.isMinion) {
         count = Math.round(Math.max(1, count / group.monster.cr.minionNum));
@@ -455,7 +456,7 @@ class MCDM extends EncounterStrategy {
   }
 
   static getSecondaryMeasurements() {
-    const budgetSpend = this.getBudgetSpend();
+    const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
     const encounterDailyPoints = this.getEncounterDailyPoints();
     return [
       {
@@ -477,7 +478,7 @@ class MCDM extends EncounterStrategy {
       return "";
     }
 
-    const budgetSpend = this.getBudgetSpend();
+    const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
 
     if(!budgetSpend) return false;
 
@@ -505,9 +506,9 @@ class MCDM extends EncounterStrategy {
         }
         return upperKey.toLowerCase();
       } else if (ratio >= 0.0 && ratio <= 1.0) {
-        if (ratio >= 0.75) {
+        if (ratio >= 0.6) {
           return upperKey.toLowerCase();
-        }else if (ratio >= 0.5) {
+        }else if (ratio >= 0.4) {
           return "slightly " + upperKey.toLowerCase();
         }
         return lowerKey.toLowerCase();
@@ -527,7 +528,7 @@ class MCDM extends EncounterStrategy {
       return 0;
     }
 
-    const budgetSpend = this.getBudgetSpend();
+    const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
 
     if (budgetSpend === 0 || budgetSpend < budget["Easy"]) return 0;
     if (budgetSpend <= budget["Standard"]) return 1;
@@ -549,7 +550,7 @@ class MCDM extends EncounterStrategy {
       return "N/A";
     }
 
-    const budgetSpend = this.getBudgetSpend();
+    const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
 
     if (budgetSpend === 0) return "None";
     if (budgetSpend < budget["Easy"]) return "Trivial";
@@ -584,26 +585,28 @@ class MCDM extends EncounterStrategy {
       helpers.randomIntBetween(Math.max(3, totalPlayers - 1) * 3, Math.max(4, totalPlayers + 1) * 3);
 
     let encounterTemplate = this.getEncounterTemplate(encounterType);
-    encounterTemplate.groups.reverse();
 
     let totalRatioSoFar = 0;
+    encounterTemplate.groups = encounterTemplate.groups.map(groupTemplate => {
+      let groupRatio = typeof groupTemplate.ratio === "string"
+        ? helpers.randomFloatBetween(...groupTemplate.ratio.split("-"))
+        : groupTemplate?.ratio;
+      if(!groupRatio){
+        groupRatio = 1.0 - totalRatioSoFar;
+      }
+      totalRatioSoFar += groupRatio;
+      groupTemplate.ratio = groupRatio;
+      return groupTemplate;
+    })
+
+    encounterTemplate.groups.reverse();
 
     const newEncounter = [];
     for (const groupTemplate of encounterTemplate.groups) {
 
-      let groupRatio = typeof groupTemplate.ratio === "string"
-        ? helpers.randomFloatBetween(...groupTemplate.ratio.split("-"))
-        : groupTemplate?.ratio;
-
-      if(!groupRatio){
-        groupRatio = 1.0 - totalRatioSoFar;
-      }
-
-      totalRatioSoFar += groupRatio;
-
       let targetCr = encounterTemplate.subtractive
         ? totalCrBudget / encounterTemplate.groups.length
-        : totalCrBudget * groupRatio;
+        : totalCrBudget * groupTemplate.ratio;
 
       targetCr /= groupTemplate.count;
 
@@ -634,17 +637,16 @@ class MCDM extends EncounterStrategy {
 
       const monster = foundMonster.copy();
       let count = groupTemplate.count;
-      const crContributed = count * monster.cr.numeric;
       if (monster.isMinion) {
         monster.name += " (Minion)"
         count = Math.min(monster.cr.minionNum * count, maxNumberMinions);
       }
-      newEncounter.push({ monster, count, crContributed });
+      newEncounter.push({ monster, count, baseCount: groupTemplate.count });
 
     }
 
     // If we have any leftover budget, we add a monster to pad it out
-    const totalGeneratedCr = newEncounter.reduce((acc, group) => acc + group.crContributed, 0);
+    let totalGeneratedCr = this.getBudgetSpend(newEncounter);
     if(totalCrBudget > (totalGeneratedCr * 1.1)){
       let foundMonster;
       let attempts = 0;
