@@ -47,6 +47,7 @@ watch(sliderValue, (value) => {
 });
 
 function updateFilters() {
+  shadowSliderValue.value = [...sliderValue.value];
   filters.cr.min = sliderValue.value[0];
   filters.cr.max = sliderValue.value[1];
 }
@@ -111,6 +112,7 @@ filters.$subscribe((mutation, state) => {
             name="min_cr"
             id="min_cr_select"
             v-model="minCr"
+            @change="updateFilters"
           >
             <option
               v-for="option in filters.crValues"
@@ -131,6 +133,7 @@ filters.$subscribe((mutation, state) => {
             name="max_cr"
             id="max_cr_select"
             v-model="maxCr"
+            @change="updateFilters"
           >
             <option
               v-for="option in filters.crValues"
