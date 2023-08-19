@@ -3,12 +3,18 @@ import { ref, watch } from "vue";
 import Slider from "@vueform/slider";
 import { useFilters } from "../stores/filters.js";
 
+let dragging = false;
+
 const filters = useFilters();
 const minCr = ref(filters.crValues[Math.round(filters.cr.min)].label);
 const maxCr = ref(filters.crValues[Math.round(filters.cr.max)].label);
 
 const defaultValue = ref([0, 33]);
 const sliderValue = ref([
+    filters.cr.min,
+    filters.cr.max
+]);
+const shadowSliderValue = ref([
     filters.cr.min,
     filters.cr.max
 ]);
@@ -38,9 +44,13 @@ watch(maxCr, (updatedIndex) => {
 });
 
 watch(sliderValue, (value) => {
-  filters.cr.min = value[0];
+  if(!dragging) {
+    filters.cr.min = value[0];
+  }
   minCr.value = filters.crValues[Math.round(value[0])].value;
-  filters.cr.max = value[1];
+  if(!dragging) {
+    filters.cr.max = value[1];
+  }
   maxCr.value = filters.crValues[Math.round(value[1])].value;
 });
 
@@ -91,7 +101,10 @@ filters.$subscribe((mutation, state) => {
           :max="33"
           :format="resolveOptionLabel"
           :options="{ tooltips: [false, false], animate: true }"
-          v-model="sliderValue"
+          v-model="shadowSliderValue"
+          @slide="(event) => { sliderValue = [...event]; }"
+          @start="() => { dragging = true; }"
+          @end="(event) => { dragging = false; sliderValue = [...event]; }"
         ></Slider>
       </div>
 
