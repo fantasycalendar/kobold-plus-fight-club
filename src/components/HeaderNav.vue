@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useModals } from "../stores/modals";
+import { useNews } from "../stores/news";
 
 const modals = useModals();
 
@@ -63,6 +64,22 @@ const menu = ref(false);
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 h-full"
             >About</RouterLink
           >
+          <a
+            title="News"
+            @click="useNews().show()"
+            href="javascript:"
+            class="inline-flex items-center px-2 py-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300 relative"
+          >
+            <i class="fa fa-rss"></i>
+            <span class="absolute flex h-3 w-3 top-0 right-0" v-if="useNews().hasUnread">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-3 w-3 bg-red-500"
+              ></span>
+            </span>
+          </a>
           <a
             title="Toggle light mode (ctrl+shift+\)"
             @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
@@ -130,13 +147,18 @@ const menu = ref(false);
           >Fantasy Calendar</a
         >
         <a
-          @click="() => {modals.show('importer'); menu = false;}"
+          @click="
+            () => {
+              modals.show('importer');
+              menu = false;
+            }
+          "
           href="javascript:"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
           >Import Custom Monsters</a
         >
         <RouterLink
-            @click="menu = false"
+          @click="menu = false"
           to="about"
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
           >About</RouterLink
