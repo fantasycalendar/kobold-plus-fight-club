@@ -3,8 +3,6 @@ import { ref, watch } from "vue";
 import Slider from "@vueform/slider";
 import { useFilters } from "../stores/filters.js";
 
-let dragging = false;
-
 const filters = useFilters();
 const minCr = ref(filters.crValues[Math.round(filters.cr.min)].label);
 const maxCr = ref(filters.crValues[Math.round(filters.cr.max)].label);
@@ -44,15 +42,14 @@ watch(maxCr, (updatedIndex) => {
 });
 
 watch(sliderValue, (value) => {
-  if(!dragging) {
-    filters.cr.min = value[0];
-  }
   minCr.value = filters.crValues[Math.round(value[0])].value;
-  if(!dragging) {
-    filters.cr.max = value[1];
-  }
   maxCr.value = filters.crValues[Math.round(value[1])].value;
 });
+
+function updateFilters() {
+  filters.cr.min = sliderValue.value[0];
+  filters.cr.max = sliderValue.value[1];
+}
 
 // Now that all the mapping is done, we also want to subscribe to any external
 // changes that occur on the store, updating our local data in the process.
@@ -103,8 +100,7 @@ filters.$subscribe((mutation, state) => {
           :options="{ tooltips: [false, false], animate: true }"
           v-model="shadowSliderValue"
           @slide="(event) => { sliderValue = [...event]; }"
-          @start="() => { dragging = true; }"
-          @end="(event) => { dragging = false; sliderValue = [...event]; }"
+          @end="updateFilters"
         ></Slider>
       </div>
 
