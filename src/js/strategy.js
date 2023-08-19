@@ -150,7 +150,7 @@ class KFC extends EncounterStrategy {
   static description = "The encounter generation strategy you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters."
   static difficulties = [
     { key: "easy", label: "Easy" },
-    { key: "medium", label: "medium", },
+    { key: "medium", label: "Medium", },
     { key: "hard", label: "Hard" },
     { key: "deadly", label: "Deadly" },
   ]
