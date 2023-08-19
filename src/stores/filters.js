@@ -26,12 +26,28 @@ export const useFilters = defineStore("filters", {
       },
       size: helpers.migrateLocalStorage("filtersSize", "size", []),
       sizeOptions: [
-        { value: "tiny", label: "Tiny" },
-        { value: "small", label: "Small" },
-        { value: "medium", label: "Medium" },
-        { value: "large", label: "Large" },
-        { value: "huge", label: "Huge" },
-        { value: "gargantuan", label: "Gargantuan" },
+        {
+            label:"Include",
+            options:[
+                { value: "tiny", label: "Tiny" },
+                { value: "small", label: "Small" },
+                { value: "medium", label: "Medium" },
+                { value: "large", label: "Large" },
+                { value: "huge", label: "Huge" },
+                { value: "gargantuan", label: "Gargantuan" },
+            ]
+        },
+        {
+            label:"Exclude",
+            options:[
+                { value: "ex-tiny", label: "-Tiny" },
+                { value: "ex-small", label: "-Small" },
+                { value: "ex-medium", label: "-Medium" },
+                { value: "ex-large", label: "-Large" },
+                { value: "ex-huge", label: "-Huge" },
+                { value: "ex-gargantuan", label: "-Gargantuan" },
+            ]
+        }
       ],
       legendary: helpers.migrateLocalStorage(
         "filtersLegendary",
@@ -173,7 +189,20 @@ export const useFilters = defineStore("filters", {
         return {
           search: (monster) => this.searchFor(monster.searchable),
           alignment: (monster) => monster.alignment.bits & state.alignment.bits,
-          size: (monster) => state.size.includes(monster.size.toLowerCase()),
+          size: (monster) => {
+            const monsterSize = monster.size.toLowerCase();
+            const exclusiveFilters = state.size.filter((s)=>s.indexOf('ex-') === 0);
+            const inclusiveFilters = state.size.filter((s)=>s.indexOf('ex-') !== 0);
+
+            const isNotExcluded =
+              exclusiveFilters.length === 0 ||
+              !exclusiveFilters.includes(`ex-${monsterSize}`);
+            const isIncluded =
+              inclusiveFilters.length === 0 ||
+              inclusiveFilters.includes(monsterSize);
+            
+            return isNotExcluded && isIncluded;
+          },
           type: (monster) => state.type.includes(monster.type.toLowerCase()),
           environment: (monster) =>
             state.environment.find((environment) =>
