@@ -68,7 +68,7 @@ const news = useNews();
                   </h2>
                   <div class="ml-3 flex h-7 items-center">
                     <button
-                      @click="$emit('close')"
+                      @click="news.hide"
                       type="button"
                       class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                     >
