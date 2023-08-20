@@ -64,7 +64,7 @@ const news = useNews();
                     class="text-lg font-medium text-gray-900 dark:text-gray-200"
                     id="slide-over-title"
                   >
-                    Filter monsters
+                    Kobold+ News
                   </h2>
                   <div class="ml-3 flex h-7 items-center">
                     <button
