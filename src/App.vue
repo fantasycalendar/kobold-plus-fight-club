@@ -57,6 +57,8 @@ onMounted(async () => {
     "Closes any open dialogs",
     () => {
       modals.closeAll();
+      notifications.dismissAll();
+      news.hide();
     },
     90
   );

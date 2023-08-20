@@ -14,6 +14,10 @@ export const useNotifications = defineStore("notifications", {
       return this.idIncrement++;
     },
 
+    dismissAll() {
+      this.entries = [];
+    },
+
     dismiss(dismissId) {
       const index = this.entries.findIndex(
         (notification) => notification.id === dismissId

@@ -44,7 +44,7 @@ export const useNews = defineStore("news", {
         mcdmSource.enabled = true;
 
         setTimeout(() => {
-          useEncounter().strategy = "mcdm";
+          useEncounter().setStrategy("mcdm");
 
           useNotifications().notify({
             title: "Flee, Mortals! has been enabled.",
