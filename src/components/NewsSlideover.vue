@@ -13,33 +13,33 @@ const news = useNews();
 
 <template>
   <div
-    class="fixed 2xl:static 2xl:pointer-events-none inset-0 z-30 2xl:z-0 overflow-hidden"
+    class="fixed inset-0 z-30 overflow-hidden"
     aria-labelledby="slide-over-title"
     role="dialog"
     aria-modal="true"
     v-show="news.open"
     v-cloak
   >
-    <div class="absolute 2xl:static inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
       <!-- Background overlay, show/hide based on slide-over state. -->
       <transition
         enter-active-class="ease-in-out duration-200"
-        enter-from-class="opacity-0 2xl:opacity-100"
+        enter-from-class="opacity-0"
         enter-to-class="opacity-100"
         leave-active-class="ease-in-out duration-200"
         leave-from-class="opacity-100"
-        leave-to-class="opacity-0 2xl:opacity-100"
+        leave-to-class="opacity-0"
       >
         <div
           @click="news.hide"
-          class="absolute 2xl:hidden inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity 2xl:duration-0"
+          class="absolute inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity"
           aria-hidden="true"
           v-show="news.open"
         ></div>
       </transition>
 
       <div
-        class="pointer-events-none fixed 2xl:static inset-y-0 right-0 flex max-w-full pl-10"
+        class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10"
       >
         <transition
           enter-active-class="transform transition ease-in-out duration-200"
@@ -50,18 +50,51 @@ const news = useNews();
           leave-to-class="translate-x-full"
         >
           <div
-            class="pointer-events-auto w-screen max-w-md 2xl:!duration-[0ms] sm:duration-700"
+            class="pointer-events-auto w-screen max-w-md sm:duration-700"
             v-show="news.open"
           >
             <div
-              class="relative 2xl:static flex max-h-screen h-full flex-col overflow-y-hidden bg-white dark:bg-gray-800 shadow-xl"
+              class="relative flex max-h-screen h-full flex-col overflow-y-hidden bg-white dark:bg-gray-800 shadow-xl"
             >
               <div
-                class="px-4 sm:px-6 border-b dark:border-gray-700 py-6 2xl:hidden"
+                class="px-4 sm:px-6 border-b dark:border-gray-700 py-6"
               >
+                <div class="flex items-start justify-between">
+                  <h2
+                    class="text-lg font-medium text-gray-900 dark:text-gray-200"
+                    id="slide-over-title"
+                  >
+                    Filter monsters
+                  </h2>
+                  <div class="ml-3 flex h-7 items-center">
+                    <button
+                      @click="$emit('close')"
+                      type="button"
+                      class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    >
+                      <span class="sr-only">Close panel</span>
+                      <!-- Heroicon name: outline/x -->
+                      <svg
+                        class="h-6 w-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
               <div
-                class="flex h-full flex-col relative 2xl:absolute 2xl:inset-y-0 2xl:w-[24rem] 2xl:right-0 2xl:py-8 flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar"
+                class="flex h-full flex-col relative flex-1 px-4 py-6 sm:px-6 space-y-4 overflow-y-auto scrollbar"
               >
                 <ul role="list" class="divide-y divide-gray-100 dark:divide-gray-700">
                   <li
@@ -77,9 +110,19 @@ const news = useNews();
                       <p class="mt-3 text-sm text-gray-600 dark:text-gray-400" v-html="item.text"></p>
                     </div>
 
+                    <div v-if="item.action_type === 'source'" class="mt-2">
+                    <button
+                      @click="() => { news.source(item.source); }"
+                      type="button"
+                      class="button-primary-sm !p-2 !px-4 w-full justify-center"
+                    >
+                      {{ item.action }}
+                    </button>
+                  </div>
+
                     <div v-if="item.action_type === 'modal'" class="mt-2">
                       <button
-                        @click="modals.show(item.modal)"
+                        @click="() => { modals.show(item.modal); news.hide(); }"
                         type="button"
                         class="button-primary-sm !p-2 !px-4 w-full justify-center"
                       >

@@ -60,8 +60,6 @@ onMounted(async () => {
     },
     90
   );
-
-  notifications.displayMCDM();
 });
 </script>
 

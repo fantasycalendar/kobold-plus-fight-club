@@ -9,12 +9,12 @@ const encounter = useEncounter();
 
 <template>
   <Modal v-model:show="modals.strategy" title="Select encounter generation strategy">
-    <div class="grid gap-2 w-full place-items-end grid-cols-2 grow items-stretch">
+    <div class="grid gap-2 w-full place-items-end md:grid-cols-2 grow items-stretch">
       <div
         v-for="[key, strategy] in Object.entries(encounter.availableStrategies)"
         :key="key"
         @click="encounter.setStrategy(key)"
-        class="bg-white dark:bg-gray-700 shadow sm:rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer border-2 hover:border-emerald-500 transition duration-150 ease-in-out"
+        class="bg-white dark:bg-gray-700 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer border-2 hover:border-emerald-500 transition duration-150 ease-in-out"
         :class="{
           'border-emerald-500': encounter.strategy === key,
           'border-transparent': encounter.strategy !== key,

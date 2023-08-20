@@ -73,10 +73,10 @@ const menu = ref(false);
             <i class="fa fa-rss"></i>
             <span class="absolute flex h-3 w-3 top-0 right-0" v-if="useNews().hasUnread">
               <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75"
               ></span>
               <span
-                class="relative inline-flex rounded-full h-3 w-3 bg-red-500"
+                class="relative inline-flex rounded-full h-3 w-3 bg-amber-300"
               ></span>
             </span>
           </a>
@@ -97,7 +97,7 @@ const menu = ref(false);
         </div>
         <div class="-mr-2 flex items-center lg:hidden">
           <button
-            class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+            class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white relative"
             @click="menu = !menu"
           >
             <span class="sr-only">Open main menu</span>
@@ -131,6 +131,14 @@ const menu = ref(false);
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
+            <span class="absolute flex h-3 w-3 top-1 right-1" v-if="useNews().hasUnread && !menu">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-3 w-3 bg-amber-300"
+              ></span>
+            </span>
           </button>
         </div>
       </div>
@@ -163,6 +171,22 @@ const menu = ref(false);
           class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300"
           >About</RouterLink
         >
+        <a
+          title="News"
+          @click="() => {useNews().show(); menu = false;}"
+          href="javascript:"
+          class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-emerald-300 hover:text-white hover:border-gray-300 relative"
+        >
+          <span class="absolute flex h-3 w-3 top-3.5 left-16" v-if="useNews().hasUnread">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-3 w-3 bg-amber-300"
+            ></span>
+          </span>
+          <span>News</span>
+        </a>
         <a
           title="Toggle light mode (ctrl+shift+\)"
           @click="$emit('update:theme', theme === 'dark' ? 'light' : 'dark')"
