@@ -22,6 +22,7 @@
           v-show="notification.body"
           v-html="notification.body"
         ></p>
+        <component :is="notification.component" v-if="notification.component" v-bind="Object.freeze({ id: notification.id })"></component>
       </div>
       <div class="ml-4 flex-shrink-0 flex">
         <button

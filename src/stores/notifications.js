@@ -1,4 +1,5 @@
 import { defineStore,acceptHMRUpdate } from "pinia";
+import { useLocalStorage } from "@vueuse/core/index";
 
 export const useNotifications = defineStore("notifications", {
   state: () => {
@@ -12,6 +13,11 @@ export const useNotifications = defineStore("notifications", {
     getId() {
       return this.idIncrement++;
     },
+
+    dismissAll() {
+      this.entries = [];
+    },
+
     dismiss(dismissId) {
       const index = this.entries.findIndex(
         (notification) => notification.id === dismissId
@@ -30,11 +36,13 @@ export const useNotifications = defineStore("notifications", {
 
       this.entries.splice(index, 1);
     },
+
     notify(notification, body = null) {
       if (typeof notification === "string") {
         notification = {
           title: notification,
           body: body,
+          component: false,
           sticky: false,
           callback: null,
           icon_color: false,

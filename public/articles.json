@@ -1,0 +1,12 @@
+{
+	"articles": [
+		{
+			"title": "Flee, Mortals! Support",
+			"text": "MCDM's <a href='https://shop.mcdmproductions.com/collections/flee-mortals-the-mcdm-monster-book' target='_blank'>Flee, Mortals!</a> encounter generation and monsters are now supported in K+FC. This can be found in the settings above the encounter panel.",
+			"action": "Give it a try",
+			"action_type": "source",
+			"source": "mcdm",
+			"date": "2023-08-19"
+		}
+	]
+}
