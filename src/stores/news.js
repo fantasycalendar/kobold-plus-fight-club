@@ -48,7 +48,7 @@ export const useNews = defineStore("news", {
 
           useNotifications().notify({
             title: "Flee, Mortals! has been enabled.",
-            body: "We've added <strong>Flee, Mortals!</strong> from MCDM to your sources.",
+            body: "<p>We've added <strong>Flee, Mortals!</strong> from MCDM to your sources.</p><p class='mt-1'>You can toggle it along with any other sources using the <strong>Manage sources</strong> button in the filter panel.</p>",
             sticky: true,
           });
         }, 700);
