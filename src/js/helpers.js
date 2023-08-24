@@ -168,7 +168,7 @@ export function downloadFile(fileName, data, type) {
 }
 
 export function formatNumber(num) {
-  if (!num) return 0;
+  if (!num || num === Infinity) return 0;
   let number = Math.floor(num);
   let fraction = "";
   const numberString = number ? new Intl.NumberFormat("en-US").format(number) : ""
