@@ -1,5 +1,4 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
-import { useLocalStorage } from "@vueuse/core/index";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useMonsters } from "./monsters";
 import * as helpers from "../js/helpers.js";
 import CONST from "../js/constants.js";
@@ -32,6 +31,12 @@ export const useFilters = defineStore("filters", {
         { value: "large", label: "Large" },
         { value: "huge", label: "Huge" },
         { value: "gargantuan", label: "Gargantuan" },
+        { value: "not-tiny", label: "Not Tiny" },
+        { value: "not-small", label: "Not Small" },
+        { value: "not-medium", label: "Not Medium" },
+        { value: "not-large", label: "Not Large" },
+        { value: "not-huge", label: "Not Huge" },
+        { value: "not-gargantuan", label: "Not Gargantuan" },
       ],
       legendary: helpers.migrateLocalStorage(
         "filtersLegendary",
@@ -59,6 +64,20 @@ export const useFilters = defineStore("filters", {
         { value: "ooze", label: "Ooze" },
         { value: "plant", label: "Plant" },
         { value: "undead", label: "Undead" },
+        { value: "not-aberration", label: "Not Aberration" },
+        { value: "not-beast", label: "Not Beast" },
+        { value: "not-celestial", label: "Not Celestial" },
+        { value: "not-construct", label: "Not Construct" },
+        { value: "not-dragon", label: "Not Dragon" },
+        { value: "not-elemental", label: "Not Elemental" },
+        { value: "not-fey", label: "Not Fey" },
+        { value: "not-fiend", label: "Not Fiend" },
+        { value: "not-giant", label: "Not Giant" },
+        { value: "not-humanoid", label: "Not Humanoid" },
+        { value: "not-monstrosity", label: "Not Monstrosity" },
+        { value: "not-ooze", label: "Not Ooze" },
+        { value: "not-plant", label: "Not Plant" },
+        { value: "not-undead", label: "Not Undead" },
       ],
       environment: helpers.migrateLocalStorage(
         "filtersEnvironment",
@@ -173,12 +192,9 @@ export const useFilters = defineStore("filters", {
         return {
           search: (monster) => this.searchFor(monster.searchable),
           alignment: (monster) => monster.alignment.bits & state.alignment.bits,
-          size: (monster) => state.size.includes(monster.size.toLowerCase()),
-          type: (monster) => state.type.includes(monster.type.toLowerCase()),
-          environment: (monster) =>
-            state.environment.find((environment) =>
-              monster.environment.includes(environment.toLowerCase())
-            ),
+          size: (monster) => monster.filter("size", state.size),
+          type: (monster) => monster.filter("type", state.type),
+          environment: (monster) => monster.filter("environment", state.environment),
           legendary: (monster) =>
             !(state.legendary.includes("legendary") && !monster.legendary) &&
             !(state.legendary.includes("legendary_lair") && !monster.lair) &&
@@ -267,14 +283,19 @@ export const useFilters = defineStore("filters", {
           .filter(Boolean)
       );
 
-      return Array.from(results)
-        .sort()
-        .map((item) => {
-          return {
-            valueProp: item.toLowerCase(),
-            label: item,
-          };
-        });
+      results = Array.from(results).sort();
+
+      return results.map((item) => {
+        return {
+          valueProp: item.toLowerCase(),
+          label: item,
+        };
+      }).concat(results.map((item) => {
+        return {
+          valueProp: "not-" + item.toLowerCase(),
+          label: "Not " + item,
+        };
+      }));
     },
   },
 });

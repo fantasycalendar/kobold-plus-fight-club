@@ -97,6 +97,27 @@ export default class Monster {
     return this.sources.find((source) => source.actual_source.enabled);
   }
 
+  filter(key, filters) {
+    if(Array.isArray(this[key])) return this.filterArray(key, filters);
+    const positiveFilters = filters.filter(filter => !filter.startsWith("not-"));
+    const negativeFilters = filters.filter(filter => filter.startsWith("not-"));
+    let result = positiveFilters.length ? positiveFilters.includes(this[key].toLowerCase()) : true;
+    if(negativeFilters.length){
+      result = result && !negativeFilters.map(size => size.split("-")[1]).includes(this[key].toLowerCase());
+    }
+    return result;
+  }
+
+  filterArray(key, filters){
+    const positiveFilters = filters.filter(filter => !filter.startsWith("not-"));
+    const negativeFilters = filters.filter(filter => filter.startsWith("not-"));
+    let result = positiveFilters.length ? positiveFilters.find(filter => this[key].includes(filter.toLowerCase())) : true;
+    if(negativeFilters.length){
+      return result && !negativeFilters.map(size => size.split("-")[1]).find(filter => this[key].includes(filter.toLowerCase()));
+    }
+    return result;
+  }
+
   get isMinion() {
     return !!this.attributes.minion || this.tags.some(tag => tag.toLowerCase().includes('minion'));
   }
