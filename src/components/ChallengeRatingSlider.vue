@@ -12,6 +12,10 @@ const sliderValue = ref([
     filters.cr.min,
     filters.cr.max
 ]);
+const shadowSliderValue = ref([
+    filters.cr.min,
+    filters.cr.max
+]);
 
 // This formatter function is given to NoUISlider's options, to do one thing:
 // Transform numeric indexes into visual label numbers. A simple example:
@@ -38,11 +42,15 @@ watch(maxCr, (updatedIndex) => {
 });
 
 watch(sliderValue, (value) => {
-  filters.cr.min = value[0];
   minCr.value = filters.crValues[Math.round(value[0])].value;
-  filters.cr.max = value[1];
   maxCr.value = filters.crValues[Math.round(value[1])].value;
 });
+
+function updateFilters() {
+  shadowSliderValue.value = [...sliderValue.value];
+  filters.cr.min = sliderValue.value[0];
+  filters.cr.max = sliderValue.value[1];
+}
 
 // Now that all the mapping is done, we also want to subscribe to any external
 // changes that occur on the store, updating our local data in the process.
@@ -91,7 +99,9 @@ filters.$subscribe((mutation, state) => {
           :max="33"
           :format="resolveOptionLabel"
           :options="{ tooltips: [false, false], animate: true }"
-          v-model="sliderValue"
+          v-model="shadowSliderValue"
+          @slide="(event) => { sliderValue = [...event]; }"
+          @end="updateFilters"
         ></Slider>
       </div>
 
@@ -102,6 +112,7 @@ filters.$subscribe((mutation, state) => {
             name="min_cr"
             id="min_cr_select"
             v-model="minCr"
+            @change="updateFilters"
           >
             <option
               v-for="option in filters.crValues"
@@ -122,6 +133,7 @@ filters.$subscribe((mutation, state) => {
             name="max_cr"
             id="max_cr_select"
             v-model="maxCr"
+            @change="updateFilters"
           >
             <option
               v-for="option in filters.crValues"
