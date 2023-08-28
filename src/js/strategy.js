@@ -431,29 +431,11 @@ class MCDM extends EncounterStrategy {
     { easy: "4-5", standard: "2-3", hard: "0-1" },
   ];
 
-  static #getGroupBudget(acc, group) {
-    const crGroupBudget = this.encounterCrPerCharacter[group.level];
-    return {
-      Easy: (acc?.["Easy"] ?? 0) + crGroupBudget.easy * (group?.players ?? 1),
-      Standard:
-        (acc?.["Standard"] ?? 0) +
-        crGroupBudget.standard * (group?.players ?? 1),
-      Hard: (acc?.["Hard"] ?? 0) + crGroupBudget.hard * (group?.players ?? 1),
-    };
-  }
-
   static getBudget() {
-    if (!useParty().totalPlayers) {
+    let totalPlayers = useParty().totalPlayers;
+    if (!totalPlayers) {
       return {};
     }
-    let groupBudget = useParty().groups.reduce(
-      this.#getGroupBudget.bind(this),
-      {}
-    );
-    let totalBudget = useParty().activePlayers.reduce(
-      this.#getGroupBudget.bind(this),
-      groupBudget
-    );
 
     let totalLevels =
       useParty().groups.reduce(
@@ -461,12 +443,17 @@ class MCDM extends EncounterStrategy {
         0
       ) +
       useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
+
     let averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
 
-    totalBudget["One Monster Cap"] =
-      this.encounterCrPerCharacter[averageLevel].cap;
+    let crBudget = this.encounterCrPerCharacter[averageLevel];
 
-    return totalBudget;
+    return {
+      "Easy": crBudget.easy * totalPlayers,
+      "Standard": crBudget.standard * totalPlayers,
+      "Hard": crBudget.hard * totalPlayers,
+      "One Monster Cap": crBudget.cap
+    };
   }
 
   static getBudgetSpend(encounter) {
