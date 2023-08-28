@@ -17,6 +17,15 @@ class EncounterStrategy {
     "someone forgot to bring snacks",
     "rocks fall",
     "someone insulted the DM",
+    "the DM's revenge for that missed crit.",
+    "accidentally crashing a dragon's private spa day.",
+    "a masterclass in \"How Not to Survive.\"",
+    "the gods will want popcorn to watch this disaster.",
+    "the universe is asking, \"Are you sure about this?\"",
+    "the DM drew a \"TPK\" card from their deck of many things.",
+    "a plot twist written by Murphy's Law.",
+    "something from the \"Cruel and Unusual\" rulebook.",
+    "the DM is an amateur horror movie director.",
   ];
 
   static getTotalExp() {
@@ -208,10 +217,6 @@ class KFC extends EncounterStrategy {
       const [lowerKey, lowerValue] = levels[i - 1];
       const [upperKey, upperValue] = levels[i];
       const ratio = helpers.ratio(lowerValue, upperValue, adjustedExp);
-
-      if (ratio >= 10) {
-        return "... insane?";
-      }
 
       if (upperKey === "daily" && ratio >= 0.0) {
         if (ratio >= 0.2) {
@@ -431,29 +436,11 @@ class MCDM extends EncounterStrategy {
     { easy: "4-5", standard: "2-3", hard: "0-1" },
   ];
 
-  static #getGroupBudget(acc, group) {
-    const crGroupBudget = this.encounterCrPerCharacter[group.level];
-    return {
-      Easy: (acc?.["Easy"] ?? 0) + crGroupBudget.easy * (group?.players ?? 1),
-      Standard:
-        (acc?.["Standard"] ?? 0) +
-        crGroupBudget.standard * (group?.players ?? 1),
-      Hard: (acc?.["Hard"] ?? 0) + crGroupBudget.hard * (group?.players ?? 1),
-    };
-  }
-
   static getBudget() {
-    if (!useParty().totalPlayers) {
+    let totalPlayers = useParty().totalPlayers;
+    if (!totalPlayers) {
       return {};
     }
-    let groupBudget = useParty().groups.reduce(
-      this.#getGroupBudget.bind(this),
-      {}
-    );
-    let totalBudget = useParty().activePlayers.reduce(
-      this.#getGroupBudget.bind(this),
-      groupBudget
-    );
 
     let totalLevels =
       useParty().groups.reduce(
@@ -461,12 +448,17 @@ class MCDM extends EncounterStrategy {
         0
       ) +
       useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
-    let averageLevel = Math.floor(totalLevels / useParty().totalPlayers);
 
-    totalBudget["One Monster Cap"] =
-      this.encounterCrPerCharacter[averageLevel].cap;
+    let averageLevel = Math.floor(totalLevels / totalPlayers);
 
-    return totalBudget;
+    let crBudget = this.encounterCrPerCharacter[averageLevel];
+
+    return {
+      "Easy": crBudget.easy * totalPlayers,
+      "Standard": crBudget.standard * totalPlayers,
+      "Hard": crBudget.hard * totalPlayers,
+      "One Monster Cap": crBudget.cap
+    };
   }
 
   static getBudgetSpend(encounter) {
@@ -513,10 +505,6 @@ class MCDM extends EncounterStrategy {
       const [upperKey, upperValue] = levels[i];
       const ratio = helpers.ratio(lowerValue, upperValue, budgetSpend);
       if (lowerValue === upperValue) continue;
-
-      if (ratio >= 10) {
-        return "... insane?";
-      }
 
       if (upperKey === "Hard" && ratio > 1.0) {
         if (ratio >= 1.5) {
