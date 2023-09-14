@@ -64,7 +64,7 @@ export default class Monster {
         }
       }
 
-      let reference = sources.find(book);
+      let reference = sources.find(book) || { name: book, enabled: true };
       return {
         actual_source: reference,
         reference: {
