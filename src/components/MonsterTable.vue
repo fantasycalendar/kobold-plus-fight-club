@@ -171,7 +171,7 @@ onBeforeMount(() => {
             />
             <MonsterTableHeading
               label="Alignment"
-              class="hidden lg:table-cell w-32 text-right pr-4"
+              class="hidden xl:table-cell w-32 text-right pr-4"
             />
           </tr>
         </thead>
