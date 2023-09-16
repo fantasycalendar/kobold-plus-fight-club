@@ -56,6 +56,10 @@ const encounter = useEncounter();
       </dl>
     </td>
     <td
+      class="hidden px-3 pl-2 pr-4 text-sm text-gray-500 dark:text-gray-300 xl:table-cell w-32 text-right"
+      v-text="monster.alignment.string"
+    ></td>
+    <td
       class="px-3 py-2 text-sm text-gray-500 dark:text-gray-300 table-cell w-32 max-w-32 truncate"
     >
       <span class="truncate" v-text="monster.size"></span>
@@ -93,6 +97,10 @@ const encounter = useEncounter();
       </dl>
     </td>
     <td
+      class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32"
+      v-text="monster.type"
+    ></td>
+    <td
       class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 sm:table-cell w-32"
     >
       <span
@@ -118,13 +126,5 @@ const encounter = useEncounter();
         ></span>
       </span>
     </td>
-    <td
-      class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32"
-      v-text="monster.type"
-    ></td>
-    <td
-      class="hidden px-3 pl-2 pr-4 text-sm text-gray-500 dark:text-gray-300 xl:table-cell w-32 text-right"
-      v-text="monster.alignment.string"
-    ></td>
   </tr>
 </template>
