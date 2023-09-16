@@ -35,6 +35,11 @@ const encounter = useEncounter();
           {{ tag.toLowerCase() }}
         </Badge>
       </span>
+      <dt class="sr-only sm:hidden">Type</dt>
+      <dd
+        class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden"
+        v-text="monster.type"
+      ></dd>
       <dl class="font-normal">
         <dt class="sr-only">Sources</dt>
         <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
@@ -48,11 +53,6 @@ const encounter = useEncounter();
             "
           ></span>
         </dd>
-        <dt class="sr-only sm:hidden">Type</dt>
-        <dd
-          class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden"
-          v-text="monster.type"
-        ></dd>
       </dl>
     </td>
     <td
@@ -114,7 +114,7 @@ const encounter = useEncounter();
           v-text="
             ' (' + encounter.getDifficultyFromExperience(monster.cr.exp) + ')'
           "
-          class="text-xs"
+          class="text-xs hidden xl:inline"
         ></span>
       </span>
     </td>
@@ -123,7 +123,7 @@ const encounter = useEncounter();
       v-text="monster.type"
     ></td>
     <td
-      class="hidden px-3 pl-2 pr-4 text-sm text-gray-500 dark:text-gray-300 lg:table-cell w-32 text-right"
+      class="hidden px-3 pl-2 pr-4 text-sm text-gray-500 dark:text-gray-300 xl:table-cell w-32 text-right"
       v-text="monster.alignment.string"
     ></td>
   </tr>
