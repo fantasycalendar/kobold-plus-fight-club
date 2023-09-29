@@ -50,7 +50,7 @@ export default class Importer {
         return [true];
     }
 
-    static _validateMonsters(monsters){
+    static _validateMonsters(monsters, sources){
         for(let monster of monsters) {
             const monsterKeys = Object.keys(monster);
             for(let key of this.monstersRequiredHeaders){
@@ -60,6 +60,15 @@ export default class Importer {
                     }
                 }else if(!monsterKeys.includes(key)){
                     return [false, `Monsters are missing the required header: '${key}'`];
+                }else if(key === "sources"){
+                    const sourceSplit = new RegExp(": \\d+$", "g")
+                    const monsterSources = monster[key].split(", ").map(source => source.split(sourceSplit)[0]);
+                    for(const monsterSource of monsterSources){
+                        const source = sources.find(source => source['name'] === monsterSource);
+                        if(!source){
+                            return [false, `Monster '${monster['name']}' has the source '${monsterSource}', but it is not defined in the sources!`];
+                        }
+                    }
                 }
             }
         }
@@ -106,33 +115,6 @@ export default class Importer {
             return initialLoad;
         }
 
-        let monstersValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
-            key: this.googleApiKey
-        }))
-            .then(response => response.json())
-            .then(jsonifiedBody => {
-                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase())
-
-                for(let key of this.monstersRequiredHeaders){
-                    if(Array.isArray(key)) {
-                        if (!key.find(option => headers.includes(option))) {
-                            return [false, `Monsters are missing the required header: '${key[0]}'`];
-                        }
-                    }else if(!headers.includes(key)){
-                        return [false, `Monsters are missing the required header: '${key}'`];
-                    }
-                }
-                return [true];
-            })
-            .catch(err => {
-                console.error(err)
-                return false;
-            });
-
-        if(!monstersValid[0]){
-            return monstersValid;
-        }
-
         let sourcesValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Sources?` + new URLSearchParams({
             key: this.googleApiKey
         }))
@@ -149,7 +131,7 @@ export default class Importer {
                         return [false, `Sources are missing the required header: '${key}'`];
                     }
                 }
-                return [true];
+                return [true, jsonifiedBody];
             })
             .catch(err => {
                 console.error(err)
@@ -158,6 +140,42 @@ export default class Importer {
 
         if(!sourcesValid[0]){
             return sourcesValid;
+        }
+
+        let monstersValid = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${resourceLocator}/values/Monsters?` + new URLSearchParams({
+            key: this.googleApiKey
+        }))
+            .then(response => response.json())
+            .then(jsonifiedBody => {
+                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase())
+
+                for(let key of this.monstersRequiredHeaders){
+                    if(Array.isArray(key)) {
+                        if (!key.find(option => headers.includes(option))) {
+                            return [false, `Monsters are missing the required header: '${key[0]}'`];
+                        }
+                    }else if(!headers.includes(key)){
+                        return [false, `Monsters are missing the required header: '${key}'`];
+                    }else if(key === "sources"){
+                        const sourceSplit = new RegExp(": \\d+$", "g")
+                        const monsterSources = headers[key].split(", ").map(source => source.split(sourceSplit)[0]);
+                        for(const monsterSource in monsterSources){
+                            const source = sourcesValid[1].find(source => source['name'] === monsterSource);
+                            if(!source){
+                                return [false, `Monster 'Test' has the source '${monsterSource}', but it is not defined in the sources!`];
+                            }
+                        }
+                    }
+                }
+                return [true];
+            })
+            .catch(err => {
+                console.error(err)
+                return false;
+            });
+
+        if(!monstersValid[0]){
+            return monstersValid;
         }
 
         return [true, ''];
@@ -178,14 +196,14 @@ export default class Importer {
             return [false, "Your JSON has sources, but must also contain monsters."];
         }
 
-        const validMonsters = this._validateMonsters(results.monsters);
-        if(!validMonsters[0]){
-            return validMonsters;
-        }
-
         const validSources = this._validateSources(results.sources);
         if(!validSources[0]){
             return validSources;
+        }
+
+        const validMonsters = this._validateMonsters(results.monsters, results.sources);
+        if(!validMonsters[0]){
+            return validMonsters;
         }
 
         return [true, ""];
@@ -210,14 +228,14 @@ export default class Importer {
             return [false, "Your JSON has sources, but must also contain monsters."];
         }
 
-        const validMonsters = this._validateMonsters(results.monsters);
-        if(!validMonsters[0]){
-            return validMonsters;
-        }
-
         const validSources = this._validateSources(results.sources);
         if(!validSources[0]){
             return validSources;
+        }
+
+        const validMonsters = this._validateMonsters(results.monsters, results.sources);
+        if(!validMonsters[0]){
+            return validMonsters;
         }
 
         return [true, ""];
@@ -239,14 +257,14 @@ export default class Importer {
             return [false, "Couldn't resolve K+FC data, import source is probably an invalid CSV file."];
         }
 
-        const validMonsters = this._validateMonsters(results.monsters);
-        if(!validMonsters[0]){
-            return validMonsters;
-        }
-
         const validSources = this._validateSources(results.sources);
         if(!validSources[0]){
             return validSources;
+        }
+
+        const validMonsters = this._validateMonsters(results.monsters, validSources);
+        if(!validMonsters[0]){
+            return validMonsters;
         }
 
         return [true, ""];

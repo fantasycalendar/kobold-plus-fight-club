@@ -23,7 +23,7 @@
           @downloadExample="downloadExampleFile"
         ></component>
       </div>
-      <div class="text-red-400 dark:text-red-600" v-show="importError.length">
+      <div class="text-red-400 dark:text-red-600 space-x-1" v-show="importError.length">
         <i class="fa fa-exclamation-triangle"></i>
         <span v-text="importError"></span>
       </div>
