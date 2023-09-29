@@ -27,6 +27,8 @@ defineProps({
     <div class="order-2">
       <input
         type="number"
+        min="1"
+        max="20"
         :id="'level_' + playerIndex"
         v-model="player.level"
         class="px-1 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
