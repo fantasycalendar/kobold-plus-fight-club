@@ -1,6 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useFilters } from "./filters";
-import CONST from "../js/constants";
 import { useLocalStorage } from "@vueuse/core/index";
 import Monster from "../js/monster";
 import { versionCompare } from "../js/helpers";
@@ -10,8 +9,8 @@ const regexCache = {};
 export const useMonsters = defineStore("monsters", {
   state: () => {
     return {
-      version: "2.2.3",
-      storedVersion: useLocalStorage("storedMonstersVersion", "2.2.3"),
+      version: "2.2.5",
+      storedVersion: useLocalStorage("storedMonstersVersion", "2.2.5"),
 
       debugMonsters: useLocalStorage("debugMonsters", false),
       lastRegex: "",
