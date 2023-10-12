@@ -2,7 +2,7 @@ import * as helpers from './helpers';
 import Papa from 'papaparse';
 
 export default class Importer {
-    static googleApiKey = 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM'
+    static googleApiKey = 'AIzaSyCn1M-vTPGfZvYUHdfGI6EvM0luabU5RHo'
 
     static types = [
         { key: "google-sheets", label: "Google Sheets" },
@@ -47,7 +47,7 @@ export default class Importer {
                 }
             }
         }
-        return [true];
+        return [true, sources];
     }
 
     static _validateMonsters(monsters, sources){
@@ -72,7 +72,7 @@ export default class Importer {
                 }
             }
         }
-        return [true];
+        return [true, monsters];
     }
 
     static async _validateGoogleSheets(resourceLocator) {
@@ -120,18 +120,12 @@ export default class Importer {
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase());
-
-                for(let key of this.sourcesRequiredHeaders){
-                    if(Array.isArray(key)) {
-                        if (!key.find(option => headers.includes(option))) {
-                            return [false, `Sources are missing the required header: '${key[0]}'`];
-                        }
-                    }else if(!headers.includes(key)){
-                        return [false, `Sources are missing the required header: '${key}'`];
-                    }
-                }
-                return [true, jsonifiedBody];
+                const headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase());
+                const sources = jsonifiedBody.values;
+                const sourcesWithKeys = Object.fromEntries(sources.map((source) => source.map((key, index) => {
+                    return [headers[index], key]
+                })));
+                return this._validateSources(sourcesWithKeys);
             })
             .catch(err => {
                 console.error(err)
@@ -147,27 +141,12 @@ export default class Importer {
         }))
             .then(response => response.json())
             .then(jsonifiedBody => {
-                let headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase())
-
-                for(let key of this.monstersRequiredHeaders){
-                    if(Array.isArray(key)) {
-                        if (!key.find(option => headers.includes(option))) {
-                            return [false, `Monsters are missing the required header: '${key[0]}'`];
-                        }
-                    }else if(!headers.includes(key)){
-                        return [false, `Monsters are missing the required header: '${key}'`];
-                    }else if(key === "sources"){
-                        const sourceSplit = new RegExp(": \\d+$", "g")
-                        const monsterSources = headers[key].split(", ").map(source => source.split(sourceSplit)[0]);
-                        for(const monsterSource in monsterSources){
-                            const source = sourcesValid[1].find(source => source['name'] === monsterSource);
-                            if(!source){
-                                return [false, `Monster 'Test' has the source '${monsterSource}', but it is not defined in the sources!`];
-                            }
-                        }
-                    }
-                }
-                return [true];
+                const headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase())
+                const monsters = jsonifiedBody.values;
+                const monstersWithKeys = Object.fromEntries(monsters.map((monster) => monster.map((key, index) => {
+                    return [headers[index], monster];
+                })));
+                return this._validateMonsters(monstersWithKeys, sourcesValid[1]);
             })
             .catch(err => {
                 console.error(err)
