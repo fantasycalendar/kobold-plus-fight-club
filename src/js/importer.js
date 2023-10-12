@@ -2,7 +2,7 @@ import * as helpers from './helpers';
 import Papa from 'papaparse';
 
 export default class Importer {
-    static googleApiKey = 'AIzaSyCn1M-vTPGfZvYUHdfGI6EvM0luabU5RHo'
+    static googleApiKey = 'AIzaSyCsGMnu4_lqVj1E0Hsyk7V8CbRpJJauSTM'
 
     static types = [
         { key: "google-sheets", label: "Google Sheets" },
