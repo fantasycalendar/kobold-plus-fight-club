@@ -122,8 +122,8 @@ export default class Importer {
             .then(jsonifiedBody => {
                 const headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase());
                 const sources = jsonifiedBody.values;
-                const sourcesWithKeys = Object.fromEntries(sources.map((source) => source.map((key, index) => {
-                    return [headers[index], key]
+                const sourcesWithKeys = sources.map((source) => Object.fromEntries(headers.map((key, index) => {
+                    return [key, source[index] ?? ""]
                 })));
                 return this._validateSources(sourcesWithKeys);
             })
@@ -143,8 +143,8 @@ export default class Importer {
             .then(jsonifiedBody => {
                 const headers = jsonifiedBody.values.splice(0, 1)[0].map(str => str.toLowerCase())
                 const monsters = jsonifiedBody.values;
-                const monstersWithKeys = Object.fromEntries(monsters.map((monster) => monster.map((key, index) => {
-                    return [headers[index], monster];
+                const monstersWithKeys = monsters.map((monster) => Object.fromEntries(headers.map((key, index) => {
+                    return [key, monster[index] ?? ""];
                 })));
                 return this._validateMonsters(monstersWithKeys, sourcesValid[1]);
             })
