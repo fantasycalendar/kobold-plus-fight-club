@@ -146,20 +146,16 @@ onBeforeMount(() => {
               @sort="setSortBy($event)"
             />
             <MonsterTableHeading
+              label="Alignment"
+              class="hidden xl:table-cell w-32 text-right pr-4"
+            />
+            <MonsterTableHeading
               label="Size"
               sorts-column="size"
               :sort-by="sortBy"
               :sort-by-desc="sortByDesc"
               class="table-cell w-32"
               @sort="setSortBy($event)"
-            />
-            <MonsterTableHeading
-              label="CR"
-              sorts-column="cr.numeric"
-              :sort-by="sortBy"
-              :sort-by-desc="sortByDesc"
-              @sort="setSortBy($event)"
-              class="hidden sm:table-cell w-32"
             />
             <MonsterTableHeading
               label="Type"
@@ -170,8 +166,12 @@ onBeforeMount(() => {
               @sort="setSortBy($event)"
             />
             <MonsterTableHeading
-              label="Alignment"
-              class="hidden lg:table-cell w-32 text-right pr-4"
+              label="CR"
+              sorts-column="cr.numeric"
+              :sort-by="sortBy"
+              :sort-by-desc="sortByDesc"
+              @sort="setSortBy($event)"
+              class="hidden sm:table-cell w-32"
             />
           </tr>
         </thead>
