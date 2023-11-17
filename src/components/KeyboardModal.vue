@@ -9,7 +9,7 @@ const hotkeys = useHotkeys();
 
 onBeforeMount(() => {
   hotkeys.register(
-    "ctrl+/",
+    "ctrl+/, command+/",
     "Displays this help window",
     () => {
       modals.toggle("keyboard");

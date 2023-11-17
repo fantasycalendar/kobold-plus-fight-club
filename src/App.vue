@@ -43,7 +43,7 @@ onMounted(async () => {
   );
 
   hotkeys.register(
-    "ctrl+shift+\\",
+    "ctrl+shift+\\, command+shift+\\",
     "Toggles light/dark theme",
     () => {
       toggleTheme();

@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       userWantsFilters: this.filtersTest(),
-      alwaysShowFilters: false,
+      alwaysShowFilters: this.filtersTest(),
       mobileEncounterTab: false,
     };
   },
@@ -69,10 +69,12 @@ export default {
 
     setupHotkeys() {
       this.hotkeys.register(
-        "ctrl+f",
+        "ctrl+f, command+f",
         "Toggle the filters sidebar",
         () => {
-          this.userWantsFilters = this.filtersTest() ? true : !this.userWantsFilters;
+          this.userWantsFilters = this.filtersTest()
+            ? true
+            : !this.userWantsFilters;
 
           return false;
         },
@@ -80,7 +82,7 @@ export default {
       );
 
       this.hotkeys.register(
-        "ctrl+s",
+        "ctrl+s, command+s",
         "Save the current encounter",
         () => {
           this.encounter.save();
@@ -90,7 +92,7 @@ export default {
       );
 
       this.hotkeys.register(
-        "ctrl+g",
+        "ctrl+g, command+g",
         "Generate an encounter",
         () => {
           this.encounter.generateRandom();
