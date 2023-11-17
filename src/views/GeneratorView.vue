@@ -1,4 +1,3 @@
-show
 <script setup></script>
 
 <script>
