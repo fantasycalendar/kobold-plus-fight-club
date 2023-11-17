@@ -270,9 +270,9 @@ export const useFilters = defineStore("filters", {
       let results = new Set(
         useMonsters()
           .all.filter(Boolean)
+          .filter(monster => monster.sourceEnabled)
           .map((monster) => {
             return monster.environment
-              .split(",")
               .map(
                 (item) =>
                   item.trim().toUpperCase().slice(0, 1) +
