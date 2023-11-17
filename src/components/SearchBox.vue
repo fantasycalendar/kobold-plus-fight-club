@@ -68,7 +68,8 @@ onMounted(() => {
           />
 
           <div
-            class="absolute inset-y-0 right-0 flex py-1.5 pr-2 hidden md:block"
+            class="absolute inset-y-0 right-0 py-1.5 pr-2 grid place-items-center"
+            :class="{ 'right-8': filters.search.length }"
           >
             <kbd
               class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400"
