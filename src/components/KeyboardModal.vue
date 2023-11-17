@@ -6,6 +6,16 @@ import { onBeforeMount } from "vue";
 
 const modals = useModals();
 const hotkeys = useHotkeys();
+const mac = navigator.platform.startsWith('Mac');
+
+// If the hotkey is "ctrl+/, command+/", then we want to only display "⌘+/" on Mac
+// and "Ctrl+/" everywhere else. If the hotkey has no ctrl or command modifiers, 
+// such as "esc", then we want to display just "Esc" everywhere.
+function formatHotkey(hotkey) {
+    return (hotkey.includes("ctrl") && hotkey.includes("command")) 
+      ? hotkey.split(", ")[mac ? 1 : 0].replace("command", "⌘").replace("ctrl", "Ctrl")
+      : hotkey.slice(0, 1).toUpperCase() + hotkey.slice(1);
+}
 
 onBeforeMount(() => {
   hotkeys.register(
@@ -27,12 +37,12 @@ onBeforeMount(() => {
       <div
         class="my-2 max-h-96 overflow-y-auto overflow-x-hidden text-gray-700 dark:text-gray-300"
       >
-        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+        <div class="grid grid-cols-2 gap-x-8 gap-y-3">
           <div v-for="hotkey in hotkeys.help" :key="hotkey.shortcut">
             <div class="flex justify-between">
               <kbd
                 class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400"
-                v-text="hotkey.shortcut"
+                v-text="formatHotkey(hotkey.shortcut)"
               ></kbd>
               <div v-text="hotkey.description"></div>
             </div>
