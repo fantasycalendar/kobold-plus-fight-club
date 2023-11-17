@@ -14,7 +14,7 @@ const searchBox = ref(null);
 
 onMounted(() => {
   hotkeys.register(
-    "ctrl+k",
+    "ctrl+k, command+k",
     "Focus the search box",
     () => {
       searchBox.value.focus();

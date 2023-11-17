@@ -101,7 +101,7 @@ const pagination = computed(() => {
 
 onBeforeMount(() => {
   hotkeys.register(
-    "ctrl+[",
+    "ctrl+[, command+[",
     "Previous monsters search page",
     () => {
       currentPage.value--;
@@ -111,7 +111,7 @@ onBeforeMount(() => {
   );
 
   hotkeys.register(
-    "ctrl+]",
+    "ctrl+], command+]",
     "Next monsters search page",
     () => {
       currentPage.value++;
