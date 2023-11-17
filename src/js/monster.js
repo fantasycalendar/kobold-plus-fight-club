@@ -13,7 +13,7 @@ export default class Monster {
     this.type = attributes.type;
     this.size = attributes.size;
     this.hp = attributes.hp;
-    this.environment = attributes.environment.toLowerCase();
+    this.environment = attributes.environment.toLowerCase().split(',').map(env => env.trim());
     this.isUnique = !!attributes["unique?"] || !!attributes["unique"];
     this.lair = !!attributes["lair"] || !!attributes["lair?"];
 

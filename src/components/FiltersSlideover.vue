@@ -165,6 +165,7 @@ defineProps({
                   <Multiselect
                     mode="tags"
                     placeholder="Any Environment"
+                    noOptionsText="No monsters in active sources have environments"
                     v-model="filters.environment"
                     valueProp="valueProp"
                     label="label"
