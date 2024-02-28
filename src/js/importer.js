@@ -241,7 +241,7 @@ export default class Importer {
             return validSources;
         }
 
-        const validMonsters = this._validateMonsters(results.monsters, validSources);
+        const validMonsters = this._validateMonsters(results.monsters, results.sources);
         if(!validMonsters[0]){
             return validMonsters;
         }
