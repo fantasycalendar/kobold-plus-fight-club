@@ -262,7 +262,7 @@ onBeforeMount(() => {
               page.divider,
           }"
           v-text="page.divider ? '...' : page.number"
-          @click="currentPage = page.number"
+          @click="currentPage = page.divider ? currentPage : page.number"
           :key="page.number"
         ></span>
       </div>
