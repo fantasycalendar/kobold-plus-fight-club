@@ -150,7 +150,7 @@ const modals = useModals();
           }"
         >
 
-          <div v-if="index === Object.keys(encounter.budget).length - 1" class="mt-4 col-span-2"></div>
+          <div v-if="index === Object.keys(encounter.budget).length - 1 && Object.keys(encounter.budget).length > 3" class="mt-4 col-span-2"></div>
           <span>{{ label }}</span>
           <span v-html="formatNumber(budget)"></span>
         </div>

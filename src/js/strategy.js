@@ -223,8 +223,8 @@ class KFC extends EncounterStrategy {
           return ratio >= 1.0
             ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
             : ratio >= 0.6
-            ? "extremely deadly"
-            : "really deadly";
+              ? "extremely deadly"
+              : "really deadly";
         }
         return lowerKey;
       } else if (ratio >= 0.0 && ratio <= 1.0) {
@@ -511,8 +511,8 @@ class MCDM extends EncounterStrategy {
           return ratio >= 3.0
             ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
             : ratio >= 2.0
-            ? "really deadly"
-            : "deadly";
+              ? "really deadly"
+              : "deadly";
         }
         return upperKey.toLowerCase();
       } else if (ratio >= 0.0 && ratio <= 1.0) {
@@ -806,7 +806,114 @@ class MCDM extends EncounterStrategy {
   }
 }
 
+class DnD2024 extends KFC {
+
+  static key = "dnd2024";
+  static label = "D&D5e 2024 Encounter Rules";
+  static description = "The same behavior as the classic K+FC encounter generation, but fit for the 2024 rules.";
+  static url = "https://www.dndbeyond.com/sources/dnd/free-rules/combat";
+  static difficulties = [
+    { key: "low", label: "Low" },
+    { key: "moderate", label: "Moderate" },
+    { key: "high", label: "High" }
+  ];
+  static defaultDifficulty = "moderate";
+  static tableHeader = "XP Goals";
+  static measurementUnit = "XP";
+
+  static #getGroupBudget(acc, group) {
+    const groupExp = CONST.EXP2024[group.level];
+    return {
+      Low: (acc?.["Low"] ?? 0) + groupExp.low * (group?.players ?? 1),
+      Moderate: (acc?.["Moderate"] ?? 0) + groupExp.moderate * (group?.players ?? 1),
+      High: (acc?.["High"] ?? 0) + groupExp.high * (group?.players ?? 1)
+    };
+  }
+
+  static getBudget() {
+    if (!useParty().totalPlayers) {
+      return {};
+    }
+    const experience = useParty().groups.reduce(
+      this.#getGroupBudget.bind(this),
+      {}
+    );
+    return useParty().activePlayers.reduce(
+      this.#getGroupBudget.bind(this),
+      experience
+    );
+  }
+
+  static getDifficultyFeel() {
+    if (!useParty().totalPlayersToGainXP) {
+      return "";
+    }
+
+    const experience = this.getTotalExp();
+
+    if (experience === 0) return "";
+
+    const levels = Object.entries(useParty().experience);
+    for (let i = 1; i < levels.length; i++) {
+      const [lowerKey, lowerValue] = levels[i - 1];
+      const [upperKey, upperValue] = levels[i];
+      const ratio = helpers.ratio(lowerValue, upperValue, experience);
+
+      if (upperKey === "hard" && ratio >= 1.5) {
+        if (ratio >= 2.2) {
+          return ratio >= 3.0
+            ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
+            : ratio >= 2.6
+              ? "extremely deadly"
+              : "really deadly";
+        }
+        return "deadly";
+      } else if (ratio >= 0.0 && ratio <= 1.0) {
+        if (ratio > 0.7) {
+          return upperKey;
+        }
+        return lowerKey;
+      }
+    }
+
+    const ratio = helpers.ratio(0, levels[0][1], experience);
+    return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
+  }
+
+  static getActualDifficulty() {
+    const budget = this.getBudget();
+
+    if (!budget) {
+      return "N/A";
+    }
+
+    const experience = this.getTotalExp();
+
+    if (experience === 0) return "None";
+    if (experience < budget["Low"]) return "Trivial";
+    if (experience < budget["Moderate"]) return "Low";
+    if (experience < budget["High"]) return "Moderate";
+    if (experience < budget["High"] * 1.5) return "High";
+
+    return "Deadly";
+  }
+
+  static getSecondaryMeasurements() {
+    return [];
+  }
+
+  static getMultiplier() {
+    return 1.0;
+  }
+
+  static getAdjustedExp() {
+    return 0;
+  }
+
+}
+
 export default {
   [KFC.key]: KFC,
+  [DnD2024.key]: DnD2024,
   [MCDM.key]: MCDM,
 };

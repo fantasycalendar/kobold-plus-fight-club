@@ -38,11 +38,11 @@ export const useParty = defineStore("party", {
     getGroupExperience(acc, group) {
       const groupExp = CONST.EXP[group.level];
       return {
-        easy: (acc?.easy ?? 0) + groupExp.easy * (group?.players ?? 1),
-        medium: (acc?.medium ?? 0) + groupExp.medium * (group?.players ?? 1),
-        hard: (acc?.hard ?? 0) + groupExp.hard * (group?.players ?? 1),
-        deadly: (acc?.deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
-        daily: (acc?.daily ?? 0) + groupExp.daily * (group?.players ?? 1),
+        Easy: (acc?.Easy ?? 0) + groupExp.Easy * (group?.players ?? 1),
+        Medium: (acc?.Medium ?? 0) + groupExp.Medium * (group?.players ?? 1),
+        Hard: (acc?.Hard ?? 0) + groupExp.Hard * (group?.players ?? 1),
+        Deadly: (acc?.Deadly ?? 0) + groupExp.Deadly * (group?.players ?? 1),
+        Daily: (acc?.Daily ?? 0) + groupExp.Daily * (group?.players ?? 1),
       };
     },
 
