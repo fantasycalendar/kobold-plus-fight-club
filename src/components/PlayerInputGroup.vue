@@ -30,7 +30,8 @@ defineProps({
         min="1"
         max="20"
         :id="'level_' + playerIndex"
-        v-model="player.level"
+        :value="player.level"
+        @change="player.level = Math.floor(Math.min(Math.max(1, $event.target.value), 20))"
         class="px-1 py-1 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
       />
     </div>

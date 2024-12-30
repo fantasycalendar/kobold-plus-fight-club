@@ -36,7 +36,7 @@ export const useParty = defineStore("party", {
       this.groups.splice(index, 1);
     },
     getGroupExperience(acc, group) {
-      const groupExp = CONST.EXP[group.level];
+      const groupExp = CONST.EXP[Math.floor(group.level)];
       return {
         easy: (acc?.easy ?? 0) + groupExp.easy * (group?.players ?? 1),
         medium: (acc?.medium ?? 0) + groupExp.medium * (group?.players ?? 1),

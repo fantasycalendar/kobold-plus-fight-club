@@ -178,7 +178,7 @@ class KFC extends EncounterStrategy {
   static measurementUnit = "XP";
 
   static #getGroupBudget(acc, group) {
-    const groupExp = CONST.EXP[group.level];
+    const groupExp = CONST.EXP[Math.floor(group.level)];
     return {
       Easy: (acc?.["Easy"] ?? 0) + groupExp.easy * (group?.players ?? 1),
       Medium: (acc?.["Medium"] ?? 0) + groupExp.medium * (group?.players ?? 1),
@@ -444,10 +444,10 @@ class MCDM extends EncounterStrategy {
 
     let totalLevels =
       useParty().groups.reduce(
-        (acc, group) => acc + group.level * group.players,
+        (acc, group) => acc + Math.floor(group.level) * Math.floor(group.players),
         0
       ) +
-      useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
+      useParty().activePlayers.reduce((acc, player) => acc + Math.floor(player.level), 0);
 
     let averageLevel = Math.floor(totalLevels / totalPlayers);
 
@@ -574,13 +574,13 @@ class MCDM extends EncounterStrategy {
     let crCaps = [];
     let totalCrBudget = 0;
     for (const group of useParty().groups) {
-      const groupCrTable = this.encounterCrPerCharacter[group.level];
+      const groupCrTable = this.encounterCrPerCharacter[Math.floor(group.level)];
       crCaps.push(groupCrTable.cap);
-      totalCrBudget += group.players * groupCrTable[difficulty];
+      totalCrBudget += Math.floor(group.players) * groupCrTable[difficulty];
     }
 
     for (const character of useParty().activePlayers) {
-      const characterCrTable = this.encounterCrPerCharacter[character.level];
+      const characterCrTable = this.encounterCrPerCharacter[Math.floor(character.level)];
       crCaps.push(characterCrTable.cap);
       totalCrBudget += characterCrTable[difficulty];
     }
