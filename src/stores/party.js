@@ -35,16 +35,6 @@ export const useParty = defineStore("party", {
     removeGroup(index) {
       this.groups.splice(index, 1);
     },
-    getGroupExperience(acc, group) {
-      const groupExp = CONST.EXP[group.level];
-      return {
-        Easy: (acc?.Easy ?? 0) + groupExp.Easy * (group?.players ?? 1),
-        Medium: (acc?.Medium ?? 0) + groupExp.Medium * (group?.players ?? 1),
-        Hard: (acc?.Hard ?? 0) + groupExp.Hard * (group?.players ?? 1),
-        Deadly: (acc?.Deadly ?? 0) + groupExp.Deadly * (group?.players ?? 1),
-        Daily: (acc?.Daily ?? 0) + groupExp.Daily * (group?.players ?? 1),
-      };
-    },
 
     createParty() {
       this.saved.forEach((party) => (party.editing = false));
@@ -108,12 +98,7 @@ export const useParty = defineStore("party", {
 
   getters: {
     experience() {
-      if (!this.totalPlayers) {
-        return false;
-      }
-
-      const experience = this.groups.reduce(this.getGroupExperience, {});
-      return this.activePlayers.reduce(this.getGroupExperience, experience);
+      return useEncounter().encounterStrategy.getBudget();
     },
     totalPlayersToGainXP() {
       return (

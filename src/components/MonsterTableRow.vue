@@ -22,7 +22,7 @@ const encounter = useEncounter();
       <span
         class="primary-link cursor-pointer select-none"
         @click="encounter.addMonster(monster)"
-        :title="encounter.getDifficultyFromExperience(monster.cr.exp)"
+        :title="encounter.getDifficultyFromCr(monster.cr)"
         >Add</span
       >
     </td>
@@ -72,19 +72,19 @@ const encounter = useEncounter();
             class="pl-1"
             :class="{
               'text-indigo-300 dark:text-indigo-600':
-                encounter.getDifficultyFromExperience(monster.cr.exp) ===
+                encounter.getDifficultyFromCr(monster.cr) ===
                 'Trivial',
               'text-green-300 dark:text-green-600':
-                encounter.getDifficultyFromExperience(monster.cr.exp) ===
+                encounter.getDifficultyFromCr(monster.cr) ===
                 'Easy',
               'text-yellow-300 dark:text-yellow-600':
-                encounter.getDifficultyFromExperience(monster.cr.exp) ===
+                encounter.getDifficultyFromCr(monster.cr) ===
                 'Medium',
               'text-amber-300 dark:text-orange-600':
-                encounter.getDifficultyFromExperience(monster.cr.exp) ===
+                encounter.getDifficultyFromCr(monster.cr) ===
                 'Hard',
               'text-rose-300 dark:text-rose-600':
-                encounter.getDifficultyFromExperience(monster.cr.exp) ===
+                encounter.getDifficultyFromCr(monster.cr) ===
                 'Deadly',
             }"
           ></span>
@@ -106,21 +106,21 @@ const encounter = useEncounter();
       <span
         :class="{
           'text-cyan-600 dark:text-cyan-400':
-            encounter.getDifficultyFromExperience(monster.cr.exp) === 'Trivial',
+            encounter.getDifficultyFromCr(monster.cr) === 'Trivial',
           'text-green-600 dark:text-green-400':
-            encounter.getDifficultyFromExperience(monster.cr.exp) === 'Easy',
+            encounter.getDifficultyFromCr(monster.cr) === 'Easy',
           'text-yellow-600 dark:text-yellow-400':
-            encounter.getDifficultyFromExperience(monster.cr.exp) === 'Medium',
+            encounter.getDifficultyFromCr(monster.cr) === 'Medium',
           'text-amber-600 dark:text-orange-400':
-            encounter.getDifficultyFromExperience(monster.cr.exp) === 'Hard',
+            encounter.getDifficultyFromCr(monster.cr) === 'Hard',
           'text-rose-600 dark:text-rose-500':
-            encounter.getDifficultyFromExperience(monster.cr.exp) === 'Deadly',
+            encounter.getDifficultyFromCr(monster.cr) === 'Deadly',
         }"
       >
         <span v-text="monster.cr.string"></span>
         <span
           v-text="
-            ' (' + encounter.getDifficultyFromExperience(monster.cr.exp) + ')'
+            ' (' + encounter.getDifficultyFromCr(monster.cr) + ')'
           "
           class="text-xs hidden xl:inline"
         ></span>

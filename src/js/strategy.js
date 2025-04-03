@@ -7,6 +7,9 @@ import { useParty } from "../stores/party.js";
 import { useEncounter } from "../stores/encounter.js";
 
 class EncounterStrategy {
+
+	static fudge_factor = 1.1;
+
   static insaneDifficultyStrings = [
     "an incredibly bad idea",
     "suicide",
@@ -34,20 +37,34 @@ class EncounterStrategy {
     }, 0);
   }
 
+	static getBudget() {
+		if (!useParty().totalPlayers) {
+			return {};
+		}
+		const experience = useParty().groups.reduce(
+			this.#getGroupBudget.bind(this),
+			{}
+		);
+		return useParty().activePlayers.reduce(
+			this.#getGroupBudget.bind(this),
+			experience
+		);
+	}
+
+	static #getGroupBudget(acc, group) {
+		const groupExp = CONST.EXP[group.level];
+		return {
+			Easy: (acc?.Easy ?? 0) + groupExp.easy * (group?.players ?? 1),
+			Medium: (acc?.Medium ?? 0) + groupExp.medium * (group?.players ?? 1),
+			Hard: (acc?.Hard ?? 0) + groupExp.hard * (group?.players ?? 1),
+			Deadly: (acc?.Deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
+			Daily: (acc?.Daily ?? 0) + groupExp.daily * (group?.players ?? 1),
+		};
+	}
+
   static getEncounterTemplate(encounterType) {
     let template = helpers.clone(CONST.ENCOUNTER_TYPES[encounterType]);
     template = helpers.randomArrayElement(template.samples);
-    if (encounterType === "random") {
-      template = {
-        subtractive: true,
-        groups: template.map((num) => {
-          return { count: num };
-        }),
-      };
-    } else {
-      template = helpers.clone(CONST.ENCOUNTER_TYPES[encounterType]);
-      template = helpers.randomArrayElement(template.samples);
-    }
 
     const players = Number(useParty().totalPlayers);
     template.groups = template.groups.map((group) => {
@@ -66,16 +83,6 @@ class EncounterStrategy {
       (acc, group) => acc + group.count,
       0
     );
-
-    if (encounterType === "random") {
-      template.overallRatio = template.groups.reduce(
-        (acc, group) => acc + (group.ratio || 1),
-        0
-      );
-      template.groups.forEach((group) => {
-        group.ratio = (group.ratio || 1) / template.overallRatio;
-      });
-    }
 
     return template;
   }
@@ -164,7 +171,7 @@ class EncounterStrategy {
 
 class KFC extends EncounterStrategy {
   static key = "k+fc";
-  static label = "Classic Kobold+ Fight Club";
+  static label = "D&D5e 2014 Encounter Rules";
   static description =
     "The encounter generation strategy you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters.";
   static difficulties = [
@@ -184,8 +191,8 @@ class KFC extends EncounterStrategy {
       Medium: (acc?.["Medium"] ?? 0) + groupExp.medium * (group?.players ?? 1),
       Hard: (acc?.["Hard"] ?? 0) + groupExp.hard * (group?.players ?? 1),
       Deadly: (acc?.["Deadly"] ?? 0) + groupExp.deadly * (group?.players ?? 1),
-      "Daily budget":
-        (acc?.["Daily budget"] ?? 0) + groupExp.daily * (group?.players ?? 1),
+      "Daily Budget":
+        (acc?.["Daily Budget"] ?? 0) + groupExp.daily * (group?.players ?? 1),
     };
   }
 
@@ -262,30 +269,32 @@ class KFC extends EncounterStrategy {
   }
 
   static getActualDifficulty() {
+    const adjustedExp = this.getAdjustedExp();
     const budget = this.getBudget();
+    return this.getDifficultyFromCr({ exp: adjustedExp }, budget)
+  }
 
+  static getDifficultyFromCr(cr, budget){
     if (!budget) {
       return "N/A";
     }
 
-    const adjustedExp = this.getAdjustedExp();
-
-    if (adjustedExp === 0) return "None";
-    if (adjustedExp < budget["Easy"]) return "Trivial";
-    if (adjustedExp < budget["Medium"]) return "Easy";
-    if (adjustedExp < budget["Hard"]) return "Medium";
-    if (adjustedExp < budget["Deadly"]) return "Hard";
+    if (cr.exp === 0) return "None";
+    if (cr.exp < budget["Easy"]) return "Trivial";
+    if (cr.exp < budget["Medium"]) return "Easy";
+    if (cr.exp < budget["Hard"]) return "Medium";
+    if (cr.exp < budget["Deadly"]) return "Hard";
 
     return "Deadly";
   }
 
   static generateEncounter(difficulty, encounterType) {
-    const totalExperienceTarget = useParty().experience[difficulty];
+
+    const totalExperienceTarget = useParty().experience[difficulty.toLowerCase()];
 
     if (!totalExperienceTarget) return;
 
-    let fudgeFactor = 1.1; // The algorithm is conservative in spending exp; so this tries to get it closer to the actual medium value
-    let baseExpBudget = totalExperienceTarget * fudgeFactor;
+    let baseExpBudget = totalExperienceTarget * this.fudge_factor;
     let encounterTemplate = this.getEncounterTemplate(encounterType);
     let totalAvailableXP =
       baseExpBudget / this.getMultiplier(encounterTemplate.groups);
@@ -554,18 +563,20 @@ class MCDM extends EncounterStrategy {
   }
 
   static getActualDifficulty() {
+    const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
     const budget = this.getBudget();
+    return this.getDifficultyFromCr({ numeric: budgetSpend }, budget);
+  }
 
+  static getDifficultyFromCr(cr, budget){
     if (!budget) {
       return "N/A";
     }
 
-    const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
-
-    if (budgetSpend === 0) return "None";
-    if (budgetSpend < budget["Easy"]) return "Trivial";
-    if (budgetSpend < budget["Standard"]) return "Easy";
-    if (budgetSpend < budget["Hard"]) return "Standard";
+    if (cr.numeric === 0) return "None";
+    if (cr.numeric < budget["Easy"]) return "Trivial";
+    if (cr.numeric < budget["Standard"]) return "Easy";
+    if (cr.numeric < budget["Hard"]) return "Standard";
 
     return "Hard";
   }
@@ -820,13 +831,14 @@ class DnD2024 extends KFC {
   static defaultDifficulty = "moderate";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
+	static fudge_factor = 1.2;
 
-  static #getGroupBudget(acc, group) {
+	static #getGroupBudget(acc, group) {
     const groupExp = CONST.EXP2024[group.level];
     return {
-      Low: (acc?.["Low"] ?? 0) + groupExp.low * (group?.players ?? 1),
-      Moderate: (acc?.["Moderate"] ?? 0) + groupExp.moderate * (group?.players ?? 1),
-      High: (acc?.["High"] ?? 0) + groupExp.high * (group?.players ?? 1)
+      Low: (acc?.Low ?? 0) + groupExp.low * (group?.players ?? 1),
+      Moderate: (acc?.Moderate ?? 0) + groupExp.moderate * (group?.players ?? 1),
+      High: (acc?.High ?? 0) + groupExp.high * (group?.players ?? 1)
     };
   }
 
@@ -859,18 +871,20 @@ class DnD2024 extends KFC {
       const [upperKey, upperValue] = levels[i];
       const ratio = helpers.ratio(lowerValue, upperValue, experience);
 
-      if (upperKey === "hard" && ratio >= 1.5) {
-        if (ratio >= 2.2) {
+      if (i === levels.length-1 && ratio >= 1) {
+        if (ratio >= 2.0) {
           return ratio >= 3.0
             ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
-            : ratio >= 2.6
+            : ratio >= 2.5
               ? "extremely deadly"
               : "really deadly";
+        } else if (ratio >= 1.5) {
+	        return "deadly";
         }
-        return "deadly";
+	      return upperKey;
       } else if (ratio >= 0.0 && ratio <= 1.0) {
-        if (ratio > 0.7) {
-          return upperKey;
+        if (ratio >= 0.6) {
+          return "like " + upperKey;
         }
         return lowerKey;
       }
@@ -880,20 +894,16 @@ class DnD2024 extends KFC {
     return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
   }
 
-  static getActualDifficulty() {
-    const budget = this.getBudget();
-
+  static getDifficultyFromCr(cr, budget){
     if (!budget) {
       return "N/A";
     }
 
-    const experience = this.getTotalExp();
-
-    if (experience === 0) return "None";
-    if (experience < budget["Low"]) return "Trivial";
-    if (experience < budget["Moderate"]) return "Low";
-    if (experience < budget["High"]) return "Moderate";
-    if (experience < budget["High"] * 1.5) return "High";
+    if (cr.exp === 0) return "None";
+    if (cr.exp < budget["Low"]) return "Trivial";
+    if (cr.exp < budget["Moderate"]) return "Low";
+    if (cr.exp < budget["High"]) return "Moderate";
+    if (cr.exp < budget["High"] * 1.5) return "High";
 
     return "Deadly";
   }
@@ -907,13 +917,13 @@ class DnD2024 extends KFC {
   }
 
   static getAdjustedExp() {
-    return 0;
+    return this.getTotalExp();
   }
 
 }
 
 export default {
-  [KFC.key]: KFC,
-  [DnD2024.key]: DnD2024,
+	[DnD2024.key]: DnD2024,
+	[KFC.key]: KFC,
   [MCDM.key]: MCDM,
 };

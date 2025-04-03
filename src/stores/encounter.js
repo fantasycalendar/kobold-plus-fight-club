@@ -38,7 +38,7 @@ export const useEncounter = defineStore("encounter", {
         []
       ),
       availableStrategies: strategies,
-      strategy: useLocalStorage("strategy", "k+fc"),
+      strategy: useLocalStorage("strategy", "dnd2024"),
     };
   },
   actions: {
@@ -46,20 +46,9 @@ export const useEncounter = defineStore("encounter", {
       this.strategy = strategy;
       this.difficulty = strategies[strategy].defaultDifficulty;
     },
-    getDifficultyFromExperience(exp) {
-      const levels = useParty().experience;
 
-      if (!levels) {
-        return "N/A";
-      }
-
-      if (exp === 0) return "None";
-      if (exp < levels.easy) return "Trivial";
-      if (exp < levels.medium) return "Easy";
-      if (exp < levels.hard) return "Medium";
-      if (exp < levels.deadly) return "Hard";
-
-      return "Deadly";
+    getDifficultyFromCr(cr) {
+	    return this.encounterStrategy.getDifficultyFromCr(cr, useParty().experience);
     },
 
     generateRandom() {
