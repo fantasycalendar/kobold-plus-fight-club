@@ -49,7 +49,10 @@ const modals = useModals();
                 encounter.difficulty.slice(0, 1).toUpperCase() +
                 encounter.difficulty.slice(1)
               "
-              :options="encounter.encounterStrategy.difficulties"
+              :options="
+                encounter.encounterStrategy.difficulties.map((label) => {
+                  return { key: label, label: label };
+                })"
               :option-subtext="
                 (option) =>
                   helpers.formatNumber(encounter.budget[option.label]) +

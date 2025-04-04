@@ -175,10 +175,10 @@ class KFC extends EncounterStrategy {
   static description =
     "The encounter generation strategy you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters.";
   static difficulties = [
-    { key: "easy", label: "Easy" },
-    { key: "medium", label: "Medium" },
-    { key: "hard", label: "Hard" },
-    { key: "deadly", label: "Deadly" },
+	  "Easy",
+	  "Medium",
+	  "Hard",
+	  "Deadly"
   ];
   static defaultDifficulty = "medium";
   static tableHeader = "XP Goals";
@@ -290,7 +290,7 @@ class KFC extends EncounterStrategy {
 
   static generateEncounter(difficulty, encounterType) {
 
-    const totalExperienceTarget = useParty().experience[difficulty.toLowerCase()];
+    const totalExperienceTarget = useParty().experience[difficulty];
 
     if (!totalExperienceTarget) return;
 
@@ -408,11 +408,11 @@ class MCDM extends EncounterStrategy {
   static url =
     "https://shop.mcdmproductions.com/collections/flee-mortals-the-mcdm-monster-book";
   static difficulties = [
-    { key: "easy", label: "Easy" },
-    { key: "standard", label: "Standard" },
-    { key: "hard", label: "Hard" },
+	  "Easy",
+	  "Standard",
+	  "Hard",
   ];
-  static defaultDifficulty = "standard";
+  static defaultDifficulty = "Standard";
   static measurementUnit = "CR";
 
   static tableHeader = "CR Budget";
@@ -824,11 +824,11 @@ class DnD2024 extends KFC {
   static description = "The same behavior as the classic K+FC encounter generation, but fit for the 2024 rules.";
   static url = "https://www.dndbeyond.com/sources/dnd/free-rules/combat";
   static difficulties = [
-    { key: "low", label: "Low" },
-    { key: "moderate", label: "Moderate" },
-    { key: "high", label: "High" }
+	  "Low",
+	  "Moderate",
+	  "High"
   ];
-  static defaultDifficulty = "moderate";
+  static defaultDifficulty = "Moderate";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
 	static fudge_factor = 1.2;
