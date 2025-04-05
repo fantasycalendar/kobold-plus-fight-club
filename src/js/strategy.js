@@ -36,7 +36,7 @@ class EncounterStrategy {
 	static difficulties = [];
 
 	static getGroupBudget(acc, group) {
-		const groupExp = this.encounterExpPerCharacter[group.level];
+		const groupExp = this.encounterExpPerCharacter[Math.floor(group.level)];
 		for(const difficulty of this.difficulties){
 			acc[difficulty.key] ??= 0;
 			acc[difficulty.key] += groupExp[difficulty.key] * (group?.players ?? 1);
@@ -451,10 +451,10 @@ class MCDM extends EncounterStrategy {
 
     let totalLevels =
       useParty().groups.reduce(
-        (acc, group) => acc + group.level * group.players,
+        (acc, group) => acc + Math.floor(group.level) * Math.floor(group.players),
         0
       ) +
-      useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
+      useParty().activePlayers.reduce((acc, player) => acc + Math.floor(player.level), 0);
 
     let averageLevel = helpers.clamp(Math.round(totalLevels / totalPlayers), 1, 20);
 
@@ -584,13 +584,13 @@ class MCDM extends EncounterStrategy {
     let crCaps = [];
     let totalCrBudget = 0;
     for (const group of useParty().groups) {
-      const groupCrTable = this.encounterCrPerCharacter[group.level];
+      const groupCrTable = this.encounterCrPerCharacter[Math.floor(group.level)];
       crCaps.push(groupCrTable.cap);
-      totalCrBudget += group.players * groupCrTable[difficulty];
+      totalCrBudget += Math.floor(group.players) * groupCrTable[difficulty];
     }
 
     for (const character of useParty().activePlayers) {
-      const characterCrTable = this.encounterCrPerCharacter[character.level];
+      const characterCrTable = this.encounterCrPerCharacter[Math.floor(character.level)];
       crCaps.push(characterCrTable.cap);
       totalCrBudget += characterCrTable[difficulty];
     }
