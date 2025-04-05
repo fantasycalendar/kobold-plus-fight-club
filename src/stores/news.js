@@ -1,4 +1,4 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { useSources } from "./sources";
 import { useModals } from "./modals";

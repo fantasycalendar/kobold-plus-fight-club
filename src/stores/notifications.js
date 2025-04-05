@@ -1,5 +1,4 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
-import { useLocalStorage } from "@vueuse/core/index";
+import { acceptHMRUpdate, defineStore } from "pinia";
 
 export const useNotifications = defineStore("notifications", {
   state: () => {

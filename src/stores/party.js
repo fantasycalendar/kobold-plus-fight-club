@@ -1,7 +1,6 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
-import CONST from "../js/constants.js";
-import {useEncounter} from "./encounter";
+import { useEncounter } from "./encounter";
 
 export const useParty = defineStore("party", {
   state: () => {

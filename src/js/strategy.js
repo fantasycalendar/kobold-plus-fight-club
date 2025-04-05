@@ -5,11 +5,10 @@ import { useFilters } from "../stores/filters.js";
 import * as helpers from "./helpers.js";
 import { useParty } from "../stores/party.js";
 import { useEncounter } from "../stores/encounter.js";
-import { clamp } from "./helpers.js";
 
 class EncounterStrategy {
 
-	static fudge_factor = 1.1;
+  static fudge_factor = 1.1;
 
   static insaneDifficultyStrings = [
     "an incredibly bad idea",
@@ -32,17 +31,17 @@ class EncounterStrategy {
     "the DM is an amateur horror movie director.",
   ];
 
-	static encounterExpPerCharacter = {};
-	static difficulties = [];
+  static encounterExpPerCharacter = {};
+  static difficulties = [];
 
-	static getGroupBudget(acc, group) {
-		const groupExp = this.encounterExpPerCharacter[Math.floor(group.level)];
-		for(const difficulty of this.difficulties){
-			acc[difficulty.key] ??= 0;
-			acc[difficulty.key] += groupExp[difficulty.key] * (group?.players ?? 1);
-		}
-		return acc;
-	}
+  static getGroupBudget(acc, group) {
+    const groupExp = this.encounterExpPerCharacter[Math.floor(group.level)];
+    for (const difficulty of this.difficulties) {
+      acc[difficulty.key] ??= 0;
+      acc[difficulty.key] += groupExp[difficulty.key] * (group?.players ?? 1);
+    }
+    return acc;
+  }
 
   static getTotalExp() {
     return useEncounter().monsterGroups.reduce((acc, group) => {
@@ -50,19 +49,19 @@ class EncounterStrategy {
     }, 0);
   }
 
-	static getBudget() {
-		if (!useParty().totalPlayers) {
-			return {};
-		}
-		const experience = useParty().groups.reduce(
-			this.getGroupBudget.bind(this),
-			{}
-		);
-		return useParty().activePlayers.reduce(
-			this.getGroupBudget.bind(this),
-			experience
-		);
-	}
+  static getBudget() {
+    if (!useParty().totalPlayers) {
+      return {};
+    }
+    const experience = useParty().groups.reduce(
+      this.getGroupBudget.bind(this),
+      {}
+    );
+    return useParty().activePlayers.reduce(
+      this.getGroupBudget.bind(this),
+      experience
+    );
+  }
 
   static getEncounterTemplate(encounterType) {
     let template = helpers.clone(CONST.ENCOUNTER_TYPES[encounterType]);
@@ -177,37 +176,37 @@ class KFC extends EncounterStrategy {
   static description =
     "The encounter generation strategy you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters.";
   static difficulties = [
-	  { key: "easy", label: "Easy" },
-	  { key: "medium", label: "Medium" },
-	  { key: "hard", label: "Hard" },
-	  { key: "deadly", label: "Deadly" },
-	  { key: "daily", label: "Daily Experience", hidden: true },
+    { key: "easy", label: "Easy" },
+    { key: "medium", label: "Medium" },
+    { key: "hard", label: "Hard" },
+    { key: "deadly", label: "Deadly" },
+    { key: "daily", label: "Daily Experience", hidden: true },
   ];
   static defaultDifficulty = "medium";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
-	static encounterExpPerCharacter = {
-		1: { daily: 300, easy: 25, medium: 50, hard: 75, deadly: 100 },
-		2: { daily: 600, easy: 50, medium: 100, hard: 150, deadly: 200 },
-		3: { daily: 1200, easy: 75, medium: 150, hard: 225, deadly: 400 },
-		4: { daily: 1700, easy: 125, medium: 250, hard: 375, deadly: 500 },
-		5: { daily: 3500, easy: 250, medium: 500, hard: 750, deadly: 1100 },
-		6: { daily: 4000, easy: 300, medium: 600, hard: 900, deadly: 1400 },
-		7: { daily: 5000, easy: 350, medium: 750, hard: 1100, deadly: 1700 },
-		8: { daily: 6000, easy: 450, medium: 900, hard: 1400, deadly: 2100 },
-		9: { daily: 7500, easy: 550, medium: 1100, hard: 1600, deadly: 2400 },
-		10: { daily: 9000, easy: 600, medium: 1200, hard: 1900, deadly: 2800 },
-		11: { daily: 10500, easy: 800, medium: 1600, hard: 2400, deadly: 3600 },
-		12: { daily: 11500, easy: 1000, medium: 2000, hard: 3000, deadly: 4500 },
-		13: { daily: 13500, easy: 1100, medium: 2200, hard: 3400, deadly: 5100 },
-		14: { daily: 15000, easy: 1250, medium: 2500, hard: 3800, deadly: 5700 },
-		15: { daily: 18000, easy: 1400, medium: 2800, hard: 4300, deadly: 6400 },
-		16: { daily: 20000, easy: 1600, medium: 3200, hard: 4800, deadly: 7200 },
-		17: { daily: 25000, easy: 2000, medium: 3900, hard: 5900, deadly: 8800 },
-		18: { daily: 27000, easy: 2100, medium: 4200, hard: 6300, deadly: 9500 },
-		19: { daily: 30000, easy: 2400, medium: 4900, hard: 7300, deadly: 10900 },
-		20: { daily: 40000, easy: 2800, medium: 5700, hard: 8500, deadly: 12700 },
-	}
+  static encounterExpPerCharacter = {
+    1: { daily: 300, easy: 25, medium: 50, hard: 75, deadly: 100 },
+    2: { daily: 600, easy: 50, medium: 100, hard: 150, deadly: 200 },
+    3: { daily: 1200, easy: 75, medium: 150, hard: 225, deadly: 400 },
+    4: { daily: 1700, easy: 125, medium: 250, hard: 375, deadly: 500 },
+    5: { daily: 3500, easy: 250, medium: 500, hard: 750, deadly: 1100 },
+    6: { daily: 4000, easy: 300, medium: 600, hard: 900, deadly: 1400 },
+    7: { daily: 5000, easy: 350, medium: 750, hard: 1100, deadly: 1700 },
+    8: { daily: 6000, easy: 450, medium: 900, hard: 1400, deadly: 2100 },
+    9: { daily: 7500, easy: 550, medium: 1100, hard: 1600, deadly: 2400 },
+    10: { daily: 9000, easy: 600, medium: 1200, hard: 1900, deadly: 2800 },
+    11: { daily: 10500, easy: 800, medium: 1600, hard: 2400, deadly: 3600 },
+    12: { daily: 11500, easy: 1000, medium: 2000, hard: 3000, deadly: 4500 },
+    13: { daily: 13500, easy: 1100, medium: 2200, hard: 3400, deadly: 5100 },
+    14: { daily: 15000, easy: 1250, medium: 2500, hard: 3800, deadly: 5700 },
+    15: { daily: 18000, easy: 1400, medium: 2800, hard: 4300, deadly: 6400 },
+    16: { daily: 20000, easy: 1600, medium: 3200, hard: 4800, deadly: 7200 },
+    17: { daily: 25000, easy: 2000, medium: 3900, hard: 5900, deadly: 8800 },
+    18: { daily: 27000, easy: 2100, medium: 4200, hard: 6300, deadly: 9500 },
+    19: { daily: 30000, easy: 2400, medium: 4900, hard: 7300, deadly: 10900 },
+    20: { daily: 40000, easy: 2800, medium: 5700, hard: 8500, deadly: 12700 },
+  }
 
   static getDifficultyFeel() {
     if (!useParty().totalPlayersToGainXP) {
@@ -273,7 +272,7 @@ class KFC extends EncounterStrategy {
     return this.getDifficultyFromCr({ exp: adjustedExp }, budget)
   }
 
-  static getDifficultyFromCr(cr, budget){
+  static getDifficultyFromCr(cr, budget) {
     if (!budget) {
       return "N/A";
     }
@@ -405,10 +404,10 @@ class MCDM extends EncounterStrategy {
   static url =
     "https://shop.mcdmproductions.com/collections/flee-mortals-the-mcdm-monster-book";
   static difficulties = [
-	  { key: "easy", label: "Easy" },
-	  { key: "standard", label: "Standard" },
-	  { key: "hard", label: "Hard" },
-	  { key: "cap", label: "One Monster Cap", hidden: true },
+    { key: "easy", label: "Easy" },
+    { key: "standard", label: "Standard" },
+    { key: "hard", label: "Hard" },
+    { key: "cap", label: "One Monster Cap", hidden: true },
   ];
   static defaultDifficulty = "standard";
   static measurementUnit = "CR";
@@ -566,7 +565,7 @@ class MCDM extends EncounterStrategy {
     return this.getDifficultyFromCr({ numeric: budgetSpend }, budget);
   }
 
-  static getDifficultyFromCr(cr, budget){
+  static getDifficultyFromCr(cr, budget) {
     if (!budget) {
       return "N/A";
     }
@@ -819,37 +818,37 @@ class DnD2024 extends KFC {
   static description = "The same behavior as the classic K+FC encounter generation, but fit for the 2024 rules.";
   static url = "https://www.dndbeyond.com/sources/dnd/free-rules/combat";
   static difficulties = [
-	  { key: "low", label: "Low" },
-	  { key: "moderate", label: "Moderate" },
-	  { key: "high", label: "High" },
+    { key: "low", label: "Low" },
+    { key: "moderate", label: "Moderate" },
+    { key: "high", label: "High" },
   ];
   static defaultDifficulty = "moderate";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
-	static fudge_factor = 1.15;
+  static fudge_factor = 1.15;
 
-	static encounterExpPerCharacter = {
-		1: { low: 50, moderate: 75, high: 100 },
-		2: { low: 100, moderate: 150, high: 200 },
-		3: { low: 150, moderate: 225, high: 400 },
-		4: { low: 250, moderate: 375, high: 500 },
-		5: { low: 500, moderate: 750, high: 1100 },
-		6: { low: 600, moderate: 1000, high: 1400 },
-		7: { low: 750, moderate: 1300, high: 1700 },
-		8: { low: 1000, moderate: 1700, high: 2100 },
-		9: { low: 1300, moderate: 2000, high: 2600 },
-		10: { low: 1600, moderate: 2300, high: 3100 },
-		11: { low: 1900, moderate: 2900, high: 4100 },
-		12: { low: 2200, moderate: 3700, high: 4700 },
-		13: { low: 2600, moderate: 4200, high: 5400 },
-		14: { low: 2900, moderate: 4900, high: 6200 },
-		15: { low: 3300, moderate: 5400, high: 7800 },
-		16: { low: 3800, moderate: 6100, high: 9800 },
-		17: { low: 4500, moderate: 7200, high: 11700 },
-		18: { low: 5000, moderate: 8700, high: 14200 },
-		19: { low: 5500, moderate: 10700, high: 17200 },
-		20: { low: 6400, moderate: 13200, high: 22000 }
-	};
+  static encounterExpPerCharacter = {
+    1: { low: 50, moderate: 75, high: 100 },
+    2: { low: 100, moderate: 150, high: 200 },
+    3: { low: 150, moderate: 225, high: 400 },
+    4: { low: 250, moderate: 375, high: 500 },
+    5: { low: 500, moderate: 750, high: 1100 },
+    6: { low: 600, moderate: 1000, high: 1400 },
+    7: { low: 750, moderate: 1300, high: 1700 },
+    8: { low: 1000, moderate: 1700, high: 2100 },
+    9: { low: 1300, moderate: 2000, high: 2600 },
+    10: { low: 1600, moderate: 2300, high: 3100 },
+    11: { low: 1900, moderate: 2900, high: 4100 },
+    12: { low: 2200, moderate: 3700, high: 4700 },
+    13: { low: 2600, moderate: 4200, high: 5400 },
+    14: { low: 2900, moderate: 4900, high: 6200 },
+    15: { low: 3300, moderate: 5400, high: 7800 },
+    16: { low: 3800, moderate: 6100, high: 9800 },
+    17: { low: 4500, moderate: 7200, high: 11700 },
+    18: { low: 5000, moderate: 8700, high: 14200 },
+    19: { low: 5500, moderate: 10700, high: 17200 },
+    20: { low: 6400, moderate: 13200, high: 22000 }
+  };
 
   static getDifficultyFeel() {
     if (!useParty().totalPlayersToGainXP) {
@@ -866,7 +865,7 @@ class DnD2024 extends KFC {
       const [upperKey, upperValue] = levels[i];
       const ratio = helpers.ratio(lowerValue, upperValue, experience);
 
-      if (i === levels.length-1 && ratio >= 1) {
+      if (i === levels.length - 1 && ratio >= 1) {
         if (ratio >= 2.0) {
           return ratio >= 3.0
             ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
@@ -874,9 +873,9 @@ class DnD2024 extends KFC {
               ? "extremely deadly"
               : "really deadly";
         } else if (ratio >= 1.5) {
-	        return "deadly";
+          return "deadly";
         }
-	      return upperKey;
+        return upperKey;
       } else if (ratio >= 0.0 && ratio <= 1.0) {
         if (ratio >= 0.6) {
           return "like " + upperKey;
@@ -889,7 +888,7 @@ class DnD2024 extends KFC {
     return ratio > 0.5 ? "like a nuisance" : "like a minor nuisance";
   }
 
-  static getDifficultyFromCr(cr, budget){
+  static getDifficultyFromCr(cr, budget) {
     if (!budget) {
       return "N/A";
     }
@@ -918,7 +917,7 @@ class DnD2024 extends KFC {
 }
 
 export default {
-	[DnD2024.key]: DnD2024,
-	[KFC.key]: KFC,
+  [DnD2024.key]: DnD2024,
+  [KFC.key]: KFC,
   [MCDM.key]: MCDM,
 };

@@ -3,7 +3,6 @@ import { useParty } from "./party";
 import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
 import { useMonsters } from "./monsters";
-import { useFilters } from "./filters";
 import { useLocalStorage } from "@vueuse/core/index";
 import strategies from "../js/strategy.js";
 
@@ -47,13 +46,13 @@ export const useEncounter = defineStore("encounter", {
     },
 
     getDifficultyFromCr(cr) {
-	    return this.encounterStrategy.getDifficultyFromCr(cr, useParty().experience);
+      return this.encounterStrategy.getDifficultyFromCr(cr, useParty().experience);
     },
 
     generateRandom() {
       useParty().ensureGroup();
       const newEncounter = this.encounterStrategy.generateEncounter(this.difficulty, this.type);
-      if(!newEncounter) return;
+      if (!newEncounter) return;
       this.groups = newEncounter;
       this.saveToHistory(true);
     },
@@ -207,7 +206,7 @@ export const useEncounter = defineStore("encounter", {
     monsterGroups() {
       return this.groups.map(group => {
         const monster = useMonsters().lookup[group.monster.slug];
-        if(!monster) return false;
+        if (!monster) return false;
         return { monster, count: group.count }
       }).filter(Boolean);
     },
@@ -227,8 +226,8 @@ export const useEncounter = defineStore("encounter", {
     lastBudget() {
       const encounterBudget = this.budget;
       return {
-        label: Object.keys(encounterBudget)[Object.keys(encounterBudget).length-1],
-        value: Object.values(encounterBudget)[Object.keys(encounterBudget).length-1],
+        label: Object.keys(encounterBudget)[Object.keys(encounterBudget).length - 1],
+        value: Object.values(encounterBudget)[Object.keys(encounterBudget).length - 1],
       }
     },
 

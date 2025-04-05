@@ -1,10 +1,8 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useFilters } from "./filters";
 import { useLocalStorage } from "@vueuse/core/index";
 import Monster from "../js/monster";
 import { versionCompare } from "../js/helpers";
-
-const regexCache = {};
 
 export const useMonsters = defineStore("monsters", {
   state: () => {
