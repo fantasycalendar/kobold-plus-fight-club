@@ -142,8 +142,8 @@ const modals = useModals();
         >
         </div>
         <div
-          v-for="(label, index) in encounter.encounterStrategy.difficulties"
-          :key="label"
+          v-for="({ key, label }, index) in encounter.encounterStrategy.difficulties"
+          :key="key"
           class="contents"
           :class="{
             'font-semibold': encounter.actualDifficulty === label,
@@ -152,7 +152,7 @@ const modals = useModals();
 
           <div v-if="index === Object.keys(encounter.budget).length - 1 && Object.keys(encounter.budget).length > 3" class="mt-4 col-span-2"></div>
           <span>{{ label }}</span>
-          <span v-html="formatNumber(encounter.budget[label])"></span>
+          <span v-html="formatNumber(encounter.budget[key])"></span>
         </div>
       </div>
     </div>

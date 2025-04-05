@@ -16,11 +16,10 @@ export const useEncounter = defineStore("encounter", {
         "loadedEncounterIndex",
         null
       ),
-      loadedLast: false,
       difficulty: helpers.migrateLocalStorage(
         "encounterDifficulty",
         "difficulty",
-        "medium"
+        "Moderate"
       ),
       type: helpers.migrateLocalStorage(
         "encounterGenerateType",
@@ -116,7 +115,6 @@ export const useEncounter = defineStore("encounter", {
       const lastEntry = this.history[this.history.length - 1];
       if (!encounter.length) {
         if (lastEntry) {
-          this.loadedLast = false;
           this.history.pop();
         }
         return;
@@ -153,7 +151,6 @@ export const useEncounter = defineStore("encounter", {
 
     loadFromHistory(index) {
       this.loadedIndex = null;
-      this.loadedLast = true;
       const encounter = this.history.splice(index, 1)[0];
       this.history.push(encounter);
       this.load(encounter);
@@ -181,7 +178,6 @@ export const useEncounter = defineStore("encounter", {
     },
 
     loadFromSaved(index) {
-      this.loadedLast = false;
       this.loadedIndex = index;
       this.load(this.saved[index]);
       useNotifications().notify({
@@ -203,7 +199,6 @@ export const useEncounter = defineStore("encounter", {
 
     clear() {
       this.groups = [];
-      this.loadedLast = false;
       this.loadedIndex = null;
     },
   },

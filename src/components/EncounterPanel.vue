@@ -50,12 +50,10 @@ const modals = useModals();
                 encounter.difficulty.slice(1)
               "
               :options="
-                encounter.encounterStrategy.difficulties.map((label) => {
-                  return { key: label, label: label };
-                })"
+                encounter.encounterStrategy.difficulties.filter(diff => !diff.hidden)"
               :option-subtext="
                 (option) =>
-                  helpers.formatNumber(encounter.budget[option.label]) +
+                  helpers.formatNumber(encounter.budget[option.key]) +
                   ' ' +
                   encounter.encounterStrategy.measurementUnit
               "

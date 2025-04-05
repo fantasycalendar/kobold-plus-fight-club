@@ -37621,23 +37621,6 @@
     "sources": "Flee Mortals: 31"
   },
   {
-    "name": "Angulotl Yegg",
-    "cr": "0",
-    "size": "Small",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Angulotls",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 32"
-  },
-  {
     "name": "Clawfish",
     "cr": "1/8",
     "size": "Small",
@@ -37978,23 +37961,6 @@
     "sources": "Flee Mortals: 53"
   },
   {
-    "name": "Bugbear Warden",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Bugbears",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 53"
-  },
-  {
     "name": "Chimera",
     "cr": "6",
     "size": "Large",
@@ -38214,23 +38180,6 @@
     "legendary": "",
     "unique": "unique",
     "sources": "Flee Mortals: 71"
-  },
-  {
-    "name": "Devil Retainer",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Fiend",
-    "tags": "Retainer",
-    "section": "Devils",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 72"
   },
   {
     "name": "Dragonet",
@@ -38607,40 +38556,6 @@
     "sources": "Flee Mortals: 101"
   },
   {
-    "name": "Blood Seneschal",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Elemental",
-    "tags": "Retainer",
-    "section": "Elementals",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 102"
-  },
-  {
-    "name": "Lava Bastion",
-    "cr": "0",
-    "size": "Large",
-    "type": "Elemental",
-    "tags": "Retainer",
-    "section": "Elementals",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 102"
-  },
-  {
     "name": "Fire Giant Red Fist",
     "cr": "9",
     "size": "Huge",
@@ -38998,23 +38913,6 @@
     "sources": "Flee Mortals: 122"
   },
   {
-    "name": "Gnoll Gnasher",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Fiend",
-    "tags": "Retainer",
-    "section": "Gnolls",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 123"
-  },
-  {
     "name": "Goblin Assassin",
     "cr": "1/2",
     "size": "Small",
@@ -39202,23 +39100,6 @@
     "sources": "Flee Mortals: 131"
   },
   {
-    "name": "Goblin Sneak",
-    "cr": "0",
-    "size": "Small",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Goblins",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 132"
-  },
-  {
     "name": "Griffon",
     "cr": "2",
     "size": "Large",
@@ -39304,23 +39185,6 @@
     "sources": "Flee Mortals: 140"
   },
   {
-    "name": "Sea Hag Apprentice",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Fey",
-    "tags": "Retainer",
-    "section": "Hags",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 141"
-  },
-  {
     "name": "Harpy",
     "cr": "1",
     "size": "Medium",
@@ -39336,23 +39200,6 @@
     "legendary": "",
     "unique": "",
     "sources": "Flee Mortals: 142"
-  },
-  {
-    "name": "Harpy Fledgling",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Monstrosity",
-    "tags": "Retainer",
-    "section": "Harpies",
-    "alignment": "chaotic evil",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 143"
   },
   {
     "name": "Starving Harpy",
@@ -39593,23 +39440,6 @@
     "sources": "Flee Mortals: 157"
   },
   {
-    "name": "Hobgoblin Tactician",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Hobgoblins",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 157"
-  },
-  {
     "name": "Human Apprentice Mage",
     "cr": "6",
     "size": "Medium",
@@ -39797,23 +39627,6 @@
     "sources": "Flee Mortals: 166"
   },
   {
-    "name": "Human Mercenary",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Humans",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 166"
-  },
-  {
     "name": "Kingfissure Worm",
     "cr": "15",
     "size": "Gargantuan",
@@ -39984,23 +39797,6 @@
     "sources": "Flee Mortals: 178"
   },
   {
-    "name": "Kobold Decanus",
-    "cr": "0",
-    "size": "Small",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Kobolds",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 179"
-  },
-  {
     "name": "Lightbender",
     "cr": "5",
     "size": "Large",
@@ -40086,23 +39882,6 @@
     "sources": "Flee Mortals: 184"
   },
   {
-    "name": "Lizardfolk Hunter",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Lizardfolk",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 185"
-  },
-  {
     "name": "Manticore",
     "cr": "3",
     "size": "Large",
@@ -40152,23 +39931,6 @@
     "legendary": "",
     "unique": "unique",
     "sources": "Flee Mortals: 190"
-  },
-  {
-    "name": "Medusa Headstrong",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Monstrosity",
-    "tags": "Retainer",
-    "section": "Medusas",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 191"
   },
   {
     "name": "Mimic",
@@ -40222,23 +39984,6 @@
     "sources": "Flee Mortals: 196"
   },
   {
-    "name": "Minotaur Devastator",
-    "cr": "0",
-    "size": "Large",
-    "type": "Monstrosity",
-    "tags": "Retainer",
-    "section": "Minotaur",
-    "alignment": "chaotic neutral",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 197"
-  },
-  {
     "name": "Minotaur Lackey",
     "cr": "3",
     "size": "Large",
@@ -40288,23 +40033,6 @@
     "legendary": "",
     "unique": "",
     "sources": "Flee Mortals: 198"
-  },
-  {
-    "name": "Ogre Basher",
-    "cr": "0",
-    "size": "Large",
-    "type": "Giant",
-    "tags": "Retainer",
-    "section": "Ogres",
-    "alignment": "chaotic evil",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 199"
   },
   {
     "name": "Olothec",
@@ -40545,23 +40273,6 @@
     "sources": "Flee Mortals: 213"
   },
   {
-    "name": "Orc Blacksmith",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Orcs",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 214"
-  },
-  {
     "name": "Otyugh",
     "cr": "5",
     "size": "Large",
@@ -40783,23 +40494,6 @@
     "sources": "Flee Mortals: 232"
   },
   {
-    "name": "Time Raider Freebooter",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Humanoid",
-    "tags": "Retainer",
-    "section": "Time Raiders",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 233"
-  },
-  {
     "name": "Goxomoc",
     "cr": "30",
     "size": "Gargantuan",
@@ -40866,23 +40560,6 @@
     "legendary": "",
     "unique": "",
     "sources": "Flee Mortals: 240"
-  },
-  {
-    "name": "Treant Immobilizer",
-    "cr": "0",
-    "size": "Large",
-    "type": "Plant",
-    "tags": "Retainer",
-    "section": "Treants",
-    "alignment": "true neutral",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 241"
   },
   {
     "name": "Treant Sapling",
@@ -41036,23 +40713,6 @@
     "legendary": "",
     "unique": "unique",
     "sources": "Flee Mortals: 249"
-  },
-  {
-    "name": "Ghost Sycophant",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Undead",
-    "tags": "Retainer",
-    "section": "Undead",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 250"
   },
   {
     "name": "Crawling Claw",
@@ -41223,23 +40883,6 @@
     "legendary": "",
     "unique": "",
     "sources": "Flee Mortals: 255"
-  },
-  {
-    "name": "Wight Deathguard",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Undead",
-    "tags": "Retainer",
-    "section": "Undead",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 256"
   },
   {
     "name": "Lich",
@@ -41427,23 +41070,6 @@
     "legendary": "",
     "unique": "unique",
     "sources": "Flee Mortals: 272"
-  },
-  {
-    "name": "Vampire Neophyte",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Undead",
-    "tags": "Retainer",
-    "section": "Undead",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 274"
   },
   {
     "name": "Multivok Bodyguard",
@@ -41648,23 +41274,6 @@
     "legendary": "",
     "unique": "unique",
     "sources": "Flee Mortals: 287"
-  },
-  {
-    "name": "Voiceless Talker Operative",
-    "cr": "0",
-    "size": "Medium",
-    "type": "Aberration",
-    "tags": "Retainer",
-    "section": "Voiceless Talkers",
-    "alignment": "any alignment",
-    "environment": "",
-    "ac": "",
-    "hp": "",
-    "init": "",
-    "lair": "",
-    "legendary": "",
-    "unique": "",
-    "sources": "Flee Mortals: 288"
   },
   {
     "name": "Wyvern",

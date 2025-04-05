@@ -5,6 +5,7 @@ import { useFilters } from "../stores/filters.js";
 import * as helpers from "./helpers.js";
 import { useParty } from "../stores/party.js";
 import { useEncounter } from "../stores/encounter.js";
+import { clamp } from "./helpers.js";
 
 class EncounterStrategy {
 
@@ -31,6 +32,18 @@ class EncounterStrategy {
     "the DM is an amateur horror movie director.",
   ];
 
+	static encounterExpPerCharacter = {};
+	static difficulties = [];
+
+	static getGroupBudget(acc, group) {
+		const groupExp = this.encounterExpPerCharacter[group.level];
+		for(const difficulty of this.difficulties){
+			acc[difficulty.key] ??= 0;
+			acc[difficulty.key] += groupExp[difficulty.key] * (group?.players ?? 1);
+		}
+		return acc;
+	}
+
   static getTotalExp() {
     return useEncounter().monsterGroups.reduce((acc, group) => {
       return acc + group.monster.experience * group.count;
@@ -42,24 +55,13 @@ class EncounterStrategy {
 			return {};
 		}
 		const experience = useParty().groups.reduce(
-			this.#getGroupBudget.bind(this),
+			this.getGroupBudget.bind(this),
 			{}
 		);
 		return useParty().activePlayers.reduce(
-			this.#getGroupBudget.bind(this),
+			this.getGroupBudget.bind(this),
 			experience
 		);
-	}
-
-	static #getGroupBudget(acc, group) {
-		const groupExp = CONST.EXP[group.level];
-		return {
-			Easy: (acc?.Easy ?? 0) + groupExp.easy * (group?.players ?? 1),
-			Medium: (acc?.Medium ?? 0) + groupExp.medium * (group?.players ?? 1),
-			Hard: (acc?.Hard ?? 0) + groupExp.hard * (group?.players ?? 1),
-			Deadly: (acc?.Deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
-			Daily: (acc?.Daily ?? 0) + groupExp.daily * (group?.players ?? 1),
-		};
 	}
 
   static getEncounterTemplate(encounterType) {
@@ -175,40 +177,37 @@ class KFC extends EncounterStrategy {
   static description =
     "The encounter generation strategy you know and love from Kobold+ Fight Club. It calculates the experience target appropriate for the party on the selected difficulty, picks a random encounter template, tries to fill that template with CR appropriate monsters.";
   static difficulties = [
-	  "Easy",
-	  "Medium",
-	  "Hard",
-	  "Deadly"
+	  { key: "easy", label: "Easy" },
+	  { key: "medium", label: "Medium" },
+	  { key: "hard", label: "Hard" },
+	  { key: "deadly", label: "Deadly" },
+	  { key: "daily", label: "Daily Experience", hidden: true },
   ];
   static defaultDifficulty = "medium";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
-
-  static #getGroupBudget(acc, group) {
-    const groupExp = CONST.EXP[group.level];
-    return {
-      Easy: (acc?.["Easy"] ?? 0) + groupExp.easy * (group?.players ?? 1),
-      Medium: (acc?.["Medium"] ?? 0) + groupExp.medium * (group?.players ?? 1),
-      Hard: (acc?.["Hard"] ?? 0) + groupExp.hard * (group?.players ?? 1),
-      Deadly: (acc?.["Deadly"] ?? 0) + groupExp.deadly * (group?.players ?? 1),
-      "Daily Budget":
-        (acc?.["Daily Budget"] ?? 0) + groupExp.daily * (group?.players ?? 1),
-    };
-  }
-
-  static getBudget() {
-    if (!useParty().totalPlayers) {
-      return {};
-    }
-    const experience = useParty().groups.reduce(
-      this.#getGroupBudget.bind(this),
-      {}
-    );
-    return useParty().activePlayers.reduce(
-      this.#getGroupBudget.bind(this),
-      experience
-    );
-  }
+	static encounterExpPerCharacter = {
+		1: { daily: 300, easy: 25, medium: 50, hard: 75, deadly: 100 },
+		2: { daily: 600, easy: 50, medium: 100, hard: 150, deadly: 200 },
+		3: { daily: 1200, easy: 75, medium: 150, hard: 225, deadly: 400 },
+		4: { daily: 1700, easy: 125, medium: 250, hard: 375, deadly: 500 },
+		5: { daily: 3500, easy: 250, medium: 500, hard: 750, deadly: 1100 },
+		6: { daily: 4000, easy: 300, medium: 600, hard: 900, deadly: 1400 },
+		7: { daily: 5000, easy: 350, medium: 750, hard: 1100, deadly: 1700 },
+		8: { daily: 6000, easy: 450, medium: 900, hard: 1400, deadly: 2100 },
+		9: { daily: 7500, easy: 550, medium: 1100, hard: 1600, deadly: 2400 },
+		10: { daily: 9000, easy: 600, medium: 1200, hard: 1900, deadly: 2800 },
+		11: { daily: 10500, easy: 800, medium: 1600, hard: 2400, deadly: 3600 },
+		12: { daily: 11500, easy: 1000, medium: 2000, hard: 3000, deadly: 4500 },
+		13: { daily: 13500, easy: 1100, medium: 2200, hard: 3400, deadly: 5100 },
+		14: { daily: 15000, easy: 1250, medium: 2500, hard: 3800, deadly: 5700 },
+		15: { daily: 18000, easy: 1400, medium: 2800, hard: 4300, deadly: 6400 },
+		16: { daily: 20000, easy: 1600, medium: 3200, hard: 4800, deadly: 7200 },
+		17: { daily: 25000, easy: 2000, medium: 3900, hard: 5900, deadly: 8800 },
+		18: { daily: 27000, easy: 2100, medium: 4200, hard: 6300, deadly: 9500 },
+		19: { daily: 30000, easy: 2400, medium: 4900, hard: 7300, deadly: 10900 },
+		20: { daily: 40000, easy: 2800, medium: 5700, hard: 8500, deadly: 12700 },
+	}
 
   static getDifficultyFeel() {
     if (!useParty().totalPlayersToGainXP) {
@@ -280,10 +279,10 @@ class KFC extends EncounterStrategy {
     }
 
     if (cr.exp === 0) return "None";
-    if (cr.exp < budget["Easy"]) return "Trivial";
-    if (cr.exp < budget["Medium"]) return "Easy";
-    if (cr.exp < budget["Hard"]) return "Medium";
-    if (cr.exp < budget["Deadly"]) return "Hard";
+    if (cr.exp < budget["easy"]) return "Trivial";
+    if (cr.exp < budget["medium"]) return "Easy";
+    if (cr.exp < budget["hard"]) return "Medium";
+    if (cr.exp < budget["deadly"]) return "Hard";
 
     return "Deadly";
   }
@@ -315,9 +314,7 @@ class KFC extends EncounterStrategy {
 
       totalRatioSoFar += groupRatio;
 
-      let targetExp = encounterTemplate.subtractive
-        ? totalAvailableXP / encounterTemplate.groups.length
-        : totalAvailableXP * groupRatio;
+      let targetExp = totalAvailableXP * groupRatio;
 
       targetExp /= groupTemplate.count;
 
@@ -408,11 +405,12 @@ class MCDM extends EncounterStrategy {
   static url =
     "https://shop.mcdmproductions.com/collections/flee-mortals-the-mcdm-monster-book";
   static difficulties = [
-	  "Easy",
-	  "Standard",
-	  "Hard",
+	  { key: "easy", label: "Easy" },
+	  { key: "standard", label: "Standard" },
+	  { key: "hard", label: "Hard" },
+	  { key: "cap", label: "One Monster Cap", hidden: true },
   ];
-  static defaultDifficulty = "Standard";
+  static defaultDifficulty = "standard";
   static measurementUnit = "CR";
 
   static tableHeader = "CR Budget";
@@ -458,15 +456,15 @@ class MCDM extends EncounterStrategy {
       ) +
       useParty().activePlayers.reduce((acc, player) => acc + player.level, 0);
 
-    let averageLevel = Math.floor(totalLevels / totalPlayers);
+    let averageLevel = helpers.clamp(Math.round(totalLevels / totalPlayers), 1, 20);
 
     let crBudget = this.encounterCrPerCharacter[averageLevel];
 
     return {
-      "Easy": crBudget.easy * totalPlayers,
-      "Standard": crBudget.standard * totalPlayers,
-      "Hard": crBudget.hard * totalPlayers,
-      "One Monster Cap": crBudget.cap
+      "easy": crBudget.easy * totalPlayers,
+      "standard": crBudget.standard * totalPlayers,
+      "hard": crBudget.hard * totalPlayers,
+      "cap": crBudget.cap
     };
   }
 
@@ -515,7 +513,7 @@ class MCDM extends EncounterStrategy {
       const ratio = helpers.ratio(lowerValue, upperValue, budgetSpend);
       if (lowerValue === upperValue) continue;
 
-      if (upperKey === "Hard" && ratio > 1.0) {
+      if (upperKey === "hard" && ratio > 1.0) {
         if (ratio >= 1.5) {
           return ratio >= 3.0
             ? "like " + helpers.randomArrayElement(this.insaneDifficultyStrings)
@@ -548,16 +546,16 @@ class MCDM extends EncounterStrategy {
     const budgetSpend = this.getBudgetSpend(useEncounter().monsterGroups);
 
     if (budgetSpend === 0 || budgetSpend < budget["Easy"]) return 0;
-    if (budgetSpend <= budget["Standard"]) return 1;
-    if (budgetSpend < budget["Hard"]) return 2;
+    if (budgetSpend <= budget["standard"]) return 1;
+    if (budgetSpend < budget["hard"]) return 2;
 
     const ratio = helpers.ratio(
-      budget["Standard"],
-      budget["Hard"],
+      budget["standard"],
+      budget["hard"],
       budgetSpend
     );
 
-    if (budgetSpend >= budget["Hard"] && ratio < 2.0) return 4;
+    if (budgetSpend >= budget["hard"] && ratio < 2.0) return 4;
 
     return 8;
   }
@@ -575,13 +573,14 @@ class MCDM extends EncounterStrategy {
 
     if (cr.numeric === 0) return "None";
     if (cr.numeric < budget["Easy"]) return "Trivial";
-    if (cr.numeric < budget["Standard"]) return "Easy";
-    if (cr.numeric < budget["Hard"]) return "Standard";
+    if (cr.numeric < budget["standard"]) return "Easy";
+    if (cr.numeric < budget["hard"]) return "Standard";
 
     return "Hard";
   }
 
   static generateEncounter(difficulty, encounterType, retrying = false) {
+
     let crCaps = [];
     let totalCrBudget = 0;
     for (const group of useParty().groups) {
@@ -633,11 +632,7 @@ class MCDM extends EncounterStrategy {
 
     const newEncounter = [];
     for (const groupTemplate of encounterTemplate.groups) {
-      let targetCr = encounterTemplate.subtractive
-        ? totalCrBudget / encounterTemplate.groups.length
-        : totalCrBudget * groupTemplate.ratio;
-
-      targetCr /= groupTemplate.count;
+      let targetCr = (totalCrBudget * groupTemplate.ratio) / groupTemplate.count;
 
       targetCr = Math.min(targetCr, crCap);
 
@@ -824,37 +819,37 @@ class DnD2024 extends KFC {
   static description = "The same behavior as the classic K+FC encounter generation, but fit for the 2024 rules.";
   static url = "https://www.dndbeyond.com/sources/dnd/free-rules/combat";
   static difficulties = [
-	  "Low",
-	  "Moderate",
-	  "High"
+	  { key: "low", label: "Low" },
+	  { key: "moderate", label: "Moderate" },
+	  { key: "high", label: "High" },
   ];
-  static defaultDifficulty = "Moderate";
+  static defaultDifficulty = "moderate";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
-	static fudge_factor = 1.2;
+	static fudge_factor = 1.15;
 
-	static #getGroupBudget(acc, group) {
-    const groupExp = CONST.EXP2024[group.level];
-    return {
-      Low: (acc?.Low ?? 0) + groupExp.low * (group?.players ?? 1),
-      Moderate: (acc?.Moderate ?? 0) + groupExp.moderate * (group?.players ?? 1),
-      High: (acc?.High ?? 0) + groupExp.high * (group?.players ?? 1)
-    };
-  }
-
-  static getBudget() {
-    if (!useParty().totalPlayers) {
-      return {};
-    }
-    const experience = useParty().groups.reduce(
-      this.#getGroupBudget.bind(this),
-      {}
-    );
-    return useParty().activePlayers.reduce(
-      this.#getGroupBudget.bind(this),
-      experience
-    );
-  }
+	static encounterExpPerCharacter = {
+		1: { low: 50, moderate: 75, high: 100 },
+		2: { low: 100, moderate: 150, high: 200 },
+		3: { low: 150, moderate: 225, high: 400 },
+		4: { low: 250, moderate: 375, high: 500 },
+		5: { low: 500, moderate: 750, high: 1100 },
+		6: { low: 600, moderate: 1000, high: 1400 },
+		7: { low: 750, moderate: 1300, high: 1700 },
+		8: { low: 1000, moderate: 1700, high: 2100 },
+		9: { low: 1300, moderate: 2000, high: 2600 },
+		10: { low: 1600, moderate: 2300, high: 3100 },
+		11: { low: 1900, moderate: 2900, high: 4100 },
+		12: { low: 2200, moderate: 3700, high: 4700 },
+		13: { low: 2600, moderate: 4200, high: 5400 },
+		14: { low: 2900, moderate: 4900, high: 6200 },
+		15: { low: 3300, moderate: 5400, high: 7800 },
+		16: { low: 3800, moderate: 6100, high: 9800 },
+		17: { low: 4500, moderate: 7200, high: 11700 },
+		18: { low: 5000, moderate: 8700, high: 14200 },
+		19: { low: 5500, moderate: 10700, high: 17200 },
+		20: { low: 6400, moderate: 13200, high: 22000 }
+	};
 
   static getDifficultyFeel() {
     if (!useParty().totalPlayersToGainXP) {
@@ -900,10 +895,10 @@ class DnD2024 extends KFC {
     }
 
     if (cr.exp === 0) return "None";
-    if (cr.exp < budget["Low"]) return "Trivial";
-    if (cr.exp < budget["Moderate"]) return "Low";
-    if (cr.exp < budget["High"]) return "Moderate";
-    if (cr.exp < budget["High"] * 1.5) return "High";
+    if (cr.exp < budget["low"]) return "Trivial";
+    if (cr.exp < budget["moderate"]) return "Low";
+    if (cr.exp < budget["high"]) return "Moderate";
+    if (cr.exp < budget["high"] * 1.5) return "High";
 
     return "Deadly";
   }
