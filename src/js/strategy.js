@@ -33,6 +33,7 @@ class EncounterStrategy {
 
   static encounterExpPerCharacter = {};
   static difficulties = [];
+  static difficultyClassColors = {};
 
   static getGroupBudget(acc, group) {
     const groupExp = this.encounterExpPerCharacter[Math.floor(group.level)];
@@ -168,6 +169,15 @@ class EncounterStrategy {
     if (!monsterList.length) return;
     return helpers.randomArrayElement(monsterList);
   }
+
+  static getDifficultyFromCr(cr, budget){
+    throw new Error("Not Implemented")
+  }
+
+  static getDifficultyClassColorFromCr(cr, budget) {
+    const difficulty = this.getDifficultyFromCr(cr, budget);
+    return this.difficultyClassColors[difficulty];
+  }
 }
 
 class KFC extends EncounterStrategy {
@@ -182,6 +192,13 @@ class KFC extends EncounterStrategy {
     { key: "deadly", label: "Deadly" },
     { key: "daily", label: "Daily Experience", hidden: true },
   ];
+  static difficultyClassColors = {
+    'Trivial': 'text-indigo-300 dark:text-indigo-600',
+    'Easy': 'text-green-300 dark:text-green-600',
+    'Medium': 'text-yellow-300 dark:text-yellow-600',
+    'Hard': 'text-amber-300 dark:text-orange-600',
+    'Deadly': 'text-rose-300 dark:text-rose-600',
+  }
   static defaultDifficulty = "medium";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";
@@ -409,6 +426,13 @@ class MCDM extends EncounterStrategy {
     { key: "hard", label: "Hard" },
     { key: "cap", label: "One Monster Cap", hidden: true },
   ];
+  static difficultyClassColors = {
+    'Trivial': 'text-indigo-300 dark:text-indigo-600',
+    'Easy': 'text-green-300 dark:text-green-600',
+    'Standard': 'text-yellow-300 dark:text-yellow-600',
+    'Hard': 'text-amber-300 dark:text-orange-600',
+    'Deadly': 'text-rose-300 dark:text-rose-600',
+  }
   static defaultDifficulty = "standard";
   static measurementUnit = "CR";
 
@@ -822,6 +846,13 @@ class DnD2024 extends KFC {
     { key: "moderate", label: "Moderate" },
     { key: "high", label: "High" },
   ];
+  static difficultyClassColors = {
+    'Trivial': 'text-indigo-300 dark:text-indigo-600',
+    'Low': 'text-green-300 dark:text-green-600',
+    'Moderate': 'text-yellow-300 dark:text-yellow-600',
+    'High': 'text-amber-300 dark:text-orange-600',
+    'Deadly': 'text-rose-300 dark:text-rose-600',
+  }
   static defaultDifficulty = "moderate";
   static tableHeader = "XP Goals";
   static measurementUnit = "XP";

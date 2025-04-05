@@ -49,6 +49,10 @@ export const useEncounter = defineStore("encounter", {
       return this.encounterStrategy.getDifficultyFromCr(cr, useParty().experience);
     },
 
+    getDifficultyClassColorFromCr(cr) {
+      return this.encounterStrategy.getDifficultyClassColorFromCr(cr, useParty().experience);
+    },
+
     generateRandom() {
       useParty().ensureGroup();
       const newEncounter = this.encounterStrategy.generateEncounter(this.difficulty, this.type);

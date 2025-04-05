@@ -70,23 +70,7 @@ const encounter = useEncounter();
           <span
             v-text="monster.cr.string"
             class="pl-1"
-            :class="{
-              'text-indigo-300 dark:text-indigo-600':
-                encounter.getDifficultyFromCr(monster.cr) ===
-                'Trivial',
-              'text-green-300 dark:text-green-600':
-                encounter.getDifficultyFromCr(monster.cr) ===
-                'Easy',
-              'text-yellow-300 dark:text-yellow-600':
-                encounter.getDifficultyFromCr(monster.cr) ===
-                'Medium',
-              'text-amber-300 dark:text-orange-600':
-                encounter.getDifficultyFromCr(monster.cr) ===
-                'Hard',
-              'text-rose-300 dark:text-rose-600':
-                encounter.getDifficultyFromCr(monster.cr) ===
-                'Deadly',
-            }"
+            :class="encounter.getDifficultyClassColorFromCr(monster.cr)"
           ></span>
         </dd>
         <dt class="sr-only sm:hidden">Alignment</dt>
@@ -103,20 +87,7 @@ const encounter = useEncounter();
     <td
       class="hidden px-3 py-2 text-sm text-gray-500 dark:text-gray-300 sm:table-cell w-32"
     >
-      <span
-        :class="{
-          'text-cyan-600 dark:text-cyan-400':
-            encounter.getDifficultyFromCr(monster.cr) === 'Trivial',
-          'text-green-600 dark:text-green-400':
-            encounter.getDifficultyFromCr(monster.cr) === 'Easy',
-          'text-yellow-600 dark:text-yellow-400':
-            encounter.getDifficultyFromCr(monster.cr) === 'Medium',
-          'text-amber-600 dark:text-orange-400':
-            encounter.getDifficultyFromCr(monster.cr) === 'Hard',
-          'text-rose-600 dark:text-rose-500':
-            encounter.getDifficultyFromCr(monster.cr) === 'Deadly',
-        }"
-      >
+      <span :class="encounter.getDifficultyClassColorFromCr(monster.cr)">
         <span v-text="monster.cr.string"></span>
         <span
           v-text="
