@@ -3,7 +3,6 @@ import { useParty } from "./party";
 import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
 import { useMonsters } from "./monsters";
-import { useFilters } from "./filters";
 import { useLocalStorage } from "@vueuse/core/index";
 import strategies from "../js/strategy.js";
 
@@ -16,11 +15,10 @@ export const useEncounter = defineStore("encounter", {
         "loadedEncounterIndex",
         null
       ),
-      loadedLast: false,
       difficulty: helpers.migrateLocalStorage(
         "encounterDifficulty",
         "difficulty",
-        "medium"
+        "moderate"
       ),
       type: helpers.migrateLocalStorage(
         "encounterGenerateType",
@@ -38,7 +36,7 @@ export const useEncounter = defineStore("encounter", {
         []
       ),
       availableStrategies: strategies,
-      strategy: useLocalStorage("strategy", "k+fc"),
+      strategy: useLocalStorage("strategy", "dnd2024"),
     };
   },
   actions: {
@@ -46,26 +44,19 @@ export const useEncounter = defineStore("encounter", {
       this.strategy = strategy;
       this.difficulty = strategies[strategy].defaultDifficulty;
     },
-    getDifficultyFromExperience(exp) {
-      const levels = useParty().experience;
 
-      if (!levels) {
-        return "N/A";
-      }
+    getDifficultyFromCr(cr) {
+      return this.encounterStrategy.getDifficultyFromCr(cr, useParty().experience);
+    },
 
-      if (exp === 0) return "None";
-      if (exp < levels.easy) return "Trivial";
-      if (exp < levels.medium) return "Easy";
-      if (exp < levels.hard) return "Medium";
-      if (exp < levels.deadly) return "Hard";
-
-      return "Deadly";
+    getDifficultyClassColorFromCr(cr) {
+      return this.encounterStrategy.getDifficultyClassColorFromCr(cr, useParty().experience);
     },
 
     generateRandom() {
       useParty().ensureGroup();
       const newEncounter = this.encounterStrategy.generateEncounter(this.difficulty, this.type);
-      if(!newEncounter) return;
+      if (!newEncounter) return;
       this.groups = newEncounter;
       this.saveToHistory(true);
     },
@@ -127,7 +118,6 @@ export const useEncounter = defineStore("encounter", {
       const lastEntry = this.history[this.history.length - 1];
       if (!encounter.length) {
         if (lastEntry) {
-          this.loadedLast = false;
           this.history.pop();
         }
         return;
@@ -164,7 +154,6 @@ export const useEncounter = defineStore("encounter", {
 
     loadFromHistory(index) {
       this.loadedIndex = null;
-      this.loadedLast = true;
       const encounter = this.history.splice(index, 1)[0];
       this.history.push(encounter);
       this.load(encounter);
@@ -192,7 +181,6 @@ export const useEncounter = defineStore("encounter", {
     },
 
     loadFromSaved(index) {
-      this.loadedLast = false;
       this.loadedIndex = index;
       this.load(this.saved[index]);
       useNotifications().notify({
@@ -214,7 +202,6 @@ export const useEncounter = defineStore("encounter", {
 
     clear() {
       this.groups = [];
-      this.loadedLast = false;
       this.loadedIndex = null;
     },
   },
@@ -223,7 +210,7 @@ export const useEncounter = defineStore("encounter", {
     monsterGroups() {
       return this.groups.map(group => {
         const monster = useMonsters().lookup[group.monster.slug];
-        if(!monster) return false;
+        if (!monster) return false;
         return { monster, count: group.count }
       }).filter(Boolean);
     },
@@ -243,8 +230,8 @@ export const useEncounter = defineStore("encounter", {
     lastBudget() {
       const encounterBudget = this.budget;
       return {
-        label: Object.keys(encounterBudget)[Object.keys(encounterBudget).length-1],
-        value: Object.values(encounterBudget)[Object.keys(encounterBudget).length-1],
+        label: Object.keys(encounterBudget)[Object.keys(encounterBudget).length - 1],
+        value: Object.values(encounterBudget)[Object.keys(encounterBudget).length - 1],
       }
     },
 

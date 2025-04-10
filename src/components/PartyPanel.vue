@@ -69,7 +69,7 @@ const modals = useModals();
             type="number"
             min="1"
             :value="group.players"
-            @change="group.players = Math.max(1, $event.target.value)"
+            @change="group.players = Math.max(1, Math.floor($event.target.value))"
             class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
           />
 
@@ -85,7 +85,7 @@ const modals = useModals();
             max="20"
             :value="group.level"
             @change="
-              group.level = Math.max(1, Math.min(20, $event.target.value))
+              group.level = Math.max(1, Math.min(20, Math.floor($event.target.value)))
             "
             class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
           />
@@ -142,17 +142,17 @@ const modals = useModals();
         >
         </div>
         <div
-          v-for="([label, budget], index) in Object.entries(encounter.budget)"
-          :key="label"
+          v-for="({ key, label }, index) in encounter.encounterStrategy.difficulties"
+          :key="key"
           class="contents"
           :class="{
             'font-semibold': encounter.actualDifficulty === label,
           }"
         >
 
-          <div v-if="index === Object.keys(encounter.budget).length - 1" class="mt-4 col-span-2"></div>
+          <div v-if="index === Object.keys(encounter.budget).length - 1 && Object.keys(encounter.budget).length > 3" class="mt-4 col-span-2"></div>
           <span>{{ label }}</span>
-          <span v-html="formatNumber(budget)"></span>
+          <span v-html="formatNumber(encounter.budget[key])"></span>
         </div>
       </div>
     </div>

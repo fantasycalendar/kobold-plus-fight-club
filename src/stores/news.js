@@ -1,4 +1,4 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
 import { useSources } from "./sources";
 import { useModals } from "./modals";
@@ -56,6 +56,32 @@ export const useNews = defineStore("news", {
         useNotifications().notify({
           title: "Flee, Mortals! is already enabled.",
           body: "You've already added <strong>Flee, Mortals!</strong> to your sources.",
+          icon: "fa fa-info-circle",
+          icon_color: "text-blue-500",
+          sticky: true,
+        });
+      }
+
+      useModals().show("strategy");
+      this.hide();
+    },
+    enableDnd2024() {
+
+      if (useEncounter().strategy !== "dnd2024") {
+
+        setTimeout(() => {
+          useEncounter().setStrategy("dnd2024");
+
+          useNotifications().notify({
+            title: "D&D5e 2024 encounter rules has been enabled.",
+            body: "<p>We've enabled the <strong>D&D5e 2024</strong> encounter rules.</p>",
+            sticky: true,
+          });
+        }, 700);
+      } else {
+        useNotifications().notify({
+          title: "D&D5e 2024 encounter rules are already enabled.",
+          body: "You've already enabled the <strong>D&D5e 2024</strong> encounter rules.",
           icon: "fa fa-info-circle",
           icon_color: "text-blue-500",
           sticky: true,

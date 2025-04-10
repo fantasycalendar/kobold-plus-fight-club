@@ -55,6 +55,10 @@ export function randomArrayElement(inArray, { recurse = false } = {}) {
   return choice;
 }
 
+export function clamp(value, min, max){
+	return Math.max(min, Math.min(max, value));
+}
+
 /**
  * Clones an object and returns a copy of it
  *

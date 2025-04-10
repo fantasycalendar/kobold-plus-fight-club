@@ -7,6 +7,14 @@
 			"action_type": "source",
 			"source": "mcdm",
 			"date": "2023-08-19"
+		},
+		{
+			"title": "D&D5e 2024 Support",
+			"text": "D&D5e 2024's <a href='https://www.dndbeyond.com/sources/dnd/free-rules/combat' target='_blank'>encounter generation rules</a> are now available in in K+FC. This can be found in the settings above the encounter panel.",
+			"action": "Give it a try",
+			"action_type": "source",
+			"source": "dnd2024",
+			"date": "2025-03-04"
 		}
 	]
 }

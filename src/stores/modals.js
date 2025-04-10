@@ -1,4 +1,4 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 
 export const useModals = defineStore("modals", {
   state: () => {
@@ -25,7 +25,7 @@ export const useModals = defineStore("modals", {
       ["importer", "encounter", "sources", "strategy", "party", "keyboard"].forEach(
         (modal) => {
           this.hide(modal);
-      });
+        });
     },
   },
 });

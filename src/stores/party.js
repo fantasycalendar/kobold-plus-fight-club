@@ -1,7 +1,6 @@
-import { defineStore,acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core/index";
-import CONST from "../js/constants.js";
-import {useEncounter} from "./encounter";
+import { useEncounter } from "./encounter";
 
 export const useParty = defineStore("party", {
   state: () => {
@@ -34,16 +33,6 @@ export const useParty = defineStore("party", {
     },
     removeGroup(index) {
       this.groups.splice(index, 1);
-    },
-    getGroupExperience(acc, group) {
-      const groupExp = CONST.EXP[group.level];
-      return {
-        easy: (acc?.easy ?? 0) + groupExp.easy * (group?.players ?? 1),
-        medium: (acc?.medium ?? 0) + groupExp.medium * (group?.players ?? 1),
-        hard: (acc?.hard ?? 0) + groupExp.hard * (group?.players ?? 1),
-        deadly: (acc?.deadly ?? 0) + groupExp.deadly * (group?.players ?? 1),
-        daily: (acc?.daily ?? 0) + groupExp.daily * (group?.players ?? 1),
-      };
     },
 
     createParty() {
@@ -108,12 +97,7 @@ export const useParty = defineStore("party", {
 
   getters: {
     experience() {
-      if (!this.totalPlayers) {
-        return false;
-      }
-
-      const experience = this.groups.reduce(this.getGroupExperience, {});
-      return this.activePlayers.reduce(this.getGroupExperience, experience);
+      return useEncounter().encounterStrategy.getBudget();
     },
     totalPlayersToGainXP() {
       return (
