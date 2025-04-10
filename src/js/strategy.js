@@ -180,7 +180,7 @@ class EncounterStrategy {
   }
 }
 
-class KFC extends EncounterStrategy {
+class KPFC extends EncounterStrategy {
   static key = "k+fc";
   static label = "D&D5e 2014 Encounter Rules";
   static description =
@@ -190,7 +190,7 @@ class KFC extends EncounterStrategy {
     { key: "medium", label: "Medium" },
     { key: "hard", label: "Hard" },
     { key: "deadly", label: "Deadly" },
-    { key: "daily", label: "Daily Experience", hidden: true },
+    { key: "daily", label: "Daily Experience", quiet: true },
   ];
   static difficultyClassColors = {
     'Trivial': 'text-indigo-300 dark:text-indigo-600',
@@ -424,7 +424,7 @@ class MCDM extends EncounterStrategy {
     { key: "easy", label: "Easy" },
     { key: "standard", label: "Standard" },
     { key: "hard", label: "Hard" },
-    { key: "cap", label: "One Monster Cap", hidden: true },
+    { key: "cap", label: "One Monster Cap", quiet: true },
   ];
   static difficultyClassColors = {
     'Trivial': 'text-indigo-300 dark:text-indigo-600',
@@ -835,7 +835,7 @@ class MCDM extends EncounterStrategy {
   }
 }
 
-class DnD2024 extends KFC {
+class DnD2024 extends KPFC {
 
   static key = "dnd2024";
   static label = "D&D5e 2024 Encounter Rules";
@@ -949,6 +949,6 @@ class DnD2024 extends KFC {
 
 export default {
   [DnD2024.key]: DnD2024,
-  [KFC.key]: KFC,
+  [KPFC.key]: KPFC,
   [MCDM.key]: MCDM,
 };

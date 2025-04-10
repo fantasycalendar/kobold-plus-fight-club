@@ -50,7 +50,7 @@ const modals = useModals();
                 encounter.difficulty.slice(1)
               "
               :options="
-                encounter.encounterStrategy.difficulties.filter(diff => !diff.hidden)"
+                encounter.encounterStrategy.difficulties.filter(diff => !diff.quiet)"
               :option-subtext="
                 (option) =>
                   helpers.formatNumber(encounter.budget[option.key]) +

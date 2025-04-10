@@ -18,7 +18,7 @@ export const useEncounter = defineStore("encounter", {
       difficulty: helpers.migrateLocalStorage(
         "encounterDifficulty",
         "difficulty",
-        "Moderate"
+        "moderate"
       ),
       type: helpers.migrateLocalStorage(
         "encounterGenerateType",

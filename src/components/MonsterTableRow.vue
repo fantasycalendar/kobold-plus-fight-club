@@ -93,7 +93,7 @@ const encounter = useEncounter();
           v-text="
             ' (' + encounter.getDifficultyFromCr(monster.cr) + ')'
           "
-          class="text-xs hidden xl:inline"
+          class="text-xs hidden sm:inline opacity-90"
         ></span>
       </span>
     </td>
