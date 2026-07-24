@@ -86,5 +86,5 @@ onMounted(async () => {
 </template>
 
 <style>
-@import "../node_modules/@vueform/multiselect/themes/tailwind.scss";
+@import "../node_modules/@vueform/multiselect/themes/tailwind.css";
 </style>

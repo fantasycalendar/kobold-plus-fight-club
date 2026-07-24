@@ -35,12 +35,12 @@ const encounter = useEncounter();
           {{ tag.toLowerCase() }}
         </Badge>
       </span>
-      <dt class="sr-only sm:hidden">Type</dt>
-      <dd
-        class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden"
-        v-text="monster.type"
-      ></dd>
       <dl class="font-normal">
+        <dt class="sr-only sm:hidden">Type</dt>
+        <dd
+          class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden"
+          v-text="monster.type"
+        ></dd>
         <dt class="sr-only">Sources</dt>
         <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
           <span
