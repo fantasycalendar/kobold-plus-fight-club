@@ -1,4 +1,4 @@
-import { useLocalStorage } from "@vueuse/core/index";
+import { useLocalStorage } from "@vueuse/core";
 
 export function migrateLocalStorage(newKey, oldKey, defaultValue) {
   let oldValue = localStorage.getItem(oldKey);
