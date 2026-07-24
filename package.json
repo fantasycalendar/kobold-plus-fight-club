@@ -11,15 +11,15 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.1.1",
+    "@fortawesome/fontawesome-free": "^7.3.1",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.20",
     "@vue/devtools-api": "^8.1.5",
     "@vueform/multiselect": "^2.6.11",
     "@vueform/slider": "^2.1.10",
     "@vueuse/core": "^14.3.0",
-    "hotkeys-js": "^3.9.4",
-    "marked": "^4.0.17",
+    "hotkeys-js": "^4.0.4",
+    "marked": "^18.0.7",
     "papaparse": "^5.5.4",
     "pinia": "^4.0.2",
     "tippy.js": "^6.3.7",

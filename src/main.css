@@ -48,6 +48,22 @@
 }
 
 /*
+  Font Awesome 7 makes icons fixed-width (1.25em) by default, whereas v6
+  used the icon's natural (content) width. That made every icon ~40% wider,
+  adding stray spacing next to text and in tight button layouts. Restore the
+  v6 behavior globally.
+*/
+.fa,
+.fas,
+.far,
+.fab,
+.fa-solid,
+.fa-regular,
+.fa-brands {
+  --fa-width: auto;
+}
+
+/*
   Optically center Font Awesome glyphs inside buttons/links. Under Tailwind
   v4's preflight the icon's line box no longer centers the glyph, leaving it
   a couple pixels high. Centering the glyph within its own box fixes it.
