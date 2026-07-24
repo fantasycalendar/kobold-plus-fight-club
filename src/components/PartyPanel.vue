@@ -41,7 +41,7 @@ const modals = useModals();
             <button
               @click="player.active = false"
               type="button"
-              class="button-danger-outline-md inline-flex justify-center !py-0"
+              class="button-danger-outline-md inline-flex justify-center py-0!"
             >
               <i class="fas fa-times"></i>
             </button>
@@ -70,7 +70,7 @@ const modals = useModals();
             min="1"
             :value="group.players"
             @change="group.players = Math.max(1, Math.floor($event.target.value))"
-            class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
+            class="border-gray-300 shadow-xs focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
           />
 
           <div
@@ -87,7 +87,7 @@ const modals = useModals();
             @change="
               group.level = Math.max(1, Math.min(20, Math.floor($event.target.value)))
             "
-            class="border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
+            class="border-gray-300 shadow-xs focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
           />
 
           <div
@@ -96,7 +96,7 @@ const modals = useModals();
             <input
               type="checkbox"
               v-model="group.getsXP"
-              class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded"
+              class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded-sm"
             />
           </div>
 

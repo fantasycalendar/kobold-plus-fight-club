@@ -21,7 +21,7 @@ const menu = ref(false);
     <div class="mx-auto px-4 sm:px-6 lg:px-6">
       <div class="flex justify-between h-16 w-full">
         <div class="flex">
-          <div class="flex-shrink-0 flex items-center">
+          <div class="shrink-0 flex items-center">
             <RouterLink :to="{ name: 'home' }" class="flex items-center">
               <img
                 class="h-8 w-auto"
@@ -43,7 +43,7 @@ const menu = ref(false);
             class="inline-flex items-center px-1 text-sm font-medium text-emerald-300 hover:text-white hover:border-gray-300"
             >Keyboard Shortcuts
             <span
-              class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-emerald-800 text-emerald-100 ml-1"
+              class="inline-flex items-center px-1 py-0.5 rounded-sm text-xs font-medium bg-emerald-800 text-emerald-100 ml-1"
               >Ctrl+/</span
             ></a
           >
@@ -97,7 +97,7 @@ const menu = ref(false);
         </div>
         <div class="-mr-2 flex items-center lg:hidden">
           <button
-            class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white relative"
+            class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-white relative"
             @click="menu = !menu"
           >
             <span class="sr-only">Open main menu</span>

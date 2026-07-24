@@ -5,7 +5,7 @@
     </div>
 
     <div
-      class="grid grid-cols-[12px_12px_repeat(12,_minmax(0,_1fr))] divide divide-gray-200 dark:divide-gray-600 gap-2 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 overflow-hidden p-2"
+      class="grid grid-cols-[12px_12px_repeat(12,minmax(0,1fr))] divide divide-gray-200 dark:divide-gray-600 gap-2 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 overflow-hidden p-2"
     >
       <div
         @click="toggle(lawful_good | neutral | chaotic_evil)"

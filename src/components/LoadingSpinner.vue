@@ -59,6 +59,8 @@ export default {
 </script>
 
 <style scoped>
+@reference "../main.css";
+
 .lds-ripple {
   display: inline-block;
   position: relative;

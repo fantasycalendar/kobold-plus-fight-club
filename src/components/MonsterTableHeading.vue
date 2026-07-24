@@ -7,7 +7,7 @@
     {{ label }}
     <span
       v-if="sortsColumn"
-      class="ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible px-1 hover:bg-gray-100 hover:dark:bg-gray-600"
+      class="ml-2 flex-none rounded-sm text-gray-400 group-hover:visible group-focus:visible px-1 hover:bg-gray-100 dark:hover:bg-gray-600"
       :class="{
         invisible: sortBy !== sortsColumn,
         'bg-gray-100 dark:bg-gray-600': sortBy === sortsColumn,

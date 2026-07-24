@@ -54,7 +54,7 @@ function stopRemoving() {
 
     <button
       v-show="source.custom && !deleting"
-      class="!px-0 w-[42px] justify-center button-danger-outline-md"
+      class="px-0! w-[42px] justify-center button-danger-outline-md"
       @click="startRemoving"
     >
       <i class="fa fa-trash"></i>
@@ -62,7 +62,7 @@ function stopRemoving() {
 
     <button
       v-show="deleting"
-      class="!px-0 w-[42px] justify-center button-danger-outline-md"
+      class="px-0! w-[42px] justify-center button-danger-outline-md"
       @click="remove"
     >
       <i class="fa fa-check"></i>
@@ -80,7 +80,7 @@ function stopRemoving() {
 
     <button
       v-show="deleting"
-      class="!px-0 w-[42px] justify-center button-primary-outline-md"
+      class="px-0! w-[42px] justify-center button-primary-outline-md"
       @click="stopRemoving"
     >
       <i class="fa fa-times"></i>

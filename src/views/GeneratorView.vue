@@ -140,7 +140,7 @@ export default {
           'text-gray-900 ': !mobileEncounterTab,
           'text-gray-700': mobileEncounterTab,
         }"
-        class="relative border-gray-200 rounded-md shadow-sm py-2 text-sm font-medium dark:text-gray-100 whitespace-nowrap focus:outline-none focus:z-10 w-40"
+        class="relative border-gray-200 rounded-md shadow-xs py-2 text-sm font-medium dark:text-gray-100 whitespace-nowrap focus:outline-hidden focus:z-10 w-40"
       >
         Encounter
         <span
@@ -158,7 +158,7 @@ export default {
           'text-gray-900 ': mobileEncounterTab,
           'text-gray-700': !mobileEncounterTab,
         }"
-        class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-none focus:z-10 w-40"
+        class="ml-0.5 relative border border-transparent rounded-md py-2 text-sm font-medium whitespace-nowrap dark:text-gray-100 focus:outline-hidden focus:z-10 w-40"
       >
         Monsters
       </button>
@@ -167,7 +167,7 @@ export default {
     <div
       id="monsters_box"
       :class="{ 'hidden md:block': !mobileEncounterTab }"
-      class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-[28rem] 2xl:right-[24rem] overflow-y-auto scrollbar"
+      class="grow px-4 md:pr-0 md:absolute md:inset-y-0 md:py-8 left-0 right-0 md:inset-none md:pl-112 2xl:right-96 overflow-y-auto scrollbar"
     >
       <SearchBox @toggle-filters="userWantsFilters = !userWantsFilters" />
       <MonsterTable @modal="$emit('modal', $event)"></MonsterTable>
@@ -176,7 +176,7 @@ export default {
     <div
       id="encounter_box"
       :class="{ 'hidden md:flex': mobileEncounterTab }"
-      class="md:absolute md:inset-y-0 md:py-8 md:left-4 md:pr-4 md:pl-4 pb-8 md:flex w-full px-8 2xl:pr-4 flex-col flex-shrink-0 md:w-[28rem] overflow-y-auto scrollbar"
+      class="md:absolute md:inset-y-0 md:py-8 md:left-4 md:pr-4 md:pl-4 pb-8 md:flex w-full px-8 2xl:pr-4 flex-col shrink-0 md:w-md overflow-y-auto scrollbar"
     >
       <PartyPanel></PartyPanel>
       <EncounterPanel></EncounterPanel>

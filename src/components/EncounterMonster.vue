@@ -6,7 +6,7 @@
           :title="group.monster.name"
           data-tippy-placement="top-start"
           data-tippy-delay="1000"
-          class="pr-1 font-semibold max-w-full overflow-ellipsis truncate"
+          class="pr-1 font-semibold max-w-full text-ellipsis truncate"
           v-text="group.monster.name"
         ></span>
         <button
@@ -49,7 +49,7 @@
     </div>
 
     <div class="flex shrink-0 justify-self-end items-start">
-      <div class="flex rounded-md shadow-sm pt-3">
+      <div class="flex rounded-md shadow-xs pt-3">
         <button
           @click="$emit('add')"
           class="inline-flex items-center px-2 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 dark:text-gray-300 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-500 sm:text-sm"
@@ -90,10 +90,10 @@
     </div>
 
     <div
-      class="bg-gray-700 rounded shadow px-2 py-1 z-10 col-span-2 my-2 relative"
+      class="bg-gray-700 rounded-sm shadow-sm px-2 py-1 z-10 col-span-2 my-2 relative"
       v-if="showSources"
     >
-      <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
+      <div class="overflow-hidden whitespace-nowrap text-ellipsis">
         <div
           class="absolute top-1 right-2"
           @click="showSources = false"

@@ -24,7 +24,7 @@ function generateNew() {
           v-model="tab"
           id="tabs"
           name="tabs"
-          class="text-center border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
+          class="text-center border-gray-300 shadow-xs focus:ring-emerald-500 focus:border-emerald-500 block w-full p-1.5 pr-0 sm:text-sm disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 text-gray-600 rounded-md"
         >
           <option value="history" selected>Encounter History</option>
 
@@ -34,7 +34,7 @@ function generateNew() {
       <div class="hidden w-full sm:block">
         <div class="border-b-2 border-gray-200 dark:border-gray-700">
           <nav
-            class="-mb-[2px] justify-center flex space-x-8"
+            class="mb-[-2px] justify-center flex space-x-8"
             aria-label="Tabs"
           >
             <!-- Current: "border-emerald-500 text-emerald-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
@@ -93,7 +93,7 @@ function generateNew() {
           }"
         >
           <div
-            class="grow flex items-center mr-2 grow truncate overflow-ellipsis"
+            class="grow flex items-center mr-2 grow truncate text-ellipsis"
             :class="{
               'font-medium':
                 encounter.loadedIndex ===
@@ -115,7 +115,7 @@ function generateNew() {
             type="button"
           >
             <div
-              class="w-full h-full bg-gradient-to-l from-white dark:from-gray-800 group-hover:from-gray-50 dark:group-hover:from-gray-700 to-transparent"
+              class="w-full h-full bg-linear-to-l from-white dark:from-gray-800 group-hover:from-gray-50 dark:group-hover:from-gray-700 to-transparent"
             ></div>
             <div
               class="flex px-3 bg-white group-hover:bg-gray-50 dark:bg-gray-800 dark:group-hover:bg-gray-700 min-w-4 h-full text-right inset-y-0 right-0 space-x-2 absolute"
@@ -192,7 +192,7 @@ function generateNew() {
             :key="index"
           >
             <div
-              class="grow flex flex-col justify-center mr-2 grow truncate overflow-ellipsis"
+              class="grow flex flex-col justify-center mr-2 grow truncate text-ellipsis"
               :class="{
                 'font-medium':
                   encounter.loadedIndex === null &&
@@ -215,7 +215,7 @@ function generateNew() {
               type="button"
             >
               <div
-                class="w-full h-full bg-gradient-to-l from-white dark:from-gray-800 group-hover:from-gray-50 dark:group-hover:from-gray-700 to-transparent"
+                class="w-full h-full bg-linear-to-l from-white dark:from-gray-800 group-hover:from-gray-50 dark:group-hover:from-gray-700 to-transparent"
               ></div>
               <div
                 class="px-3 bg-white group-hover:bg-gray-50 dark:bg-gray-800 dark:group-hover:bg-gray-700 min-w-4 h-full grid place-items-center"
@@ -245,7 +245,7 @@ function generateNew() {
         v-show="!encounter.history.length"
         @click="generateNew"
         type="button"
-        class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+        class="relative block w-full border-2 border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
       >
         <i
           class="fa-solid fa-dice-d20 text-2xl h-12 w-12 mx-auto text-gray-400 dark:text-gray-300"
@@ -270,7 +270,7 @@ function generateNew() {
         v-show="tab === 'history'"
         @click="encounter.history = []"
         type="button"
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-emerald-700 dark:bg-emerald-100 dark:bg-transparent dark:text-emerald-500 dark:hover:bg-emerald-800 dark:hover:text-white hover:bg-emerald-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
       >
         <i class="fa fa-times mr-1"></i> Clear History
       </button>

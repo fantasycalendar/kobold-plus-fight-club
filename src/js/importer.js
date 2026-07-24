@@ -263,15 +263,15 @@ export default class Importer {
                         `,
         'json-file': `
                             <label class="mb-1 block" id="file_input_label" for="import_resource_locator_file">Upload JSON text file below or <a class="primary-link" href="javascript:;" @click="$emit('downloadExample')">download an example file to edit.</a></label>                
-                            <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
+                            <input accept="application/json" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="importerResourceLocator = $event.target.files[0]" aria-describedby="file_input_label" id="import_resource_locator_file" type="file">
                         `,
         'csv-file': `
                             <label class="mb-1">Upload CSV text files below or <a class="primary-link" href="javascript:;" @click="$emit('downloadExample')">download example files to edit.</a></label>
                             <div class="grid grid-cols-2 gap-2 mt-2">                
                                 <label class="" id="file_input_label_1" for="import_resource_locator_file_1">Sources CSV</label>                
                                 <label class="" id="file_input_label_2" for="import_resource_locator_file_2">Monsters CSV</label>                
-                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerSourcesFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
-                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerMonstersFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
+                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerSourcesFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_1" type="file">
+                                <input accept="text/csv" class=" text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" @change="onFileUpdate('importerMonstersFile', $event.target.files)" aria-describedby="file_input_label" id="import_resource_locator_file_2" type="file">
                             </div>
                         `
   }
