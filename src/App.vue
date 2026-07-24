@@ -84,7 +84,3 @@ onMounted(async () => {
     <NotificationArea />
   </div>
 </template>
-
-<style>
-@import "../node_modules/@vueform/multiselect/themes/tailwind.css";
-</style>
