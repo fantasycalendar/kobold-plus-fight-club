@@ -34,7 +34,7 @@ const editingMembership = ref(false);
   <div
     class=""
     :class="{
-      'flex px-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600': true,
+      'flex px-4 dark:border-gray-700 w-full relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600': true,
       'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': editing,
       'py-4': !editing,
     }"

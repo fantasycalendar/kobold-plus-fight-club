@@ -193,11 +193,11 @@ class KPFC extends EncounterStrategy {
     { key: "daily", label: "Daily Experience", quiet: true },
   ];
   static difficultyClassColors = {
-    'Trivial': 'text-indigo-300 dark:text-indigo-600',
-    'Easy': 'text-green-300 dark:text-green-600',
-    'Medium': 'text-yellow-300 dark:text-yellow-600',
-    'Hard': 'text-amber-300 dark:text-orange-600',
-    'Deadly': 'text-rose-300 dark:text-rose-600',
+    'Trivial': 'text-indigo-500 dark:text-indigo-400',
+    'Easy': 'text-green-600 dark:text-green-400',
+    'Medium': 'text-yellow-600 dark:text-yellow-400',
+    'Hard': 'text-amber-600 dark:text-orange-400',
+    'Deadly': 'text-rose-600 dark:text-rose-400',
   }
   static defaultDifficulty = "medium";
   static tableHeader = "XP Goals";
@@ -427,11 +427,11 @@ class MCDM extends EncounterStrategy {
     { key: "cap", label: "One Monster Cap", quiet: true },
   ];
   static difficultyClassColors = {
-    'Trivial': 'text-indigo-300 dark:text-indigo-600',
-    'Easy': 'text-green-300 dark:text-green-600',
-    'Standard': 'text-yellow-300 dark:text-yellow-600',
-    'Hard': 'text-amber-300 dark:text-orange-600',
-    'Deadly': 'text-rose-300 dark:text-rose-600',
+    'Trivial': 'text-indigo-500 dark:text-indigo-400',
+    'Easy': 'text-green-600 dark:text-green-400',
+    'Standard': 'text-yellow-600 dark:text-yellow-400',
+    'Hard': 'text-amber-600 dark:text-orange-400',
+    'Deadly': 'text-rose-600 dark:text-rose-400',
   }
   static defaultDifficulty = "standard";
   static measurementUnit = "CR";
@@ -847,11 +847,11 @@ class DnD2024 extends KPFC {
     { key: "high", label: "High" },
   ];
   static difficultyClassColors = {
-    'Trivial': 'text-indigo-300 dark:text-indigo-600',
-    'Low': 'text-green-300 dark:text-green-600',
-    'Moderate': 'text-yellow-300 dark:text-yellow-600',
-    'High': 'text-amber-300 dark:text-orange-600',
-    'Deadly': 'text-rose-300 dark:text-rose-600',
+    'Trivial': 'text-indigo-500 dark:text-indigo-400',
+    'Low': 'text-green-600 dark:text-green-400',
+    'Moderate': 'text-yellow-600 dark:text-yellow-400',
+    'High': 'text-amber-600 dark:text-orange-400',
+    'Deadly': 'text-rose-600 dark:text-rose-400',
   }
   static defaultDifficulty = "moderate";
   static tableHeader = "XP Goals";

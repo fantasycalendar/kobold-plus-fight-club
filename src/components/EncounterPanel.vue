@@ -38,7 +38,7 @@ const modals = useModals();
       </div>
 
       <div
-        class="flex flex-col sm:flex-row pb-4 w-full space-x-2 items-end justify-between pb-4"
+        class="flex flex-col sm:flex-row pb-4 w-full sm:space-x-2 items-end justify-between pb-4"
       >
         <div class="grid gap-2 w-full place-items-end sm:grid-cols-8 grow">
           <div class="w-full col-span-1 sm:col-span-3">
@@ -125,14 +125,14 @@ const modals = useModals();
 
     <div class="border-t border-gray-200 dark:border-gray-700">
       <dl
-        class="space-y-1 divide-y divide-dashed divide-gray-400 dark:divide-gray-700"
+        class="divide-y divide-dashed divide-gray-400 dark:divide-gray-700"
       >
-        <div class="flex items-center justify-between">
-          <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
+        <div class="flex items-center justify-between py-1.5">
+          <dt class="text-sm text-gray-600 dark:text-gray-200">
             <span class="block">Difficulty</span>
           </dt>
           <dd
-            class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300 text-right"
+            class="text-sm font-medium text-gray-900 dark:text-gray-300 text-right"
           >
             <span class="block" v-text="encounter.actualDifficulty"></span>
             <span
@@ -147,12 +147,12 @@ const modals = useModals();
           </dd>
         </div>
 
-        <div class="flex items-center justify-between">
-          <dt class="mt-1 text-sm text-gray-600 dark:text-gray-200">
+        <div class="flex items-center justify-between py-1.5">
+          <dt class="text-sm text-gray-600 dark:text-gray-200">
             Total XP
           </dt>
           <dd
-            class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+            class="text-sm font-medium text-gray-900 dark:text-gray-300"
             v-text="
               encounter.totalExp > 0
                 ? helpers.formatNumber(encounter.totalExp) +
@@ -167,15 +167,15 @@ const modals = useModals();
         </div>
 
         <div
-          class="flex items-center justify-between"
+          class="flex items-center justify-between py-1.5"
           v-for="secondaryMeasurement in encounter.secondaryMeasurements"
         >
           <dt
-            class="mt-1 text-sm text-gray-600 dark:text-gray-200"
+            class="text-sm text-gray-600 dark:text-gray-200"
             v-html="secondaryMeasurement.label"
           ></dt>
           <dd
-            class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+            class="text-sm font-medium text-gray-900 dark:text-gray-300"
             v-html="secondaryMeasurement.value"
           ></dd>
         </div>

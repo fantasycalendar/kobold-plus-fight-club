@@ -52,6 +52,20 @@ function updateFilters() {
   filters.cr.max = sliderValue.value[1];
 }
 
+// Called from the min/max <select> boxes. We derive the slider indices
+// directly from the current select labels rather than reading sliderValue,
+// because the watchers that sync sliderValue from minCr/maxCr flush after
+// this handler runs — reading sliderValue here would use a stale value and
+// lag the slider/table by one update.
+function updateFromSelect() {
+  const min = filters.crValues.findIndex((entry) => entry.value === minCr.value);
+  const max = filters.crValues.findIndex((entry) => entry.value === maxCr.value);
+  sliderValue.value = [min, max];
+  shadowSliderValue.value = [min, max];
+  filters.cr.min = min;
+  filters.cr.max = max;
+}
+
 // Now that all the mapping is done, we also want to subscribe to any external
 // changes that occur on the store, updating our local data in the process.
 // For example, this would allow multiple instances of this component.
@@ -61,6 +75,10 @@ filters.$subscribe((mutation, state) => {
     state.cr.max !== sliderValue.value[1]
   ) {
     sliderValue.value = [state.cr.min, state.cr.max];
+    // shadowSliderValue is what the <Slider> actually renders, so keep it in
+    // sync too — otherwise external changes (e.g. Reset Filters) update the
+    // selects but leave the slider handles where they were.
+    shadowSliderValue.value = [state.cr.min, state.cr.max];
   }
 });
 </script>
@@ -112,7 +130,7 @@ filters.$subscribe((mutation, state) => {
             name="min_cr"
             id="min_cr_select"
             v-model="minCr"
-            @change="updateFilters"
+            @change="updateFromSelect"
           >
             <option
               v-for="option in filters.crValues"
@@ -133,7 +151,7 @@ filters.$subscribe((mutation, state) => {
             name="max_cr"
             id="max_cr_select"
             v-model="maxCr"
-            @change="updateFilters"
+            @change="updateFromSelect"
           >
             <option
               v-for="option in filters.crValues"

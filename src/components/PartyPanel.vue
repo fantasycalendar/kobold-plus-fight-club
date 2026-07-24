@@ -74,7 +74,7 @@ const modals = useModals();
           />
 
           <div
-            class="text-center grid place-items-center text-gray-600 dark:text-gray-400 scale-150 md:transform-none"
+            class="text-center grid place-items-center text-gray-600 dark:text-gray-400 scale-150 md:scale-100"
           >
             <i class="fa fa-times"></i>
           </div>
@@ -91,12 +91,12 @@ const modals = useModals();
           />
 
           <div
-            class="flex items-center justify-center scale-150 md:transform-none"
+            class="flex items-center justify-center scale-150 md:scale-100"
           >
             <input
               type="checkbox"
               v-model="group.getsXP"
-              class="focus:ring-emerald-500 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded-sm"
+              class="focus:ring-emerald-500 focus:ring-offset-0 h-4 w-4 text-emerald-600 disabled:opacity-70 border-gray-300 rounded-sm"
             />
           </div>
 

@@ -36,6 +36,34 @@
   }
 }
 
+/*
+  Tailwind CSS v4 defaults buttons to `cursor: default`. Restore the v3
+  pointer cursor on interactive buttons so the app feels the same.
+*/
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/*
+  Optically center Font Awesome glyphs inside buttons/links. Under Tailwind
+  v4's preflight the icon's line box no longer centers the glyph, leaving it
+  a couple pixels high. Centering the glyph within its own box fixes it.
+*/
+button > i.fa,
+button > i.fas,
+button > i.fa-solid,
+a > i.fa,
+a > i.fas,
+a > i.fa-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 input[type=text] {
     @apply disabled:text-gray-500 disabled:bg-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-gray-600 block w-full px-2 shadow-xs border-gray-300 rounded-md mb-4;
 }

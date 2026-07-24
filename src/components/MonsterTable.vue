@@ -126,7 +126,7 @@ onBeforeMount(() => {
   <div class="px-4 sm:px-6 lg:px-8">
     <div
       v-show="!monsters.loading"
-      class="-mx-4 mt-8 overflow-x-auto shadow-sm ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg"
+      class="-mx-4 mt-8 overflow-x-auto shadow-sm ring-1 ring-black/5 sm:-mx-6 md:mx-0 md:rounded-lg"
     >
       <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
         <thead class="bg-gray-50 dark:bg-gray-700">

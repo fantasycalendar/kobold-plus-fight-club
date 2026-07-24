@@ -79,7 +79,7 @@ function generateNew() {
               encounter.saved.length - index - 1 &&
               encounter.loadFromSaved(encounter.saved.length - index - 1)
           "
-          class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
+          class="flex px-2 py-4 dark:border-gray-700 w-full relative"
           :title="
             encounter.saved[encounter.saved.length - index - 1]
               .map((group) => `${group.monster.name} x${group.count}`)
@@ -168,7 +168,7 @@ function generateNew() {
       >
         <div v-for="(_, index) of encounter.history">
           <div
-            class="flex px-2 py-4 dark:border-gray-700 w-100 relative"
+            class="flex px-2 py-4 dark:border-gray-700 w-full relative"
             :title="
               encounter.history[encounter.history.length - index - 1]
                 .map((group) => `${group.monster.name} x${group.count}`)

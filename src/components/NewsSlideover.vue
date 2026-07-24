@@ -32,7 +32,7 @@ const news = useNews();
       >
         <div
           @click="news.hide"
-          class="absolute inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity"
+          class="absolute inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity"
           aria-hidden="true"
           v-show="news.open"
         ></div>

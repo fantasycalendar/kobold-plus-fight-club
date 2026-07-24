@@ -16,7 +16,7 @@ const notifications = useNotifications();
       class="w-full flex flex-col items-center space-y-4 sm:items-end"
     >
       <div
-        class="max-w-sm w-full relative bg-white dark:bg-gray-700 dark:shadow-xl shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+        class="max-w-sm w-full relative bg-white dark:bg-gray-700 dark:shadow-xl shadow-lg rounded-lg pointer-events-auto ring-1 ring-black/5 overflow-hidden"
         v-for="(notification, index) in notifications.entries"
         :key="index"
       >
