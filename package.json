@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5050",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "lint": "eslint . --fix",
     "tauri-dev": "tauri dev",
     "tauri": "tauri"
   },
@@ -28,15 +28,17 @@
     "vue3-click-away": "^1.2.4"
   },
   "devDependencies": {
-    "@rushstack/eslint-patch": "^1.16.1",
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.3",
     "@tauri-apps/cli": "^1.4.0",
     "@vitejs/plugin-vue": "^6.0.8",
-    "@vue/eslint-config-prettier": "^7.0.0",
-    "eslint": "^8.5.0",
-    "eslint-plugin-vue": "^8.2.0",
-    "prettier": "^2.5.1",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "vue-eslint-parser": "^10.0.0"
   }
 }
