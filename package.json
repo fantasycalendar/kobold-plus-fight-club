@@ -6,15 +6,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 5050",
-    "lint": "eslint . --fix",
-    "tauri-dev": "tauri dev",
-    "tauri": "tauri"
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.20",
-    "@vue/devtools-api": "^8.1.5",
+    "@vue/devtools-api": "^8.2.1",
     "@vueform/multiselect": "^2.6.11",
     "@vueform/slider": "^2.1.10",
     "@vueuse/core": "^14.3.0",
@@ -30,7 +28,6 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.3",
-    "@tauri-apps/cli": "^1.4.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/eslint-config-prettier": "^10.2.0",
     "eslint": "^10.8.0",
