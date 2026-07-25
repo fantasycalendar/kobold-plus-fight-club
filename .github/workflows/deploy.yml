@@ -9,12 +9,13 @@ jobs:
   kobold-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '22'
+          cache: 'npm'
       - name: Install NPM dependencies
-        run: npm install
+        run: npm ci
       - name: Build application
         run: npm run build
       - name: Actions Status Discord
@@ -29,7 +30,7 @@ jobs:
           color: 0xdc2626
           nodetail: true
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
