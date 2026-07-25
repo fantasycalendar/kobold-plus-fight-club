@@ -166,7 +166,7 @@ function generateNew() {
       <div
         class="mt-2 max-h-96 overflow-y-auto scrollbar divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 dark:text-gray-300"
       >
-        <div v-for="(_, index) of encounter.history">
+        <div v-for="(_, index) of encounter.history" :key="index">
           <div
             class="flex px-2 py-4 dark:border-gray-700 w-full relative"
             :title="

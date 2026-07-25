@@ -164,7 +164,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 import { useFilters } from "../stores/filters";
 
 const filters = useFilters();
@@ -178,7 +178,6 @@ const chaotic_neutral = ref(32);
 const lawful_evil = ref(64);
 const neutral_evil = ref(128);
 const chaotic_evil = ref(256);
-const total = ref(1023);
 const randomIconIndex = ref(0);
 const icons = ref([
   "fa-solid fa-dumpster-fire",
@@ -204,7 +203,7 @@ const icons = ref([
 ]);
 const randomIcon = computed(() => icons.value[randomIconIndex.value]);
 
-filters.$subscribe((mutation, state) => {
+filters.$subscribe(() => {
   let newIndex = Math.floor(Math.random() * icons.value.length);
   randomIconIndex.value =
     newIndex === randomIconIndex.value
@@ -227,8 +226,5 @@ function classes(value) {
       !(filters.alignment.bits & value),
     "cursor-pointer grid place-items-center text-center select-none text-white": true,
   };
-}
-function reset() {
-  filters.alignment.bits = 1023;
 }
 </script>

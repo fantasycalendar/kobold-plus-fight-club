@@ -44,6 +44,20 @@ export default [
     },
   },
 
+  // Project-specific rule overrides.
+  {
+    rules: {
+      // Several long-standing single-word components (Badge, Modal,
+      // Notification) would need renaming across the app to satisfy this.
+      // Not worth the churn.
+      "vue/multi-word-component-names": "off",
+
+      // Allow intentionally-unused args prefixed with an underscore (e.g.
+      // abstract method signatures that document their interface).
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    },
+  },
+
   // Disable rules that conflict with Prettier. Must come last so it wins.
   skipFormatting,
 ];

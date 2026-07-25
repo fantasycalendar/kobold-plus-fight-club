@@ -169,6 +169,7 @@ const modals = useModals();
         <div
           class="flex items-center justify-between py-1.5"
           v-for="secondaryMeasurement in encounter.secondaryMeasurements"
+          :key="secondaryMeasurement.label"
         >
           <dt
             class="text-sm text-gray-600 dark:text-gray-200"

@@ -10,7 +10,7 @@ import LoadingSpinner from "./LoadingSpinner.vue";
 import MonsterTableHeading from "./MonsterTableHeading.vue";
 import MonsterTableRow from "./MonsterTableRow.vue";
 
-const emit = defineEmits(["modal"]);
+defineEmits(["modal"]);
 
 const sortBy = ref("name");
 const sortByDesc = ref(false);

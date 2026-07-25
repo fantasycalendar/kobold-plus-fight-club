@@ -79,7 +79,7 @@ export function isValidHttpUrl(string) {
   let url;
   try {
     url = new URL(string);
-  } catch (err) {
+  } catch {
     return false;
   }
   return url.protocol === "http:" || url.protocol === "https:";
@@ -157,7 +157,9 @@ export function validateJSON(jsonString) {
     if (o && typeof o === "object") {
       return o;
     }
-  } catch (e) {}
+  } catch {
+    // Not valid JSON / not an object — fall through to the default below.
+  }
 
   return false;
 }

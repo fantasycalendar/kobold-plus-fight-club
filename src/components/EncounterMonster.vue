@@ -42,6 +42,7 @@
         <Badge
           class="mr-1"
           v-for="tag in [group.monster.type, ...group.monster.tags]"
+          :key="tag"
         >
           {{ tag.toLowerCase() }}
         </Badge>
@@ -107,6 +108,7 @@
         <ul class="list-disc list-inside max-w-full ml-2">
           <li
             v-for="source in group.monster.sources"
+            :key="source.name"
             class="max-w-full truncate"
             :title="source.fullText"
             data-tippy-delay="1000"

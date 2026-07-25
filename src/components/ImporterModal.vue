@@ -84,6 +84,7 @@
                   >
                     <tr
                       v-for="source in stagedSources"
+                      :key="source.name"
                       class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600"
                     >
                       <td
@@ -162,6 +163,7 @@
                   >
                     <tr
                       v-for="monster in stagedMonsters.slice(0, 6)"
+                      :key="monster.name"
                       class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600"
                     >
                       <td

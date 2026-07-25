@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import * as helpers from "../js/helpers.js";
 export default {
   name: "SelectInput",
   props: {
@@ -110,7 +109,7 @@ export default {
     },
     options: {
       type: Array,
-      default: [],
+      default: () => [],
     },
     optionSubtext: {
       type: Function,

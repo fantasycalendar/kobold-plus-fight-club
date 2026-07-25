@@ -1,8 +1,6 @@
 <script setup>
-import Multiselect from "@vueform/multiselect";
 import { useModals } from "../stores/modals";
 import { useNews } from "../stores/news";
-import { ref } from "vue";
 
 const modals = useModals();
 const news = useNews();
@@ -99,6 +97,7 @@ const news = useNews();
                 <ul role="list" class="divide-y divide-gray-100 dark:divide-gray-700">
                   <li
                     v-for="item in news.articles"
+                    :key="item.title"
                     class="py-4"
                   >
                     <div class="flex items-center gap-x-3">

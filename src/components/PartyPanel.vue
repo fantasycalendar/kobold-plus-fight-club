@@ -64,7 +64,7 @@ const modals = useModals();
         >
         <div>&nbsp;</div>
 
-        <div class="contents" v-for="(group, index) in party.groups">
+        <div class="contents" v-for="(group, index) in party.groups" :key="index">
           <input
             type="number"
             min="1"

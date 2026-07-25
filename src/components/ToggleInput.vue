@@ -3,7 +3,6 @@ import { ref } from "vue";
 const props = defineProps(["modelValue", "darker", "end"]);
 const emit = defineEmits(["update:modelValue"]);
 
-const input = ref(null);
 const end = ref(props.end);
 
 function toggleValue() {

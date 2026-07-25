@@ -1,6 +1,6 @@
 <script setup>
 
-const props = defineProps({
+defineProps({
   color: {
     type: String,
     default: "emerald"

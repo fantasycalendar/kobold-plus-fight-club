@@ -134,6 +134,7 @@ filters.$subscribe((mutation, state) => {
           >
             <option
               v-for="option in filters.crValues"
+              :key="option.value"
               :value="option.value"
               v-text="option.label"
               :disabled="parseInt(option.value) > parseInt(maxCr)"
@@ -155,6 +156,7 @@ filters.$subscribe((mutation, state) => {
           >
             <option
               v-for="option in filters.crValues"
+              :key="option.value"
               :value="option.value"
               v-text="option.label"
               :disabled="parseInt(option.value) < parseInt(minCr)"

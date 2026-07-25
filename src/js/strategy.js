@@ -170,7 +170,7 @@ class EncounterStrategy {
     return helpers.randomArrayElement(monsterList);
   }
 
-  static getDifficultyFromCr(cr, budget){
+  static getDifficultyFromCr(_cr, _budget){
     throw new Error("Not Implemented")
   }
 
