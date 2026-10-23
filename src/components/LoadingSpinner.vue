@@ -33,7 +33,7 @@ const loadingMessage =
     Math.floor(Math.random() * loadingMessages.value.length)
   ];
 
-const props = defineProps({
+defineProps({
   classes: {
     type: String,
     default: "",
@@ -59,6 +59,8 @@ export default {
 </script>
 
 <style scoped>
+@reference "../main.css";
+
 .lds-ripple {
   display: inline-block;
   position: relative;

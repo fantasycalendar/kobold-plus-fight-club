@@ -42,10 +42,10 @@ function sendToImprovedInitiative() {
     }
   });
 
-  party.saved.forEach((party, partyIndex) => {
+  party.saved.forEach((party) => {
     party.players
       .filter((player) => player.active)
-      .forEach((player, playerIndex) => {
+      .forEach((player) => {
         data.Combatants.push({
           Id: helpers.slugify(`${party.name}-${player.name}`),
           Name: player.name,

@@ -1,8 +1,6 @@
 <script setup>
-import Multiselect from "@vueform/multiselect";
 import { useModals } from "../stores/modals";
 import { useNews } from "../stores/news";
-import { ref } from "vue";
 
 const modals = useModals();
 const news = useNews();
@@ -32,7 +30,7 @@ const news = useNews();
       >
         <div
           @click="news.hide"
-          class="absolute inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity"
+          class="absolute inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity"
           aria-hidden="true"
           v-show="news.open"
         ></div>
@@ -70,7 +68,7 @@ const news = useNews();
                     <button
                       @click="news.hide"
                       type="button"
-                      class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                      class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                     >
                       <span class="sr-only">Close panel</span>
                       <!-- Heroicon name: outline/x -->
@@ -99,6 +97,7 @@ const news = useNews();
                 <ul role="list" class="divide-y divide-gray-100 dark:divide-gray-700">
                   <li
                     v-for="item in news.articles"
+                    :key="item.title"
                     class="py-4"
                   >
                     <div class="flex items-center gap-x-3">
@@ -106,7 +105,7 @@ const news = useNews();
                       <h3 class="flex-auto truncate text-sm font-semibold leading-6 text-gray-900 dark:text-gray-300">{{ item.title }}</h3>
                       <time :datetime="item.date" class="flex-none text-xs text-gray-500">{{ item.date }}</time>
                     </div>
-                    <div class="prose dark:prose-invert prose-a:text-emerald-700 dark:prose-a:text-emerald-500 hover:prose-a:text-emerald-600 dark:hover:prose-a:text-emerald-600">
+                    <div class="prose dark:prose-invert prose-a:text-emerald-700 dark:prose-a:text-emerald-500 prose-a:hover:text-emerald-600 dark:prose-a:hover:text-emerald-600">
                       <p class="mt-3 text-sm text-gray-600 dark:text-gray-400" v-html="item.text"></p>
                     </div>
 
@@ -114,7 +113,7 @@ const news = useNews();
                     <button
                       @click="() => { news.source(item.source); }"
                       type="button"
-                      class="button-primary-sm !p-2 !px-4 w-full justify-center"
+                      class="button-primary-sm p-2! px-4! w-full justify-center"
                     >
                       {{ item.action }}
                     </button>
@@ -124,7 +123,7 @@ const news = useNews();
                       <button
                         @click="() => { modals.show(item.modal); news.hide(); }"
                         type="button"
-                        class="button-primary-sm !p-2 !px-4 w-full justify-center"
+                        class="button-primary-sm p-2! px-4! w-full justify-center"
                       >
                         {{ item.action }}
                       </button>

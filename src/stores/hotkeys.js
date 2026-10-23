@@ -11,13 +11,25 @@ export const useHotkeys = defineStore("hotkeys", {
     register(shortcut, description, callback, sortBy = null, hidden = false) {
       sortBy = sortBy ?? this.definitions.length + 1;
 
-      this.definitions.push({
-        shortcut,
-        description,
-        hidden,
-        sortBy,
-      });
+      const definition = { shortcut, description, hidden, sortBy };
 
+      // Components can re-register their shortcuts when they are re-created
+      // (e.g. navigating away and back to a routed view). Replace any existing
+      // definition for the same shortcut instead of pushing a duplicate, which
+      // would both leak entries into the help list and bind the hotkey handler
+      // multiple times.
+      const existingIndex = this.definitions.findIndex(
+        (existing) => existing.shortcut === shortcut
+      );
+      if (existingIndex === -1) {
+        this.definitions.push(definition);
+      } else {
+        this.definitions[existingIndex] = definition;
+      }
+
+      // Unbind any previous handler for this shortcut before binding the new
+      // one so the callback doesn't fire multiple times per keypress.
+      hotkeys.unbind(shortcut);
       hotkeys(shortcut, callback);
     },
   },

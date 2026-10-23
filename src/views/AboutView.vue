@@ -136,6 +136,8 @@ import { RouterLink } from "vue-router";
 </template>
 
 <style scoped>
+@reference "../main.css";
+
 .primary-link {
   @apply no-underline;
 }

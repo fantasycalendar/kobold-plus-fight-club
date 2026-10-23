@@ -245,7 +245,7 @@ export const useFilters = defineStore("filters", {
           this.isValidRegex = true;
 
           return true;
-        } catch (e) {
+        } catch {
           this.regex = null;
           this.isValidRegex = false;
           return false;

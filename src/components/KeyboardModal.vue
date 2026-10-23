@@ -41,7 +41,7 @@ onBeforeMount(() => {
           <div v-for="hotkey in hotkeys.help" :key="hotkey.shortcut">
             <div class="flex justify-between">
               <kbd
-                class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded px-2 text-sm font-sans font-medium text-gray-400"
+                class="inline-flex items-center border border-gray-200 dark:border-gray-600 rounded-sm px-2 text-sm font-sans font-medium text-gray-400"
                 v-text="formatHotkey(hotkey.shortcut)"
               ></kbd>
               <div v-text="hotkey.description"></div>

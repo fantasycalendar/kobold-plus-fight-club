@@ -14,7 +14,7 @@ const encounter = useEncounter();
         v-for="[key, strategy] in Object.entries(encounter.availableStrategies)"
         :key="key"
         @click="encounter.setStrategy(key)"
-        class="bg-white dark:bg-gray-700 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer border-2 hover:border-emerald-500 transition duration-150 ease-in-out"
+        class="bg-white dark:bg-gray-700 shadow-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer border-2 hover:border-emerald-500 transition duration-150 ease-in-out"
         :class="{
           'border-emerald-500': encounter.strategy === key,
           'border-transparent': encounter.strategy !== key,

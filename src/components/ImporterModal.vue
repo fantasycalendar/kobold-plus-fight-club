@@ -46,7 +46,7 @@
           <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle">
               <div
-                class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
+                class="overflow-hidden shadow-xs ring-1 ring-black/5"
               >
                 <table
                   class="min-w-full divide-y divide-gray-300 dark:divide-gray-700"
@@ -84,6 +84,7 @@
                   >
                     <tr
                       v-for="source in stagedSources"
+                      :key="source.name"
                       class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600"
                     >
                       <td
@@ -118,7 +119,7 @@
           <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle">
               <div
-                class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
+                class="overflow-hidden shadow-xs ring-1 ring-black/5"
               >
                 <table
                   class="min-w-full divide-y divide-gray-300 dark:divide-gray-600"
@@ -162,6 +163,7 @@
                   >
                     <tr
                       v-for="monster in stagedMonsters.slice(0, 6)"
+                      :key="monster.name"
                       class="odd:bg-gray-50 even:bg-gray-100 dark:odd:bg-gray-700 dark:even:bg-gray-600"
                     >
                       <td

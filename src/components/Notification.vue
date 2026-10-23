@@ -1,7 +1,7 @@
 <template>
   <div class="p-4" :class="{ 'mb-2': !notification.sticky }">
     <div class="flex items-start">
-      <div class="flex-shrink-0">
+      <div class="shrink-0">
         <i
           class="fa"
           :class="{
@@ -24,9 +24,9 @@
         ></p>
         <component :is="notification.component" v-if="notification.component" v-bind="Object.freeze({ id: notification.id })"></component>
       </div>
-      <div class="ml-4 flex-shrink-0 flex">
+      <div class="ml-4 shrink-0 flex">
         <button
-          class="bg-white dark:bg-gray-500 dark:text-gray-800 rounded-md inline-flex text-gray-400 dark:text-gray-800 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+          class="bg-white dark:bg-gray-500 dark:text-gray-800 rounded-md inline-flex text-gray-400 dark:text-gray-800 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
           @click="$emit('dismiss', notification.id)"
         >
           <span class="sr-only">Close</span>
@@ -55,7 +55,7 @@
   >
     <transition
       v-show="notification.timer"
-      leave-active-class="transition-all ease-linear duration-[2900ms]"
+      leave-active-class="transition-all ease-linear duration-2900"
       leave-from-class="w-full"
       leave-to-class="w-0"
     >

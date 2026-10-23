@@ -17,7 +17,7 @@ function switchToImport() {
 <template>
   <Modal v-model:show="modals.sources" title="Select your sources">
     <button
-      class="button-primary-outline-md absolute top-5 right-6 !py-1"
+      class="button-primary-outline-md absolute top-5 right-6 py-1!"
       @click="switchToImport"
     >
       <i class="fa fa-plus mr-1 text-lg"></i> Import new

@@ -3,7 +3,7 @@ import {useEncounter} from "../stores/encounter";
 import Monster from "../js/monster";
 import Badge from "./Badge.vue";
 
-const props = defineProps({
+defineProps({
   monster: {
     type: Monster,
   },
@@ -31,16 +31,16 @@ const encounter = useEncounter();
     >
       <span class="truncate" v-text="monster.name"></span>
       <span v-show="monster.tags.length" class="inline-flex space-x-1 ml-2">
-        <Badge v-for="tag in monster.tags">
+        <Badge v-for="tag in monster.tags" :key="tag">
           {{ tag.toLowerCase() }}
         </Badge>
       </span>
-      <dt class="sr-only sm:hidden">Type</dt>
-      <dd
-        class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden"
-        v-text="monster.type"
-      ></dd>
       <dl class="font-normal">
+        <dt class="sr-only sm:hidden">Type</dt>
+        <dd
+          class="mt-1 truncate text-gray-500 dark:text-gray-400 lg:hidden"
+          v-text="monster.type"
+        ></dd>
         <dt class="sr-only">Sources</dt>
         <dd class="mt-1 truncate text-gray-500 dark:text-gray-400">
           <span

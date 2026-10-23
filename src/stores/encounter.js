@@ -3,7 +3,7 @@ import { useParty } from "./party";
 import * as helpers from "../js/helpers";
 import { useNotifications } from "./notifications";
 import { useMonsters } from "./monsters";
-import { useLocalStorage } from "@vueuse/core/index";
+import { useLocalStorage } from "@vueuse/core";
 import strategies from "../js/strategy.js";
 
 export const useEncounter = defineStore("encounter", {

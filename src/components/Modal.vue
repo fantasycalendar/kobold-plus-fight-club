@@ -10,7 +10,7 @@
           leave-to-class="opacity-0"
           v-show="show"
       >
-        <div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
+        <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity" aria-hidden="true"
              @click="$emit('update:show', false)"
         ></div>
         <!--    TODO: Fix clicking the background.    -->

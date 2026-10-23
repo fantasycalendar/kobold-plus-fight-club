@@ -34,7 +34,7 @@ const editingMembership = ref(false);
   <div
     class=""
     :class="{
-      'flex px-4 dark:border-gray-700 w-100 relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600': true,
+      'flex px-4 dark:border-gray-700 w-full relative cursor-pointer group hover:bg-gray-100 dark:hover:bg-gray-600': true,
       'bg-gray-100 hover:bg-gray-50 dark:bg-gray-700': editing,
       'py-4': !editing,
     }"
@@ -43,7 +43,7 @@ const editingMembership = ref(false);
     @click="editing = !editing"
   >
     <div
-      class="grow flex justify-between mr-2 truncate overflow-ellipsis items-center"
+      class="grow flex justify-between mr-2 truncate text-ellipsis items-center"
     >
       <div>
         <span v-text="party.name"></span>
@@ -72,8 +72,8 @@ const editingMembership = ref(false);
     class="border border-gray-50 dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-y-2 gap-x-1 px-6 py-3 m-px rounded-b"
   >
     <div class="flex items-center">
-      <input v-show="editingMembership" v-model="party.name" type="text" class="!mb-0 py-0.5 text-xl" />
-      <div class="flex space-x-1 flex-grow self-stretch text-2xl" v-show="!editingMembership" v-text="party.name"></div>
+      <input v-show="editingMembership" v-model="party.name" type="text" class="mb-0! py-0.5 text-xl" />
+      <div class="flex space-x-1 grow self-stretch text-2xl" v-show="!editingMembership" v-text="party.name"></div>
       <div class="ml-2 flex space-x-1 justify-center self-stretch">
         <button
           @click.stop="parties.deleteParty(index)"

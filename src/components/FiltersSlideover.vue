@@ -40,7 +40,7 @@ defineProps({
       >
         <div
           @click="$emit('close')"
-          class="absolute 2xl:hidden inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity 2xl:duration-0"
+          class="absolute 2xl:hidden inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity 2xl:duration-0"
           aria-hidden="true"
           v-show="showFilters"
         ></div>
@@ -58,7 +58,7 @@ defineProps({
           leave-to-class="translate-x-full"
         >
           <div
-            class="pointer-events-auto w-screen max-w-md 2xl:!duration-[0ms] sm:duration-700"
+            class="pointer-events-auto w-screen max-w-md 2xl:duration-[0ms]! sm:duration-700"
             v-show="showFilters"
           >
             <div
@@ -78,7 +78,7 @@ defineProps({
                     <button
                       @click="$emit('close')"
                       type="button"
-                      class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                      class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                     >
                       <span class="sr-only">Close panel</span>
                       <!-- Heroicon name: outline/x -->
@@ -115,7 +115,7 @@ defineProps({
                   <button
                     :disabled="!filters.activeCount"
                     @click="filters.reset()"
-                    class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 disabled:hover:bg-slate-200 disabled:dark:bg-slate-700 disabled:dark:hover:bg-slate-700 disabled:hover:text-emerald-700 disabled:dark:hover:text-emerald-600 grid place-items-center text-center hidden 2xl:block ml-2"
+                    class="w-full button-secondary-md disabled:opacity-70 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:pointer-events-none grid place-items-center text-center hidden 2xl:block ml-2"
                   >
                     <span class="inline-block w-full"
                       ><i class="fa fa-undo pr-1"></i> Reset Filters</span

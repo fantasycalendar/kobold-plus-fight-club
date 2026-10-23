@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-md p-4" :class="outerColors">
     <div class="flex">
-      <div class="flex-shrink-0">
+      <div class="shrink-0">
         <!-- Heroicon name: solid/x-circle -->
         <i
           class="fa h-5 w-5 text-lg"

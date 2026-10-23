@@ -21,7 +21,7 @@ defineProps({
         type="text"
         :id="'name_' + playerIndex"
         v-model="player.name"
-        class="px-1 py-1 !mb-0 block w-full sm:text-sm rounded-md dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
+        class="px-1 py-1 mb-0! block w-full sm:text-sm rounded-md dark:text-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
       />
     </div>
     <div class="order-2">
@@ -86,7 +86,7 @@ defineProps({
         />
       </div>
       <div
-        class="grid place-items-center px-1 shrink rounded-none border border-y-1 bg-white dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
+        class="grid place-items-center px-1 shrink rounded-none border border-y bg-white dark:bg-gray-700 dark:border-gray-600 focus:ring-emerald-500 focus:border-emerald-500 border-gray-300"
       >
         /
       </div>

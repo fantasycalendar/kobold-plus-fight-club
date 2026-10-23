@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core/index";
+import { useLocalStorage } from "@vueuse/core";
 import { useSources } from "./sources";
 import { useModals } from "./modals";
 import { useNotifications } from "./notifications";
